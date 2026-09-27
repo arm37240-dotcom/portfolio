@@ -52,7 +52,7 @@ export interface CourseItem {
   id: string;
   code: string;
   title: string;
-  category: 'วิชาชีพวิศวกรรมไฟฟ้า' | 'วิชาชีพครู' | 'วิชาการทั่วไป';
+  category: string;
   credits: string;
   description: string;
   projects: CourseProject[];
@@ -61,7 +61,7 @@ export interface CourseItem {
 export interface ActivityItem {
   id: string;
   title: string;
-  category: 'กิจกรรมจิตอาสาและสโมสร' | 'การแข่งขันทักษะวิชาชีพ' | 'นวัตกรรมและผลงานวิจัย' | 'การอบรมและสัมมนา';
+  category: string;
   date: string;
   location: string;
   description: string;
@@ -91,6 +91,33 @@ export interface ThemeConfig {
   customFontUrl?: string;
 }
 
+export interface SectionTextConfig {
+  heroBadge: string;
+  heroCtaExplore: string;
+  heroCtaProfile: string;
+  heroCtaContact: string;
+  voltageLabel: string;
+  currentLabel: string;
+  gasLabel: string;
+  pressureLabel: string;
+  oscilloscopeTitle: string;
+  oscilloscopeSubtitle: string;
+  profileBadge: string;
+  profileTitle: string;
+  profileSubtitle: string;
+  educationBadge: string;
+  educationTitle: string;
+  educationSubtitle: string;
+  coursesBadge: string;
+  coursesTitle: string;
+  activitiesBadge: string;
+  activitiesTitle: string;
+  activitiesSubtitle: string;
+  footerContactHeading: string;
+  footerNote: string;
+  footerCopyright: string;
+}
+
 export interface PortfolioData {
   profile: ProfileData;
   education: EducationItem[];
@@ -98,4 +125,5 @@ export interface PortfolioData {
   activities: ActivityItem[];
   uploadedFiles: UploadedFileRecord[];
   themeConfig: ThemeConfig;
+  siteTexts: SectionTextConfig;
 }

@@ -1,22 +1,24 @@
 'use client';
 
 import React from 'react';
-import { Phone, Mail, GraduationCap, MapPin, Heart, ArrowUp } from 'lucide-react';
-import { PortfolioData } from '@/types/portfolio';
+import { Phone, Mail, MapPin, ArrowUp } from 'lucide-react';
+import { PortfolioData, SectionTextConfig } from '@/types/portfolio';
 import { EditableText } from './EditableText';
 
 interface FooterProps {
   data: PortfolioData;
   isAdmin: boolean;
   onUpdateProfile: (field: keyof PortfolioData['profile'], value: string) => void;
+  onUpdateSiteText: (field: keyof SectionTextConfig, value: string) => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({
   data,
   isAdmin,
-  onUpdateProfile
+  onUpdateProfile,
+  onUpdateSiteText
 }) => {
-  const { profile } = data;
+  const { profile, siteTexts } = data;
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -75,7 +77,12 @@ export const Footer: React.FC<FooterProps> = ({
                 />
               </p>
               <p className="text-[11px] text-slate-400 pt-1 border-t border-sky-500/10">
-                แฟ้มสะสมผลงานทางวิชาการและวิชาชีพ (Electronic Portfolio for Vocational & Engineering Education)
+                <EditableText
+                  value={siteTexts.footerNote}
+                  onSave={(v) => onUpdateSiteText('footerNote', v)}
+                  isAdmin={isAdmin}
+                  multiline={true}
+                />
               </p>
             </div>
           </div>
@@ -83,31 +90,39 @@ export const Footer: React.FC<FooterProps> = ({
           {/* Column 2: Direct Contact Channels */}
           <div className="md:col-span-5 space-y-4">
             <h4 className="text-xs font-mono font-semibold uppercase tracking-wider text-sky-400">
-              ช่องทางการติดต่ออย่างเป็นทางการ
+              <EditableText
+                value={siteTexts.footerContactHeading}
+                onSave={(v) => onUpdateSiteText('footerContactHeading', v)}
+                isAdmin={isAdmin}
+              />
             </h4>
 
             <div className="space-y-2.5 text-xs sm:text-sm">
-              <a
-                href={`tel:${profile.phone}`}
-                className="flex items-center justify-between p-3 rounded-xl bg-slate-900/60 border border-sky-500/20 hover:border-sky-400/50 hover:bg-slate-900 transition text-slate-200"
-              >
+              <div className="flex items-center justify-between p-3 rounded-xl bg-slate-900/60 border border-sky-500/20 hover:border-sky-400/50 hover:bg-slate-900 transition text-slate-200">
                 <span className="flex items-center gap-2.5">
                   <Phone size={15} className="text-sky-400" />
                   <span>เบอร์โทรศัพท์:</span>
                 </span>
-                <span className="font-mono font-semibold text-white">{profile.phone}</span>
-              </a>
+                <EditableText
+                  value={profile.phone}
+                  onSave={(v) => onUpdateProfile('phone', v)}
+                  isAdmin={isAdmin}
+                  className="font-mono font-semibold text-white"
+                />
+              </div>
 
-              <a
-                href={`mailto:${profile.email}`}
-                className="flex items-center justify-between p-3 rounded-xl bg-slate-900/60 border border-sky-500/20 hover:border-sky-400/50 hover:bg-slate-900 transition text-slate-200"
-              >
+              <div className="flex items-center justify-between p-3 rounded-xl bg-slate-900/60 border border-sky-500/20 hover:border-sky-400/50 hover:bg-slate-900 transition text-slate-200">
                 <span className="flex items-center gap-2.5">
                   <Mail size={15} className="text-sky-400" />
                   <span>อีเมล:</span>
                 </span>
-                <span className="font-mono font-semibold text-white">{profile.email}</span>
-              </a>
+                <EditableText
+                  value={profile.email}
+                  onSave={(v) => onUpdateProfile('email', v)}
+                  isAdmin={isAdmin}
+                  className="font-mono font-semibold text-white"
+                />
+              </div>
 
               <div className="p-3 rounded-xl bg-slate-900/40 border border-sky-500/10 flex items-center justify-between text-xs text-slate-400">
                 <span className="flex items-center gap-2">
@@ -123,7 +138,11 @@ export const Footer: React.FC<FooterProps> = ({
         {/* Bottom Credits & Back to Top */}
         <div className="pt-8 border-t border-sky-500/15 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
           <p>
-            © {new Date().getFullYear()} จัดทำโดย นาย อภิณัฐชรัชน์ มณีรัตน์ — สงวนลิขสิทธิ์
+            <EditableText
+              value={siteTexts.footerCopyright}
+              onSave={(v) => onUpdateSiteText('footerCopyright', v)}
+              isAdmin={isAdmin}
+            />
           </p>
           <button
             onClick={scrollToTop}

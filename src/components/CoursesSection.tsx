@@ -1,32 +1,43 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Cpu, BookOpen, Layers, ExternalLink, Tag, CheckCircle2, ChevronRight, X, Play } from 'lucide-react';
-import { PortfolioData, CourseItem, CourseProject } from '@/types/portfolio';
+import { Cpu, Layers, ChevronRight, X, Plus, Trash2, CheckCircle2 } from 'lucide-react';
+import { PortfolioData, CourseItem, CourseProject, SectionTextConfig, UploadedFileRecord } from '@/types/portfolio';
 import { EditableText } from './EditableText';
+import { EditableImage } from './EditableImage';
+import { EditableTagList } from './EditableTagList';
 
 interface CoursesSectionProps {
   data: PortfolioData;
   isAdmin: boolean;
-  onUpdateCourse: (courseId: string, field: keyof CourseItem, value: string) => void;
-  onUpdateProject: (courseId: string, projId: string, field: keyof CourseProject, value: string) => void;
+  onUpdateCourse: (courseId: string, field: keyof CourseItem, value: any) => void;
+  onUpdateProject: (courseId: string, projId: string, field: keyof CourseProject, value: any) => void;
+  onAddCourse: () => void;
+  onDeleteCourse: (courseId: string) => void;
+  onAddProject: (courseId: string) => void;
+  onDeleteProject: (courseId: string, projId: string) => void;
+  onUpdateSiteText: (field: keyof SectionTextConfig, value: string) => void;
+  onFileUploaded?: (record: UploadedFileRecord) => void;
 }
 
 export const CoursesSection: React.FC<CoursesSectionProps> = ({
   data,
   isAdmin,
   onUpdateCourse,
-  onUpdateProject
+  onUpdateProject,
+  onAddCourse,
+  onDeleteCourse,
+  onAddProject,
+  onDeleteProject,
+  onUpdateSiteText,
+  onFileUploaded
 }) => {
-  const { courses } = data;
+  const { courses, siteTexts, uploadedFiles } = data;
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [activeProjectModal, setActiveProjectModal] = useState<CourseProject | null>(null);
+  const [activeProjectModal, setActiveProjectModal] = useState<{ courseId: string; project: CourseProject } | null>(null);
 
-  const categories = [
-    { id: 'all', label: 'ทั้งหมด' },
-    { id: 'วิชาชีพวิศวกรรมไฟฟ้า', label: 'วิชาชีพวิศวกรรมไฟฟ้า' },
-    { id: 'วิชาชีพครู', label: 'วิชาชีพครู' }
-  ];
+  // Extract all unique categories dynamically from courses
+  const allCategories = Array.from(new Set(courses.map(c => c.category).filter(Boolean)));
 
   const filteredCourses = selectedCategory === 'all'
     ? courses
@@ -40,28 +51,59 @@ export const CoursesSection: React.FC<CoursesSectionProps> = ({
           <div>
             <div className="inline-flex items-center gap-2 text-xs font-semibold text-sky-400 tracking-wider uppercase mb-1">
               <Cpu size={14} />
-              <span>Curriculum & Applied Engineering Work</span>
+              <EditableText
+                value={siteTexts.coursesBadge}
+                onSave={(v) => onUpdateSiteText('coursesBadge', v)}
+                isAdmin={isAdmin}
+              />
             </div>
             <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
-              รายวิชาและชิ้นงาน (Courses & Projects)
+              <EditableText
+                value={siteTexts.coursesTitle}
+                onSave={(v) => onUpdateSiteText('coursesTitle', v)}
+                isAdmin={isAdmin}
+              />
             </h2>
           </div>
 
-          {/* Category Filter Pills */}
-          <div className="flex items-center gap-2 p-1.5 rounded-xl bg-slate-900 border border-sky-500/20 self-start sm:self-auto">
-            {categories.map((cat) => (
+          <div className="flex flex-wrap items-center gap-2">
+            {/* Category Filter Pills */}
+            <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-900 border border-sky-500/20">
               <button
-                key={cat.id}
-                onClick={() => setSelectedCategory(cat.id)}
+                onClick={() => setSelectedCategory('all')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
-                  selectedCategory === cat.id
+                  selectedCategory === 'all'
                     ? 'bg-sky-500 text-white shadow-[0_0_10px_rgba(56,189,248,0.4)]'
                     : 'text-slate-400 hover:text-white'
                 }`}
               >
-                {cat.label}
+                ทั้งหมด
               </button>
-            ))}
+              {allCategories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setSelectedCategory(cat)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
+                    selectedCategory === cat
+                      ? 'bg-sky-500 text-white shadow-[0_0_10px_rgba(56,189,248,0.4)]'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+
+            {/* Add Course Button */}
+            {isAdmin && (
+              <button
+                onClick={onAddCourse}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-semibold transition shadow"
+              >
+                <Plus size={14} />
+                <span>เพิ่มรายวิชา</span>
+              </button>
+            )}
           </div>
         </div>
 
@@ -70,11 +112,22 @@ export const CoursesSection: React.FC<CoursesSectionProps> = ({
           {filteredCourses.map((course) => (
             <div
               key={course.id}
-              className="electric-glass rounded-2xl p-6 border border-sky-500/20 flex flex-col justify-between hover:border-sky-400/50 transition-all duration-300 group"
+              className="electric-glass rounded-2xl p-6 border border-sky-500/20 flex flex-col justify-between hover:border-sky-400/50 transition-all duration-300 group relative"
             >
+              {/* Delete Course in Admin Mode */}
+              {isAdmin && (
+                <button
+                  onClick={() => onDeleteCourse(course.id)}
+                  title="ลบรายวิชานี้"
+                  className="absolute top-4 right-4 p-1.5 rounded-lg bg-slate-900/80 text-rose-400 hover:bg-rose-950 hover:text-rose-200 border border-rose-500/30 transition z-10"
+                >
+                  <Trash2 size={15} />
+                </button>
+              )}
+
               <div>
                 {/* Course Header */}
-                <div className="flex items-center justify-between gap-2 mb-3">
+                <div className="flex items-center justify-between gap-2 mb-3 pr-8">
                   <span className="font-mono text-xs px-2.5 py-1 rounded bg-sky-950/80 border border-sky-400/40 text-sky-300 font-semibold">
                     <EditableText
                       value={course.code}
@@ -82,9 +135,21 @@ export const CoursesSection: React.FC<CoursesSectionProps> = ({
                       isAdmin={isAdmin}
                     />
                   </span>
-                  <span className="text-xs text-slate-400 font-medium">
-                    หน่วยกิต: {course.credits}
-                  </span>
+                  <div className="flex items-center gap-2 text-xs text-slate-400">
+                    <span>หมวด:</span>
+                    <EditableText
+                      value={course.category}
+                      onSave={(v) => onUpdateCourse(course.id, 'category', v)}
+                      isAdmin={isAdmin}
+                      className="text-sky-400 font-medium"
+                    />
+                    <span>•</span>
+                    <EditableText
+                      value={course.credits}
+                      onSave={(v) => onUpdateCourse(course.id, 'credits', v)}
+                      isAdmin={isAdmin}
+                    />
+                  </div>
                 </div>
 
                 {/* Course Title */}
@@ -108,19 +173,30 @@ export const CoursesSection: React.FC<CoursesSectionProps> = ({
 
                 {/* Projects in Course */}
                 <div className="space-y-3 pt-3 border-t border-sky-500/15">
-                  <div className="text-xs font-semibold text-sky-400 flex items-center gap-1.5 uppercase tracking-wider">
-                    <Layers size={13} />
-                    <span>ชิ้นงานและโครงงานในรายวิชา ({course.projects.length})</span>
+                  <div className="flex items-center justify-between">
+                    <div className="text-xs font-semibold text-sky-400 flex items-center gap-1.5 uppercase tracking-wider">
+                      <Layers size={13} />
+                      <span>ชิ้นงานในรายวิชา ({course.projects.length})</span>
+                    </div>
+                    {isAdmin && (
+                      <button
+                        onClick={() => onAddProject(course.id)}
+                        className="text-[11px] flex items-center gap-1 text-sky-400 hover:text-sky-300 bg-sky-950/60 px-2 py-0.5 rounded border border-sky-500/30"
+                      >
+                        <Plus size={11} />
+                        <span>เพิ่มชิ้นงาน</span>
+                      </button>
+                    )}
                   </div>
 
                   {course.projects.map((proj) => (
                     <div
                       key={proj.id}
-                      onClick={() => setActiveProjectModal(proj)}
-                      className="p-3.5 rounded-xl bg-slate-900/60 border border-sky-500/20 hover:border-sky-400/60 hover:bg-slate-900/90 cursor-pointer transition flex items-center justify-between gap-3 group/p"
+                      onClick={() => setActiveProjectModal({ courseId: course.id, project: proj })}
+                      className="p-3.5 rounded-xl bg-slate-900/60 border border-sky-500/20 hover:border-sky-400/60 hover:bg-slate-900/90 cursor-pointer transition flex items-center justify-between gap-3 group/p relative"
                     >
-                      <div className="space-y-1">
-                        <h4 className="text-xs sm:text-sm font-semibold text-white group-hover/p:text-sky-300 transition">
+                      <div className="space-y-1 overflow-hidden pr-6">
+                        <h4 className="text-xs sm:text-sm font-semibold text-white group-hover/p:text-sky-300 transition truncate">
                           {proj.title}
                         </h4>
                         <div className="flex flex-wrap gap-1.5">
@@ -134,7 +210,22 @@ export const CoursesSection: React.FC<CoursesSectionProps> = ({
                           ))}
                         </div>
                       </div>
-                      <ChevronRight size={16} className="text-slate-500 group-hover/p:text-sky-400 group-hover/p:translate-x-1 transition" />
+
+                      <div className="flex items-center gap-2 shrink-0">
+                        {isAdmin && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onDeleteProject(course.id, proj.id);
+                            }}
+                            title="ลบชิ้นงานนี้"
+                            className="p-1 text-slate-500 hover:text-rose-400 transition"
+                          >
+                            <Trash2 size={13} />
+                          </button>
+                        )}
+                        <ChevronRight size={16} className="text-slate-500 group-hover/p:text-sky-400 group-hover/p:translate-x-1 transition" />
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -144,17 +235,27 @@ export const CoursesSection: React.FC<CoursesSectionProps> = ({
         </div>
       </div>
 
-      {/* Project Detail Modal */}
+      {/* Project Detail Modal with Full Editable Capabilities */}
       {activeProjectModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
-          <div className="electric-glass rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-sky-400 p-6 space-y-5 shadow-[0_0_50px_rgba(56,189,248,0.3)]">
+          <div className="electric-glass rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-sky-400 p-6 space-y-5 shadow-[0_0_50px_rgba(56,189,248,0.3)] relative">
             <div className="flex items-start justify-between gap-4 border-b border-sky-500/20 pb-4">
               <div>
                 <span className="text-xs font-mono text-sky-400 uppercase tracking-wider">
                   รายละเอียดชิ้นงาน / โครงงาน
                 </span>
                 <h3 className="text-xl sm:text-2xl font-bold text-white mt-1">
-                  {activeProjectModal.title}
+                  <EditableText
+                    value={activeProjectModal.project.title}
+                    onSave={(val) => {
+                      onUpdateProject(activeProjectModal.courseId, activeProjectModal.project.id, 'title', val);
+                      setActiveProjectModal({
+                        ...activeProjectModal,
+                        project: { ...activeProjectModal.project, title: val }
+                      });
+                    }}
+                    isAdmin={isAdmin}
+                  />
                 </h3>
               </div>
               <button
@@ -165,57 +266,83 @@ export const CoursesSection: React.FC<CoursesSectionProps> = ({
               </button>
             </div>
 
-            {/* Media Preview if available */}
-            {activeProjectModal.imageUrl && (
-              <div className="w-full h-56 sm:h-72 rounded-xl overflow-hidden border border-sky-500/30 bg-slate-950 relative">
-                <img
-                  src={activeProjectModal.imageUrl}
-                  alt={activeProjectModal.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            )}
+            {/* Project Image with EditableImage */}
+            <div className="w-full h-56 sm:h-72 rounded-xl overflow-hidden border border-sky-500/30 bg-slate-950 relative">
+              <EditableImage
+                src={activeProjectModal.project.imageUrl}
+                alt={activeProjectModal.project.title}
+                onSave={(newUrl) => {
+                  onUpdateProject(activeProjectModal.courseId, activeProjectModal.project.id, 'imageUrl', newUrl);
+                  setActiveProjectModal({
+                    ...activeProjectModal,
+                    project: { ...activeProjectModal.project, imageUrl: newUrl }
+                  });
+                }}
+                isAdmin={isAdmin}
+                uploadedFiles={uploadedFiles}
+                onFileUploaded={onFileUploaded}
+              />
+            </div>
 
             <div className="space-y-4">
               <div>
                 <h4 className="text-xs font-semibold text-sky-400 uppercase tracking-wider mb-1">
                   คำอธิบายการทำงาน & ผลลัพธ์
                 </h4>
-                <p className="text-sm text-slate-300 leading-relaxed">
-                  {activeProjectModal.description}
-                </p>
+                <div className="text-sm text-slate-300 leading-relaxed">
+                  <EditableText
+                    value={activeProjectModal.project.description}
+                    onSave={(val) => {
+                      onUpdateProject(activeProjectModal.courseId, activeProjectModal.project.id, 'description', val);
+                      setActiveProjectModal({
+                        ...activeProjectModal,
+                        project: { ...activeProjectModal.project, description: val }
+                      });
+                    }}
+                    isAdmin={isAdmin}
+                    multiline={true}
+                  />
+                </div>
               </div>
 
-              {activeProjectModal.highlights && activeProjectModal.highlights.length > 0 && (
-                <div>
-                  <h4 className="text-xs font-semibold text-sky-400 uppercase tracking-wider mb-2">
-                    จุดเด่นและสาระสำคัญ
-                  </h4>
-                  <ul className="space-y-1.5">
-                    {activeProjectModal.highlights.map((h, idx) => (
-                      <li key={idx} className="flex items-center gap-2 text-xs sm:text-sm text-slate-300">
-                        <CheckCircle2 size={15} className="text-sky-400 shrink-0" />
-                        <span>{h}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+              {/* Highlights with EditableTagList */}
+              <div>
+                <h4 className="text-xs font-semibold text-sky-400 uppercase tracking-wider mb-2">
+                  จุดเด่นและสาระสำคัญ
+                </h4>
+                <EditableTagList
+                  items={activeProjectModal.project.highlights || []}
+                  onUpdateList={(newList) => {
+                    onUpdateProject(activeProjectModal.courseId, activeProjectModal.project.id, 'highlights', newList);
+                    setActiveProjectModal({
+                      ...activeProjectModal,
+                      project: { ...activeProjectModal.project, highlights: newList }
+                    });
+                  }}
+                  isAdmin={isAdmin}
+                  prefix="✓ "
+                  pillClassName="flex items-center gap-2 text-xs sm:text-sm text-slate-300 bg-slate-900/60 p-2 rounded-lg border border-sky-500/20"
+                  addPlaceholder="เพิ่มจุดเด่น..."
+                />
+              </div>
 
+              {/* Tags with EditableTagList */}
               <div>
                 <h4 className="text-xs font-semibold text-sky-400 uppercase tracking-wider mb-2">
                   แท็กและทักษะที่เกี่ยวข้อง
                 </h4>
-                <div className="flex flex-wrap gap-2">
-                  {activeProjectModal.tags.map((tag, idx) => (
-                    <span
-                      key={idx}
-                      className="text-xs font-mono text-sky-300 bg-sky-950/80 px-2.5 py-1 rounded-md border border-sky-500/30"
-                    >
-                      #{tag}
-                    </span>
-                  ))}
-                </div>
+                <EditableTagList
+                  items={activeProjectModal.project.tags || []}
+                  onUpdateList={(newList) => {
+                    onUpdateProject(activeProjectModal.courseId, activeProjectModal.project.id, 'tags', newList);
+                    setActiveProjectModal({
+                      ...activeProjectModal,
+                      project: { ...activeProjectModal.project, tags: newList }
+                    });
+                  }}
+                  isAdmin={isAdmin}
+                  addPlaceholder="เพิ่มแท็ก..."
+                />
               </div>
             </div>
 

@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { ArrowRight, Download, Sparkles, Zap, Shield, Cpu, Activity } from 'lucide-react';
-import { PortfolioData } from '@/types/portfolio';
+import { ArrowRight, Zap, Shield, Cpu, Activity } from 'lucide-react';
+import { PortfolioData, SectionTextConfig } from '@/types/portfolio';
 import { EditableText } from './EditableText';
 import { OscilloscopeWave } from './OscilloscopeWave';
 
@@ -10,6 +10,7 @@ interface HeroSectionProps {
   data: PortfolioData;
   isAdmin: boolean;
   onUpdateProfile: (field: keyof PortfolioData['profile'], value: string) => void;
+  onUpdateSiteText: (field: keyof SectionTextConfig, value: string) => void;
   onNavigate: (sectionId: string) => void;
 }
 
@@ -17,9 +18,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   data,
   isAdmin,
   onUpdateProfile,
+  onUpdateSiteText,
   onNavigate
 }) => {
-  const { profile } = data;
+  const { profile, siteTexts } = data;
 
   return (
     <section id="hero" className="relative pt-6 pb-16 lg:py-20 overflow-hidden">
@@ -34,7 +36,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-sky-500"></span>
           </span>
-          <span className="tracking-wide">ครุศาสตร์อุตสาหกรรมไฟฟ้า • RMUTI Khon Kaen</span>
+          <EditableText
+            value={siteTexts.heroBadge}
+            onSave={(v) => onUpdateSiteText('heroBadge', v)}
+            isAdmin={isAdmin}
+            className="tracking-wide"
+          />
         </div>
 
         {/* Main Title & Slogan */}
@@ -66,7 +73,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             onClick={() => onNavigate('courses')}
             className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-semibold text-sm shadow-[0_0_20px_rgba(56,189,248,0.4)] transition-all transform hover:-translate-y-0.5 active:translate-y-0"
           >
-            <span>สำรวจชิ้นงาน & โครงงาน</span>
+            <EditableText
+              value={siteTexts.heroCtaExplore}
+              onSave={(v) => onUpdateSiteText('heroCtaExplore', v)}
+              isAdmin={isAdmin}
+            />
             <ArrowRight size={16} />
           </button>
 
@@ -74,23 +85,35 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             onClick={() => onNavigate('profile')}
             className="flex items-center gap-2 px-6 py-3 rounded-xl bg-slate-900/80 hover:bg-slate-800/90 text-sky-200 border border-sky-500/30 hover:border-sky-400 font-semibold text-sm transition-all"
           >
-            <span>ข้อมูลส่วนตัว (Profile)</span>
+            <EditableText
+              value={siteTexts.heroCtaProfile}
+              onSave={(v) => onUpdateSiteText('heroCtaProfile', v)}
+              isAdmin={isAdmin}
+            />
           </button>
 
           <button
             onClick={() => onNavigate('footer')}
             className="flex items-center gap-2 px-5 py-3 rounded-xl bg-transparent hover:bg-sky-950/40 text-slate-300 hover:text-white font-medium text-sm transition"
           >
-            <span>ช่องทางติดต่อ</span>
+            <EditableText
+              value={siteTexts.heroCtaContact}
+              onSave={(v) => onUpdateSiteText('heroCtaContact', v)}
+              isAdmin={isAdmin}
+            />
           </button>
         </div>
 
-        {/* Technical Specs Dashboard (Inspired by Helixion) */}
+        {/* Technical Specs Dashboard */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4">
           <div className="p-4 rounded-xl electric-glass electric-glass-hover">
             <div className="flex items-center gap-2 text-xs text-sky-400 font-mono mb-1">
               <Zap size={14} />
-              <span>VOLTAGE</span>
+              <EditableText
+                value={siteTexts.voltageLabel}
+                onSave={(v) => onUpdateSiteText('voltageLabel', v)}
+                isAdmin={isAdmin}
+              />
             </div>
             <div className="text-xl font-bold font-mono text-white">
               <EditableText
@@ -105,7 +128,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           <div className="p-4 rounded-xl electric-glass electric-glass-hover">
             <div className="flex items-center gap-2 text-xs text-sky-400 font-mono mb-1">
               <Activity size={14} />
-              <span>CURRENT</span>
+              <EditableText
+                value={siteTexts.currentLabel}
+                onSave={(v) => onUpdateSiteText('currentLabel', v)}
+                isAdmin={isAdmin}
+              />
             </div>
             <div className="text-xl font-bold font-mono text-white">
               <EditableText
@@ -120,7 +147,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           <div className="p-4 rounded-xl electric-glass electric-glass-hover">
             <div className="flex items-center gap-2 text-xs text-sky-400 font-mono mb-1">
               <Cpu size={14} />
-              <span>DISCHARGE GAS</span>
+              <EditableText
+                value={siteTexts.gasLabel}
+                onSave={(v) => onUpdateSiteText('gasLabel', v)}
+                isAdmin={isAdmin}
+              />
             </div>
             <div className="text-xl font-bold font-mono text-white">
               <EditableText
@@ -135,7 +166,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           <div className="p-4 rounded-xl electric-glass electric-glass-hover">
             <div className="flex items-center gap-2 text-xs text-sky-400 font-mono mb-1">
               <Shield size={14} />
-              <span>VACUUM / PRESSURE</span>
+              <EditableText
+                value={siteTexts.pressureLabel}
+                onSave={(v) => onUpdateSiteText('pressureLabel', v)}
+                isAdmin={isAdmin}
+              />
             </div>
             <div className="text-xl font-bold font-mono text-white">
               <EditableText
@@ -155,14 +190,22 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               <div className="flex items-center gap-2">
                 <span className="text-sm font-bold text-white flex items-center gap-1.5">
                   <span className="h-2.5 w-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]"></span>
-                  LIVE CIRCUIT OSCILLOSCOPE FEED
+                  <EditableText
+                    value={siteTexts.oscilloscopeTitle}
+                    onSave={(v) => onUpdateSiteText('oscilloscopeTitle', v)}
+                    isAdmin={isAdmin}
+                  />
                 </span>
                 <span className="text-xs font-mono text-sky-400 bg-sky-950/80 px-2 py-0.5 rounded border border-sky-500/30">
                   REALTIME 50Hz
                 </span>
               </div>
               <p className="text-xs text-slate-400 mt-0.5">
-                การจำลองสัญญาณรูปคลื่นไซน์ (Sine Waveform) และการมอดูเลตความถี่ทางไฟฟ้า
+                <EditableText
+                  value={siteTexts.oscilloscopeSubtitle}
+                  onSave={(v) => onUpdateSiteText('oscilloscopeSubtitle', v)}
+                  isAdmin={isAdmin}
+                />
               </p>
             </div>
             

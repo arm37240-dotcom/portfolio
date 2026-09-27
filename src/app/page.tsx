@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { initialPortfolioData } from '@/data/initialData';
-import { PortfolioData } from '@/types/portfolio';
+import { PortfolioData, SectionTextConfig, UploadedFileRecord, CourseItem, CourseProject, ActivityItem, EducationItem } from '@/types/portfolio';
 import { StorageService } from '@/lib/storageService';
 import { Sidebar } from '@/components/Sidebar';
 import { NavbarMobile } from '@/components/NavbarMobile';
@@ -14,7 +14,7 @@ import { ActivitiesSection } from '@/components/ActivitiesSection';
 import { Footer } from '@/components/Footer';
 import { AuthModal } from '@/components/AuthModal';
 import { AdminDrawer } from '@/components/AdminDrawer';
-import { ShieldCheck, Sliders, LogOut, Save, Sparkles } from 'lucide-react';
+import { ShieldCheck, Sliders, LogOut, Sparkles } from 'lucide-react';
 
 export default function PortfolioPage() {
   const [data, setData] = useState<PortfolioData>(initialPortfolioData);
@@ -48,7 +48,6 @@ export default function PortfolioPage() {
   // 2. จัดการคีย์ลัดลับ Ctrl + Alt + P เพื่อเปิดระบบล็อกอิน
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // ตรวจสอบทั้ง Ctrl+Alt+P และ Cmd+Alt+P (สำหรับ macOS)
       if ((e.ctrlKey || e.metaKey) && e.altKey && (e.key === 'p' || e.key === 'P' || e.code === 'KeyP')) {
         e.preventDefault();
         setIsAuthModalOpen((prev) => !prev);
@@ -70,7 +69,7 @@ export default function PortfolioPage() {
     }
   }, [isDarkMode]);
 
-  // ฟังก์ชันสลับโหมด มืด / สว่าง
+  // สลับโหมด มืด / สว่าง
   const handleToggleTheme = () => {
     const nextMode = !isDarkMode;
     setIsDarkMode(nextMode);
@@ -85,7 +84,7 @@ export default function PortfolioPage() {
     StorageService.savePortfolioData(updated);
   };
 
-  // จัดการบันทึกข้อมูล
+  // จัดการบันทึกข้อมูลและซิงค์ Supabase
   const handleSaveData = async (newData: PortfolioData) => {
     setData(newData);
     setSaveStatus('กำลังบันทึกข้อมูล...');
@@ -98,8 +97,29 @@ export default function PortfolioPage() {
     setTimeout(() => setSaveStatus(null), 3000);
   };
 
-  // การอัปเดตข้อมูลส่วนตัว
-  const handleUpdateProfile = (field: keyof PortfolioData['profile'], value: string) => {
+  // อัปเดตข้อความทั่วไปของส่วนต่างๆ (Site Texts)
+  const handleUpdateSiteText = (field: keyof SectionTextConfig, value: string) => {
+    const updated: PortfolioData = {
+      ...data,
+      siteTexts: {
+        ...data.siteTexts,
+        [field]: value
+      }
+    };
+    handleSaveData(updated);
+  };
+
+  // บันทึกไฟล์ใหม่ลงคลังไฟล์
+  const handleFileUploaded = (record: UploadedFileRecord) => {
+    const updated: PortfolioData = {
+      ...data,
+      uploadedFiles: [record, ...data.uploadedFiles]
+    };
+    handleSaveData(updated);
+  };
+
+  // อัปเดตข้อมูลส่วนตัว
+  const handleUpdateProfile = (field: keyof PortfolioData['profile'], value: any) => {
     const updated: PortfolioData = {
       ...data,
       profile: {
@@ -110,44 +130,62 @@ export default function PortfolioPage() {
     handleSaveData(updated);
   };
 
-  // อัปโหลดรูปประจำตัว
-  const handleUploadAvatar = async (file: File) => {
-    try {
-      const record = await StorageService.uploadFile(file);
-      const updated: PortfolioData = {
-        ...data,
-        profile: {
-          ...data.profile,
-          avatarUrl: record.url
-        },
-        uploadedFiles: [record, ...data.uploadedFiles]
-      };
-      handleSaveData(updated);
-    } catch (err) {
-      alert('อัปโหลดรูปภาพล้มเหลว กรุณาลองใหม่อีกครั้ง');
-    }
-  };
-
-  // การอัปเดตประวัติการศึกษา
+  // === จัดการประวัติการศึกษา ===
   const handleUpdateEducationItem = (id: string, field: any, value: string) => {
     const updatedList = data.education.map((item) =>
       item.id === id ? { ...item, [field]: value } : item
     );
-    const updated: PortfolioData = { ...data, education: updatedList };
-    handleSaveData(updated);
+    handleSaveData({ ...data, education: updatedList });
   };
 
-  // การอัปเดตรายวิชา
-  const handleUpdateCourse = (courseId: string, field: any, value: string) => {
+  const handleAddEducation = () => {
+    const newItem: EducationItem = {
+      id: 'edu_' + Date.now(),
+      level: 'ระดับการศึกษาใหม่',
+      institution: 'ชื่อสถาบันการศึกษา',
+      period: 'สำเร็จการศึกษา',
+      majorOrBranch: 'สาขาวิชา',
+      description: 'คำอธิบายประวัติการศึกษาและการเรียนรู้',
+      iconType: 'school',
+      badge: 'การศึกษา'
+    };
+    handleSaveData({ ...data, education: [...data.education, newItem] });
+  };
+
+  const handleDeleteEducation = (id: string) => {
+    if (confirm('ยืนยันการลบประวัติการศึกษานี้?')) {
+      handleSaveData({ ...data, education: data.education.filter(e => e.id !== id) });
+    }
+  };
+
+  // === จัดการรายวิชาและโครงงาน ===
+  const handleUpdateCourse = (courseId: string, field: any, value: any) => {
     const updatedList = data.courses.map((c) =>
       c.id === courseId ? { ...c, [field]: value } : c
     );
-    const updated: PortfolioData = { ...data, courses: updatedList };
-    handleSaveData(updated);
+    handleSaveData({ ...data, courses: updatedList });
   };
 
-  // การอัปเดตโครงงานในวิชา
-  const handleUpdateProject = (courseId: string, projId: string, field: any, value: string) => {
+  const handleAddCourse = () => {
+    const newCourse: CourseItem = {
+      id: 'course_' + Date.now(),
+      code: 'EE-NEW',
+      title: 'ชื่อรายวิชาใหม่',
+      category: 'วิชาชีพวิศวกรรมไฟฟ้า',
+      credits: '3 (2-2-5)',
+      description: 'คำอธิบายรายวิชาและเนื้อหาการเรียนรู้',
+      projects: []
+    };
+    handleSaveData({ ...data, courses: [newCourse, ...data.courses] });
+  };
+
+  const handleDeleteCourse = (courseId: string) => {
+    if (confirm('ยืนยันการลบรายวิชานี้พร้อมชิ้นงานทั้งหมด?')) {
+      handleSaveData({ ...data, courses: data.courses.filter(c => c.id !== courseId) });
+    }
+  };
+
+  const handleUpdateProject = (courseId: string, projId: string, field: any, value: any) => {
     const updatedList = data.courses.map((c) => {
       if (c.id === courseId) {
         const updatedProjects = c.projects.map((p) =>
@@ -157,17 +195,68 @@ export default function PortfolioPage() {
       }
       return c;
     });
-    const updated: PortfolioData = { ...data, courses: updatedList };
-    handleSaveData(updated);
+    handleSaveData({ ...data, courses: updatedList });
   };
 
-  // การอัปเดตกิจกรรม
-  const handleUpdateActivity = (actId: string, field: any, value: string) => {
+  const handleAddProject = (courseId: string) => {
+    const newProj: CourseProject = {
+      id: 'proj_' + Date.now(),
+      title: 'ชิ้นงาน/โครงงานใหม่',
+      description: 'คำอธิบายผลการทดลองและการทำงานของชิ้นงาน',
+      date: 'ภาคเรียนปัจจุบัน',
+      imageUrl: '/images/helixion_reference.png',
+      tags: ['โครงงานใหม่', 'วิศวกรรมไฟฟ้า'],
+      highlights: ['จุดเด่นของชิ้นงาน']
+    };
+
+    const updatedList = data.courses.map((c) => {
+      if (c.id === courseId) {
+        return { ...c, projects: [newProj, ...c.projects] };
+      }
+      return c;
+    });
+    handleSaveData({ ...data, courses: updatedList });
+  };
+
+  const handleDeleteProject = (courseId: string, projId: string) => {
+    if (confirm('ยืนยันการลบชิ้นงานนี้?')) {
+      const updatedList = data.courses.map((c) => {
+        if (c.id === courseId) {
+          return { ...c, projects: c.projects.filter(p => p.id !== projId) };
+        }
+        return c;
+      });
+      handleSaveData({ ...data, courses: updatedList });
+    }
+  };
+
+  // === จัดการกิจกรรมและผลงาน ===
+  const handleUpdateActivity = (actId: string, field: any, value: any) => {
     const updatedList = data.activities.map((a) =>
       a.id === actId ? { ...a, [field]: value } : a
     );
-    const updated: PortfolioData = { ...data, activities: updatedList };
-    handleSaveData(updated);
+    handleSaveData({ ...data, activities: updatedList });
+  };
+
+  const handleAddActivity = () => {
+    const newAct: ActivityItem = {
+      id: 'act_' + Date.now(),
+      title: 'ชื่อกิจกรรมหรือผลงานใหม่',
+      category: 'กิจกรรมจิตอาสาและสโมสร',
+      date: '2568',
+      location: 'ขอนแก่น',
+      description: 'รายละเอียดกิจกรรม ความสำเร็จ และบทบาทหน้าที่',
+      imageUrl: '/images/helixion_reference.png',
+      badge: 'กิจกรรมใหม่',
+      tags: ['กิจกรรม', 'วิชาชีพไฟฟ้า']
+    };
+    handleSaveData({ ...data, activities: [newAct, ...data.activities] });
+  };
+
+  const handleDeleteActivity = (actId: string) => {
+    if (confirm('ยืนยันการลบกิจกรรมนี้?')) {
+      handleSaveData({ ...data, activities: data.activities.filter(a => a.id !== actId) });
+    }
   };
 
   // ล็อกอินสำเร็จ
@@ -260,6 +349,7 @@ export default function PortfolioPage() {
           data={data}
           isAdmin={isAdmin}
           onUpdateProfile={handleUpdateProfile}
+          onUpdateSiteText={handleUpdateSiteText}
           onNavigate={handleNavigate}
         />
 
@@ -268,7 +358,8 @@ export default function PortfolioPage() {
           data={data}
           isAdmin={isAdmin}
           onUpdateProfile={handleUpdateProfile}
-          onUploadAvatar={handleUploadAvatar}
+          onUpdateSiteText={handleUpdateSiteText}
+          onFileUploaded={handleFileUploaded}
         />
 
         {/* Section 3: Education Timeline */}
@@ -276,6 +367,9 @@ export default function PortfolioPage() {
           data={data}
           isAdmin={isAdmin}
           onUpdateEducationItem={handleUpdateEducationItem}
+          onAddEducation={handleAddEducation}
+          onDeleteEducation={handleDeleteEducation}
+          onUpdateSiteText={handleUpdateSiteText}
         />
 
         {/* Section 4: Courses & Works */}
@@ -284,6 +378,12 @@ export default function PortfolioPage() {
           isAdmin={isAdmin}
           onUpdateCourse={handleUpdateCourse}
           onUpdateProject={handleUpdateProject}
+          onAddCourse={handleAddCourse}
+          onDeleteCourse={handleDeleteCourse}
+          onAddProject={handleAddProject}
+          onDeleteProject={handleDeleteProject}
+          onUpdateSiteText={handleUpdateSiteText}
+          onFileUploaded={handleFileUploaded}
         />
 
         {/* Section 5: Activities & Achievements */}
@@ -291,6 +391,10 @@ export default function PortfolioPage() {
           data={data}
           isAdmin={isAdmin}
           onUpdateActivity={handleUpdateActivity}
+          onAddActivity={handleAddActivity}
+          onDeleteActivity={handleDeleteActivity}
+          onUpdateSiteText={handleUpdateSiteText}
+          onFileUploaded={handleFileUploaded}
         />
 
         {/* Section 6: Official Footer */}
@@ -298,6 +402,7 @@ export default function PortfolioPage() {
           data={data}
           isAdmin={isAdmin}
           onUpdateProfile={handleUpdateProfile}
+          onUpdateSiteText={handleUpdateSiteText}
         />
       </main>
 

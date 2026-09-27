@@ -227,5 +227,31 @@ export const initialPortfolioData: PortfolioData = {
     oscilloscopeSpeed: 2,
     circuitAnimation: true,
     fontFamily: 'system-ui, -apple-system, sans-serif'
+  },
+  siteTexts: {
+    heroBadge: 'ครุศาสตร์อุตสาหกรรมไฟฟ้า • RMUTI Khon Kaen',
+    heroCtaExplore: 'สำรวจชิ้นงาน & โครงงาน',
+    heroCtaProfile: 'ข้อมูลส่วนตัว (Profile)',
+    heroCtaContact: 'ช่องทางติดต่อ',
+    voltageLabel: 'VOLTAGE',
+    currentLabel: 'CURRENT',
+    gasLabel: 'DISCHARGE GAS',
+    pressureLabel: 'VACUUM / PRESSURE',
+    oscilloscopeTitle: 'LIVE CIRCUIT OSCILLOSCOPE FEED',
+    oscilloscopeSubtitle: 'การจำลองสัญญาณรูปคลื่นไซน์ (Sine Waveform) และการมอดูเลตความถี่ทางไฟฟ้า',
+    profileBadge: 'Personal Biography & Identity',
+    profileTitle: 'ข้อมูลส่วนตัว',
+    profileSubtitle: 'ประวัติส่วนบุคคล ข้อมูลการศึกษา ประจำสาขาครุศาสตร์อุตสาหกรรมไฟฟ้า มทร.อีสาน วิทยาเขตขอนแก่น',
+    educationBadge: 'Academic Pathway & Qualifications',
+    educationTitle: 'ประวัติการศึกษา (Education Timeline)',
+    educationSubtitle: 'เส้นทางการศึกษาจากระดับพื้นฐาน สู่วิชาชีพช่างไฟฟ้า และระดับปริญญาตรีครุศาสตร์อุตสาหกรรม',
+    coursesBadge: 'Curriculum & Applied Engineering Work',
+    coursesTitle: 'รายวิชาและชิ้นงาน (Courses & Projects)',
+    activitiesBadge: 'Extracurricular, Competitions & Leadership',
+    activitiesTitle: 'กิจกรรมและผลงาน (Activities & Honors)',
+    activitiesSubtitle: 'ผลงานการแข่งขันทางวิชาชีพช่างไฟฟ้า กิจกรรมจิตอาสาเพื่อสังคม และนิทรรศการนวัตกรรม',
+    footerContactHeading: 'ช่องทางการติดต่ออย่างเป็นทางการ',
+    footerNote: 'แฟ้มสะสมผลงานทางวิชาการและวิชาชีพ (Electronic Portfolio for Vocational & Engineering Education)',
+    footerCopyright: '© 2026 จัดทำโดย นาย อภิณัฐชรัชน์ มณีรัตน์ — สงวนลิขสิทธิ์'
   }
 };

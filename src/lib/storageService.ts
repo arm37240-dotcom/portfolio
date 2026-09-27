@@ -39,7 +39,13 @@ export class StorageService {
           if (typeof window !== 'undefined') {
             localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data.content));
           }
-          return data.content as PortfolioData;
+          return {
+            ...initialPortfolioData,
+            ...data.content,
+            profile: { ...initialPortfolioData.profile, ...data.content.profile },
+            themeConfig: { ...initialPortfolioData.themeConfig, ...data.content.themeConfig },
+            siteTexts: { ...initialPortfolioData.siteTexts, ...data.content.siteTexts }
+          } as PortfolioData;
         }
       } catch (err) {
         console.warn('Supabase fetch failed, falling back to local storage:', err);
@@ -57,7 +63,8 @@ export class StorageService {
             ...initialPortfolioData,
             ...parsed,
             profile: { ...initialPortfolioData.profile, ...parsed.profile },
-            themeConfig: { ...initialPortfolioData.themeConfig, ...parsed.themeConfig }
+            themeConfig: { ...initialPortfolioData.themeConfig, ...parsed.themeConfig },
+            siteTexts: { ...initialPortfolioData.siteTexts, ...parsed.siteTexts }
           };
         }
       } catch (err) {

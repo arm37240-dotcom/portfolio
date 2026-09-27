@@ -1,22 +1,32 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Award, Calendar, MapPin, Tag, ExternalLink, X, CheckCircle, Sparkles } from 'lucide-react';
-import { PortfolioData, ActivityItem } from '@/types/portfolio';
+import { Award, Calendar, MapPin, X, Plus, Trash2 } from 'lucide-react';
+import { PortfolioData, ActivityItem, SectionTextConfig, UploadedFileRecord } from '@/types/portfolio';
 import { EditableText } from './EditableText';
+import { EditableImage } from './EditableImage';
+import { EditableTagList } from './EditableTagList';
 
 interface ActivitiesSectionProps {
   data: PortfolioData;
   isAdmin: boolean;
-  onUpdateActivity: (actId: string, field: keyof ActivityItem, value: string) => void;
+  onUpdateActivity: (actId: string, field: keyof ActivityItem, value: any) => void;
+  onAddActivity: () => void;
+  onDeleteActivity: (actId: string) => void;
+  onUpdateSiteText: (field: keyof SectionTextConfig, value: string) => void;
+  onFileUploaded?: (record: UploadedFileRecord) => void;
 }
 
 export const ActivitiesSection: React.FC<ActivitiesSectionProps> = ({
   data,
   isAdmin,
-  onUpdateActivity
+  onUpdateActivity,
+  onAddActivity,
+  onDeleteActivity,
+  onUpdateSiteText,
+  onFileUploaded
 }) => {
-  const { activities } = data;
+  const { activities, siteTexts, uploadedFiles } = data;
   const [activeModal, setActiveModal] = useState<ActivityItem | null>(null);
 
   return (
@@ -27,15 +37,39 @@ export const ActivitiesSection: React.FC<ActivitiesSectionProps> = ({
           <div>
             <div className="inline-flex items-center gap-2 text-xs font-semibold text-sky-400 tracking-wider uppercase mb-1">
               <Award size={14} />
-              <span>Extracurricular, Competitions & Leadership</span>
+              <EditableText
+                value={siteTexts.activitiesBadge}
+                onSave={(v) => onUpdateSiteText('activitiesBadge', v)}
+                isAdmin={isAdmin}
+              />
             </div>
             <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
-              กิจกรรมและผลงาน (Activities & Honors)
+              <EditableText
+                value={siteTexts.activitiesTitle}
+                onSave={(v) => onUpdateSiteText('activitiesTitle', v)}
+                isAdmin={isAdmin}
+              />
             </h2>
           </div>
-          <p className="text-xs sm:text-sm text-slate-400 max-w-md">
-            ผลงานการแข่งขันทางวิชาชีพช่างไฟฟ้า กิจกรรมจิตอาสาเพื่อสังคม และนิทรรศการนวัตกรรม
-          </p>
+          <div className="flex items-center gap-3">
+            <p className="text-xs sm:text-sm text-slate-400 max-w-md">
+              <EditableText
+                value={siteTexts.activitiesSubtitle}
+                onSave={(v) => onUpdateSiteText('activitiesSubtitle', v)}
+                isAdmin={isAdmin}
+                multiline={true}
+              />
+            </p>
+            {isAdmin && (
+              <button
+                onClick={onAddActivity}
+                className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-semibold transition shadow"
+              >
+                <Plus size={14} />
+                <span>เพิ่มกิจกรรม</span>
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Activities Cards Grid */}
@@ -43,22 +77,44 @@ export const ActivitiesSection: React.FC<ActivitiesSectionProps> = ({
           {activities.map((act) => (
             <div
               key={act.id}
-              className="electric-glass rounded-2xl overflow-hidden border border-sky-500/20 hover:border-sky-400/60 transition-all duration-300 flex flex-col justify-between group cursor-pointer"
+              className="electric-glass rounded-2xl overflow-hidden border border-sky-500/20 hover:border-sky-400/60 transition-all duration-300 flex flex-col justify-between group cursor-pointer relative"
               onClick={() => setActiveModal(act)}
             >
+              {/* Delete Button in Admin Mode */}
+              {isAdmin && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDeleteActivity(act.id);
+                  }}
+                  title="ลบกิจกรรมนี้"
+                  className="absolute top-3 right-3 p-1.5 rounded-lg bg-slate-900/90 text-rose-400 hover:bg-rose-950 hover:text-rose-200 border border-rose-500/30 transition z-30"
+                >
+                  <Trash2 size={14} />
+                </button>
+              )}
+
               <div>
-                {/* Thumbnail Image */}
-                <div className="w-full h-44 bg-slate-950 overflow-hidden relative">
-                  <img
-                    src={act.imageUrl || '/images/helixion_reference.png'}
+                {/* Thumbnail Image with EditableImage */}
+                <div className="w-full h-44 bg-slate-950 overflow-hidden relative" onClick={(e) => isAdmin && e.stopPropagation()}>
+                  <EditableImage
+                    src={act.imageUrl}
                     alt={act.title}
+                    onSave={(newUrl) => onUpdateActivity(act.id, 'imageUrl', newUrl)}
+                    isAdmin={isAdmin}
+                    uploadedFiles={uploadedFiles}
+                    onFileUploaded={onFileUploaded}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent pointer-events-none"></div>
                   
                   {act.badge && (
-                    <span className="absolute top-3 left-3 px-3 py-1 rounded-full text-[11px] font-semibold bg-sky-500 text-white shadow-[0_0_12px_#38bdf8]">
-                      {act.badge}
+                    <span className="absolute top-3 left-3 px-3 py-1 rounded-full text-[11px] font-semibold bg-sky-500 text-white shadow-[0_0_12px_#38bdf8] pointer-events-auto">
+                      <EditableText
+                        value={act.badge}
+                        onSave={(v) => onUpdateActivity(act.id, 'badge', v)}
+                        isAdmin={isAdmin}
+                      />
                     </span>
                   )}
                 </div>
@@ -68,12 +124,20 @@ export const ActivitiesSection: React.FC<ActivitiesSectionProps> = ({
                   <div className="flex items-center gap-3 text-[11px] text-sky-400 font-mono">
                     <span className="flex items-center gap-1">
                       <Calendar size={12} />
-                      {act.date}
+                      <EditableText
+                        value={act.date}
+                        onSave={(v) => onUpdateActivity(act.id, 'date', v)}
+                        isAdmin={isAdmin}
+                      />
                     </span>
                     <span>•</span>
                     <span className="flex items-center gap-1">
                       <MapPin size={12} />
-                      {act.location}
+                      <EditableText
+                        value={act.location}
+                        onSave={(v) => onUpdateActivity(act.id, 'location', v)}
+                        isAdmin={isAdmin}
+                      />
                     </span>
                   </div>
 
@@ -96,16 +160,14 @@ export const ActivitiesSection: React.FC<ActivitiesSectionProps> = ({
                 </div>
               </div>
 
-              {/* Card Footer Tags */}
-              <div className="px-5 pb-5 pt-2 flex flex-wrap gap-1.5 border-t border-sky-500/10">
-                {act.tags.map((t, idx) => (
-                  <span
-                    key={idx}
-                    className="text-[10px] font-mono text-sky-300/80 bg-sky-950/60 px-2 py-0.5 rounded border border-sky-500/20"
-                  >
-                    #{t}
-                  </span>
-                ))}
+              {/* Card Footer Tags with EditableTagList */}
+              <div className="px-5 pb-5 pt-2 border-t border-sky-500/10" onClick={(e) => isAdmin && e.stopPropagation()}>
+                <EditableTagList
+                  items={act.tags}
+                  onUpdateList={(newList) => onUpdateActivity(act.id, 'tags', newList)}
+                  isAdmin={isAdmin}
+                  pillClassName="text-[10px] font-mono text-sky-300/80 bg-sky-950/60 px-2 py-0.5 rounded border border-sky-500/20"
+                />
               </div>
             </div>
           ))}
@@ -122,7 +184,14 @@ export const ActivitiesSection: React.FC<ActivitiesSectionProps> = ({
                   รายละเอียดกิจกรรมและผลงาน
                 </span>
                 <h3 className="text-xl font-bold text-white mt-1">
-                  {activeModal.title}
+                  <EditableText
+                    value={activeModal.title}
+                    onSave={(val) => {
+                      onUpdateActivity(activeModal.id, 'title', val);
+                      setActiveModal({ ...activeModal, title: val });
+                    }}
+                    isAdmin={isAdmin}
+                  />
                 </h3>
               </div>
               <button
@@ -133,41 +202,68 @@ export const ActivitiesSection: React.FC<ActivitiesSectionProps> = ({
               </button>
             </div>
 
-            {activeModal.imageUrl && (
-              <div className="w-full h-52 sm:h-64 rounded-xl overflow-hidden border border-sky-500/30 bg-slate-950 relative">
-                <img
-                  src={activeModal.imageUrl}
-                  alt={activeModal.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            )}
+            {/* Modal Image with EditableImage */}
+            <div className="w-full h-52 sm:h-64 rounded-xl overflow-hidden border border-sky-500/30 bg-slate-950 relative">
+              <EditableImage
+                src={activeModal.imageUrl}
+                alt={activeModal.title}
+                onSave={(newUrl) => {
+                  onUpdateActivity(activeModal.id, 'imageUrl', newUrl);
+                  setActiveModal({ ...activeModal, imageUrl: newUrl });
+                }}
+                isAdmin={isAdmin}
+                uploadedFiles={uploadedFiles}
+                onFileUploaded={onFileUploaded}
+              />
+            </div>
 
             <div className="space-y-3 text-xs sm:text-sm">
               <div className="flex items-center gap-4 text-sky-400 font-mono">
                 <span className="flex items-center gap-1.5">
                   <Calendar size={14} />
-                  <span>{activeModal.date}</span>
+                  <EditableText
+                    value={activeModal.date}
+                    onSave={(val) => {
+                      onUpdateActivity(activeModal.id, 'date', val);
+                      setActiveModal({ ...activeModal, date: val });
+                    }}
+                    isAdmin={isAdmin}
+                  />
                 </span>
                 <span className="flex items-center gap-1.5">
                   <MapPin size={14} />
-                  <span>{activeModal.location}</span>
+                  <EditableText
+                    value={activeModal.location}
+                    onSave={(val) => {
+                      onUpdateActivity(activeModal.id, 'location', val);
+                      setActiveModal({ ...activeModal, location: val });
+                    }}
+                    isAdmin={isAdmin}
+                  />
                 </span>
               </div>
 
-              <p className="text-slate-300 leading-relaxed text-sm">
-                {activeModal.description}
-              </p>
+              <div className="text-slate-300 leading-relaxed text-sm">
+                <EditableText
+                  value={activeModal.description}
+                  onSave={(val) => {
+                    onUpdateActivity(activeModal.id, 'description', val);
+                    setActiveModal({ ...activeModal, description: val });
+                  }}
+                  isAdmin={isAdmin}
+                  multiline={true}
+                />
+              </div>
 
-              <div className="flex flex-wrap gap-2 pt-2">
-                {activeModal.tags.map((tag, idx) => (
-                  <span
-                    key={idx}
-                    className="text-xs font-mono text-sky-300 bg-sky-950/80 px-2.5 py-1 rounded-md border border-sky-500/30"
-                  >
-                    #{tag}
-                  </span>
-                ))}
+              <div className="pt-2">
+                <EditableTagList
+                  items={activeModal.tags}
+                  onUpdateList={(newList) => {
+                    onUpdateActivity(activeModal.id, 'tags', newList);
+                    setActiveModal({ ...activeModal, tags: newList });
+                  }}
+                  isAdmin={isAdmin}
+                />
               </div>
             </div>
 

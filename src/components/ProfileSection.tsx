@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
 import { 
   User, 
   Phone, 
@@ -12,33 +11,29 @@ import {
   Sparkles, 
   GraduationCap, 
   Bookmark,
-  Camera,
-  CheckCircle2,
   Clock
 } from 'lucide-react';
-import { PortfolioData } from '@/types/portfolio';
+import { PortfolioData, SectionTextConfig, UploadedFileRecord } from '@/types/portfolio';
 import { EditableText } from './EditableText';
+import { EditableImage } from './EditableImage';
+import { EditableTagList } from './EditableTagList';
 
 interface ProfileSectionProps {
   data: PortfolioData;
   isAdmin: boolean;
-  onUpdateProfile: (field: keyof PortfolioData['profile'], value: string) => void;
-  onUploadAvatar?: (file: File) => void;
+  onUpdateProfile: (field: keyof PortfolioData['profile'], value: any) => void;
+  onUpdateSiteText: (field: keyof SectionTextConfig, value: string) => void;
+  onFileUploaded?: (record: UploadedFileRecord) => void;
 }
 
 export const ProfileSection: React.FC<ProfileSectionProps> = ({
   data,
   isAdmin,
   onUpdateProfile,
-  onUploadAvatar
+  onUpdateSiteText,
+  onFileUploaded
 }) => {
-  const { profile } = data;
-
-  const handleAvatarFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0] && onUploadAvatar) {
-      onUploadAvatar(e.target.files[0]);
-    }
-  };
+  const { profile, siteTexts, uploadedFiles } = data;
 
   return (
     <section id="profile" className="py-16 border-t border-sky-500/20">
@@ -48,17 +43,30 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({
           <div>
             <div className="inline-flex items-center gap-2 text-xs font-semibold text-sky-400 tracking-wider uppercase mb-1">
               <User size={14} />
-              <span>Personal Biography & Identity</span>
+              <EditableText
+                value={siteTexts.profileBadge}
+                onSave={(v) => onUpdateSiteText('profileBadge', v)}
+                isAdmin={isAdmin}
+              />
             </div>
             <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight flex items-center gap-3">
-              <span>ข้อมูลส่วนตัว</span>
+              <EditableText
+                value={siteTexts.profileTitle}
+                onSave={(v) => onUpdateSiteText('profileTitle', v)}
+                isAdmin={isAdmin}
+              />
               <span className="text-sm font-mono font-normal text-sky-400/80 bg-sky-950/60 border border-sky-500/30 px-3 py-1 rounded-full">
-                ID: {profile.studentId}
+                ID: <EditableText value={profile.studentId} onSave={(v) => onUpdateProfile('studentId', v)} isAdmin={isAdmin} />
               </span>
             </h2>
           </div>
           <p className="text-xs sm:text-sm text-slate-400 max-w-md">
-            ประวัติส่วนบุคคล ข้อมูลการศึกษา ประจำสาขาครุศาสตร์อุตสาหกรรมไฟฟ้า มทร.อีสาน วิทยาเขตขอนแก่น
+            <EditableText
+              value={siteTexts.profileSubtitle}
+              onSave={(v) => onUpdateSiteText('profileSubtitle', v)}
+              isAdmin={isAdmin}
+              multiline={true}
+            />
           </p>
         </div>
 
@@ -69,36 +77,19 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({
             {/* Ambient Background Glow */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-sky-500/15 rounded-full blur-2xl pointer-events-none"></div>
 
-            {/* Avatar Frame with Glowing Border */}
+            {/* Avatar Frame with EditableImage */}
             <div className="relative group mb-5">
               <div className="relative w-40 h-40 sm:w-48 sm:h-48 rounded-2xl overflow-hidden border-2 border-sky-400/60 shadow-[0_0_25px_rgba(56,189,248,0.3)] bg-slate-900 flex items-center justify-center">
-                {profile.avatarUrl ? (
-                  <img
-                    src={profile.avatarUrl}
-                    alt={profile.name}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="text-center p-4">
-                    <User size={64} className="text-sky-400/60 mx-auto mb-2" />
-                    <span className="text-xs text-slate-400">ยังไม่มีรูปภาพ</span>
-                  </div>
-                )}
+                <EditableImage
+                  src={profile.avatarUrl}
+                  alt={profile.name}
+                  onSave={(newUrl) => onUpdateProfile('avatarUrl', newUrl)}
+                  isAdmin={isAdmin}
+                  uploadedFiles={uploadedFiles}
+                  onFileUploaded={onFileUploaded}
+                  className="w-full h-full object-cover"
+                />
               </div>
-
-              {/* Upload Overlay in Admin Mode */}
-              {isAdmin && (
-                <label className="absolute inset-0 bg-slate-950/70 opacity-0 group-hover:opacity-100 rounded-2xl flex flex-col items-center justify-center cursor-pointer transition text-white text-xs font-medium gap-1.5 backdrop-blur-sm">
-                  <Camera size={24} className="text-sky-400" />
-                  <span>เปลี่ยนรูปประจำตัว</span>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleAvatarFileChange}
-                    className="hidden"
-                  />
-                </label>
-              )}
             </div>
 
             {/* Name & Nickname */}
@@ -150,27 +141,31 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({
 
             {/* Contact Quick Buttons */}
             <div className="w-full space-y-2 text-xs">
-              <a
-                href={`tel:${profile.phone}`}
-                className="w-full flex items-center justify-between p-2.5 rounded-xl bg-sky-950/40 border border-sky-500/30 text-sky-200 hover:bg-sky-900/50 transition font-mono"
-              >
+              <div className="w-full flex items-center justify-between p-2.5 rounded-xl bg-sky-950/40 border border-sky-500/30 text-sky-200 font-mono">
                 <span className="flex items-center gap-2">
                   <Phone size={14} className="text-sky-400" />
-                  <span>โทรศัพท์:</span>
+                  <span>โทร:</span>
                 </span>
-                <span className="font-semibold text-white">{profile.phone}</span>
-              </a>
+                <EditableText
+                  value={profile.phone}
+                  onSave={(v) => onUpdateProfile('phone', v)}
+                  isAdmin={isAdmin}
+                  className="font-semibold text-white"
+                />
+              </div>
 
-              <a
-                href={`mailto:${profile.email}`}
-                className="w-full flex items-center justify-between p-2.5 rounded-xl bg-sky-950/40 border border-sky-500/30 text-sky-200 hover:bg-sky-900/50 transition font-mono truncate"
-              >
+              <div className="w-full flex items-center justify-between p-2.5 rounded-xl bg-sky-950/40 border border-sky-500/30 text-sky-200 font-mono truncate">
                 <span className="flex items-center gap-2">
                   <Mail size={14} className="text-sky-400" />
                   <span>อีเมล:</span>
                 </span>
-                <span className="font-semibold text-white truncate max-w-[150px]">{profile.email}</span>
-              </a>
+                <EditableText
+                  value={profile.email}
+                  onSave={(v) => onUpdateProfile('email', v)}
+                  isAdmin={isAdmin}
+                  className="font-semibold text-white truncate max-w-[150px]"
+                />
+              </div>
             </div>
           </div>
 
@@ -255,7 +250,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({
               </div>
             </div>
 
-            {/* Special Skills Section */}
+            {/* Special Skills Section with EditableTagList */}
             <div className="electric-glass rounded-2xl p-6 border border-sky-500/30 space-y-4">
               <div className="flex items-center justify-between">
                 <h4 className="text-base font-bold text-white flex items-center gap-2">
@@ -267,37 +262,31 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({
                 </span>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                {profile.specialSkills.map((skill, index) => (
-                  <div
-                    key={index}
-                    className="flex items-start gap-2.5 p-3 rounded-xl bg-slate-900/60 border border-sky-500/20 hover:border-sky-400/50 transition group"
-                  >
-                    <CheckCircle2 size={16} className="text-sky-400 shrink-0 mt-0.5" />
-                    <span className="text-xs sm:text-sm text-slate-200 group-hover:text-white transition">
-                      {skill}
-                    </span>
-                  </div>
-                ))}
-              </div>
+              <EditableTagList
+                items={profile.specialSkills}
+                onUpdateList={(newList) => onUpdateProfile('specialSkills', newList)}
+                isAdmin={isAdmin}
+                prefix="⚡ "
+                pillClassName="p-2.5 rounded-xl bg-slate-900/70 border border-sky-500/30 text-xs sm:text-sm text-slate-200 hover:border-sky-400 transition"
+                containerClassName="grid grid-cols-1 sm:grid-cols-2 gap-2"
+                addPlaceholder="เพิ่มทักษะวิชาชีพ..."
+              />
             </div>
 
-            {/* Other Interests Section */}
+            {/* Other Interests Section with EditableTagList */}
             <div className="electric-glass rounded-2xl p-6 border border-sky-500/30 space-y-3">
               <h4 className="text-base font-bold text-white flex items-center gap-2">
                 <Sparkles size={18} className="text-amber-400" />
                 <span>ความสนใจอื่นๆ & นวัตกรรมที่ติดตาม (Interests & Focus)</span>
               </h4>
-              <div className="flex flex-wrap gap-2">
-                {profile.otherInterests.map((interest, idx) => (
-                  <span
-                    key={idx}
-                    className="px-3 py-1.5 rounded-lg bg-sky-950/50 border border-sky-500/30 text-sky-200 text-xs font-medium"
-                  >
-                    ⚡ {interest}
-                  </span>
-                ))}
-              </div>
+              <EditableTagList
+                items={profile.otherInterests}
+                onUpdateList={(newList) => onUpdateProfile('otherInterests', newList)}
+                isAdmin={isAdmin}
+                prefix="🔋 "
+                pillClassName="px-3 py-1.5 rounded-lg bg-sky-950/50 border border-sky-500/30 text-sky-200 text-xs font-medium"
+                addPlaceholder="เพิ่มความสนใจ..."
+              />
             </div>
           </div>
         </div>

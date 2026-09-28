@@ -1,11 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Cpu, Layers, ChevronRight, X, Plus, Trash2, CheckCircle2 } from 'lucide-react';
+import { Cpu, Layers, ChevronRight, X, Plus, Trash2, ExternalLink, Play, Video as VideoIcon } from 'lucide-react';
 import { PortfolioData, CourseItem, CourseProject, SectionTextConfig, UploadedFileRecord } from '@/types/portfolio';
 import { EditableText } from './EditableText';
-import { EditableImage } from './EditableImage';
 import { EditableTagList } from './EditableTagList';
+import { SmartMediaView } from './SmartMediaView';
+import { extractYouTubeId, extractFirstVideoFromText } from '@/lib/mediaUtils';
 
 interface CoursesSectionProps {
   data: PortfolioData;
@@ -189,45 +190,56 @@ export const CoursesSection: React.FC<CoursesSectionProps> = ({
                     )}
                   </div>
 
-                  {course.projects.map((proj) => (
-                    <div
-                      key={proj.id}
-                      onClick={() => setActiveProjectModal({ courseId: course.id, project: proj })}
-                      className="p-3.5 rounded-xl bg-slate-900/60 border border-sky-500/20 hover:border-sky-400/60 hover:bg-slate-900/90 cursor-pointer transition flex items-center justify-between gap-3 group/p relative"
-                    >
-                      <div className="space-y-1 overflow-hidden pr-6">
-                        <h4 className="text-xs sm:text-sm font-semibold text-white group-hover/p:text-sky-300 transition truncate">
-                          {proj.title}
-                        </h4>
-                        <div className="flex flex-wrap gap-1.5">
-                          {proj.tags.slice(0, 3).map((tag, i) => (
-                            <span
-                              key={i}
-                              className="text-[10px] font-mono text-sky-300/80 bg-sky-950/60 px-2 py-0.5 rounded border border-sky-500/20"
+                  {course.projects.map((proj) => {
+                    const isYt = Boolean(extractYouTubeId(proj.imageUrl) || extractYouTubeId(proj.videoUrl || '') || extractFirstVideoFromText(proj.description));
+
+                    return (
+                      <div
+                        key={proj.id}
+                        onClick={() => setActiveProjectModal({ courseId: course.id, project: proj })}
+                        className="p-3.5 rounded-xl bg-slate-900/60 border border-sky-500/20 hover:border-sky-400/60 hover:bg-slate-900/90 cursor-pointer transition flex items-center justify-between gap-3 group/p relative"
+                      >
+                        <div className="space-y-1 overflow-hidden pr-6">
+                          <div className="flex items-center gap-2">
+                            {isYt && (
+                              <span className="p-1 rounded bg-red-600/90 text-white shrink-0">
+                                <Play size={10} className="fill-white" />
+                              </span>
+                            )}
+                            <h4 className="text-xs sm:text-sm font-semibold text-white group-hover/p:text-sky-300 transition truncate">
+                              {proj.title}
+                            </h4>
+                          </div>
+                          <div className="flex flex-wrap gap-1.5">
+                            {proj.tags.slice(0, 3).map((tag, i) => (
+                              <span
+                                key={i}
+                                className="text-[10px] font-mono text-sky-300/80 bg-sky-950/60 px-2 py-0.5 rounded border border-sky-500/20"
+                              >
+                                #{tag}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2 shrink-0">
+                          {isAdmin && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onDeleteProject(course.id, proj.id);
+                              }}
+                              title="ลบชิ้นงานนี้"
+                              className="p-1 text-slate-500 hover:text-rose-400 transition"
                             >
-                              #{tag}
-                            </span>
-                          ))}
+                              <Trash2 size={13} />
+                            </button>
+                          )}
+                          <ChevronRight size={16} className="text-slate-500 group-hover/p:text-sky-400 group-hover/p:translate-x-1 transition" />
                         </div>
                       </div>
-
-                      <div className="flex items-center gap-2 shrink-0">
-                        {isAdmin && (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onDeleteProject(course.id, proj.id);
-                            }}
-                            title="ลบชิ้นงานนี้"
-                            className="p-1 text-slate-500 hover:text-rose-400 transition"
-                          >
-                            <Trash2 size={13} />
-                          </button>
-                        )}
-                        <ChevronRight size={16} className="text-slate-500 group-hover/p:text-sky-400 group-hover/p:translate-x-1 transition" />
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -235,9 +247,9 @@ export const CoursesSection: React.FC<CoursesSectionProps> = ({
         </div>
       </div>
 
-      {/* Project Detail Modal with Full Editable Capabilities */}
+      {/* Project Detail Modal with SmartMediaView */}
       {activeProjectModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
           <div className="electric-glass rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-sky-400 p-6 space-y-5 shadow-[0_0_50px_rgba(56,189,248,0.3)] relative">
             <div className="flex items-start justify-between gap-4 border-b border-sky-500/20 pb-4">
               <div>
@@ -266,12 +278,12 @@ export const CoursesSection: React.FC<CoursesSectionProps> = ({
               </button>
             </div>
 
-            {/* Project Image with EditableImage */}
-            <div className="w-full h-56 sm:h-72 rounded-xl overflow-hidden border border-sky-500/30 bg-slate-950 relative">
-              <EditableImage
-                src={activeProjectModal.project.imageUrl}
+            {/* Smart Media Player (YouTube Embed / MP4 / Image) */}
+            <div className="w-full rounded-xl overflow-hidden border border-sky-500/30 bg-slate-950 relative min-h-[220px]">
+              <SmartMediaView
+                mediaUrl={activeProjectModal.project.imageUrl}
                 alt={activeProjectModal.project.title}
-                onSave={(newUrl) => {
+                onSaveMedia={(newUrl) => {
                   onUpdateProject(activeProjectModal.courseId, activeProjectModal.project.id, 'imageUrl', newUrl);
                   setActiveProjectModal({
                     ...activeProjectModal,
@@ -281,19 +293,43 @@ export const CoursesSection: React.FC<CoursesSectionProps> = ({
                 isAdmin={isAdmin}
                 uploadedFiles={uploadedFiles}
                 onFileUploaded={onFileUploaded}
+                showPlayerInModal={true}
               />
             </div>
 
             <div className="space-y-4">
               <div>
-                <h4 className="text-xs font-semibold text-sky-400 uppercase tracking-wider mb-1">
-                  คำอธิบายการทำงาน & ผลลัพธ์
-                </h4>
-                <div className="text-sm text-slate-300 leading-relaxed">
+                <div className="flex items-center justify-between mb-1">
+                  <h4 className="text-xs font-semibold text-sky-400 uppercase tracking-wider">
+                    คำอธิบายการทำงาน & ผลลัพธ์
+                  </h4>
+                  {extractYouTubeId(activeProjectModal.project.description) && (
+                    <a
+                      href={activeProjectModal.project.description}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs text-red-400 hover:text-red-300 inline-flex items-center gap-1 font-medium"
+                    >
+                      <ExternalLink size={12} />
+                      <span>เปิดดูบน YouTube</span>
+                    </a>
+                  )}
+                </div>
+
+                <div className="text-sm text-slate-300 leading-relaxed p-3 rounded-xl bg-slate-900/60 border border-sky-500/15">
                   <EditableText
                     value={activeProjectModal.project.description}
                     onSave={(val) => {
                       onUpdateProject(activeProjectModal.courseId, activeProjectModal.project.id, 'description', val);
+                      // If the user pasted a YouTube URL in description and image is default, also update image/video
+                      if (extractYouTubeId(val) && !extractYouTubeId(activeProjectModal.project.imageUrl)) {
+                        onUpdateProject(activeProjectModal.courseId, activeProjectModal.project.id, 'imageUrl', val);
+                        setActiveProjectModal({
+                          ...activeProjectModal,
+                          project: { ...activeProjectModal.project, description: val, imageUrl: val }
+                        });
+                        return;
+                      }
                       setActiveProjectModal({
                         ...activeProjectModal,
                         project: { ...activeProjectModal.project, description: val }

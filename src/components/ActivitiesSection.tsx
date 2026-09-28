@@ -1,11 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Award, Calendar, MapPin, X, Plus, Trash2 } from 'lucide-react';
+import { Award, Calendar, MapPin, X, Plus, Trash2, ExternalLink } from 'lucide-react';
 import { PortfolioData, ActivityItem, SectionTextConfig, UploadedFileRecord } from '@/types/portfolio';
 import { EditableText } from './EditableText';
-import { EditableImage } from './EditableImage';
 import { EditableTagList } from './EditableTagList';
+import { SmartMediaView } from './SmartMediaView';
+import { extractYouTubeId } from '@/lib/mediaUtils';
 
 interface ActivitiesSectionProps {
   data: PortfolioData;
@@ -95,15 +96,16 @@ export const ActivitiesSection: React.FC<ActivitiesSectionProps> = ({
               )}
 
               <div>
-                {/* Thumbnail Image with EditableImage */}
+                {/* Thumbnail Image with SmartMediaView */}
                 <div className="w-full h-44 bg-slate-950 overflow-hidden relative" onClick={(e) => isAdmin && e.stopPropagation()}>
-                  <EditableImage
-                    src={act.imageUrl}
+                  <SmartMediaView
+                    mediaUrl={act.imageUrl}
                     alt={act.title}
-                    onSave={(newUrl) => onUpdateActivity(act.id, 'imageUrl', newUrl)}
+                    onSaveMedia={(newUrl) => onUpdateActivity(act.id, 'imageUrl', newUrl)}
                     isAdmin={isAdmin}
                     uploadedFiles={uploadedFiles}
                     onFileUploaded={onFileUploaded}
+                    showPlayerInModal={false}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent pointer-events-none"></div>
@@ -174,9 +176,9 @@ export const ActivitiesSection: React.FC<ActivitiesSectionProps> = ({
         </div>
       </div>
 
-      {/* Activity Detail Modal */}
+      {/* Activity Detail Modal with SmartMediaView */}
       {activeModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
           <div className="electric-glass rounded-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto border border-sky-400 p-6 space-y-4 shadow-[0_0_50px_rgba(56,189,248,0.3)]">
             <div className="flex items-start justify-between gap-4 border-b border-sky-500/20 pb-3">
               <div>
@@ -202,18 +204,19 @@ export const ActivitiesSection: React.FC<ActivitiesSectionProps> = ({
               </button>
             </div>
 
-            {/* Modal Image with EditableImage */}
-            <div className="w-full h-52 sm:h-64 rounded-xl overflow-hidden border border-sky-500/30 bg-slate-950 relative">
-              <EditableImage
-                src={activeModal.imageUrl}
+            {/* Modal Media with SmartMediaView */}
+            <div className="w-full rounded-xl overflow-hidden border border-sky-500/30 bg-slate-950 relative min-h-[220px]">
+              <SmartMediaView
+                mediaUrl={activeModal.imageUrl}
                 alt={activeModal.title}
-                onSave={(newUrl) => {
+                onSaveMedia={(newUrl) => {
                   onUpdateActivity(activeModal.id, 'imageUrl', newUrl);
                   setActiveModal({ ...activeModal, imageUrl: newUrl });
                 }}
                 isAdmin={isAdmin}
                 uploadedFiles={uploadedFiles}
                 onFileUploaded={onFileUploaded}
+                showPlayerInModal={true}
               />
             </div>
 

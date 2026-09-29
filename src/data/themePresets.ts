@@ -2250,15 +2250,20 @@ export const applyThemePreset = (preset: ColorThemePreset): void => {
   root.style.setProperty('--bg-primary', colors.bgPrimary);
   root.style.setProperty('--bg-secondary', colors.bgSecondary);
   root.style.setProperty('--bg-card', colors.bgCard);
+  root.style.setProperty('--bg-card-header', colors.bgSecondary);
+  root.style.setProperty('--bg-card-sub', mode === 'light' ? colors.bgSecondary : colors.bgPrimary);
   root.style.setProperty('--border-neon', colors.borderOuter);
   root.style.setProperty('--border-neon-glow', colors.borderInner);
+  root.style.setProperty('--border-subtle', mode === 'light' ? colors.borderOuter : colors.borderInner);
   root.style.setProperty('--text-main', colors.textMain);
+  root.style.setProperty('--text-title', mode === 'light' ? colors.textMain : '#ffffff');
   root.style.setProperty('--text-muted', colors.textMuted);
   root.style.setProperty('--accent-pink', colors.accentPink);
   root.style.setProperty('--accent-cyan', colors.accentCyan);
   root.style.setProperty('--accent-green', colors.accentGreen);
   root.style.setProperty('--accent-amber', colors.accentAmber);
   root.style.setProperty('--glow-shadow', colors.glowShadow);
+  root.style.setProperty('--grid-line', mode === 'light' ? 'rgba(100, 116, 139, 0.18)' : 'rgba(43, 53, 110, 0.25)');
 
   // 3. Save to localStorage
   try {

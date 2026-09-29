@@ -82,19 +82,28 @@ export default function PortfolioPage() {
 
   // สลับโหมด มืด / สว่าง
   const handleToggleTheme = () => {
-    const nextMode = !isDarkMode;
+    const nextMode = !isDarkMode; // true = switch to dark, false = switch to light
     setIsDarkMode(nextMode);
     
     let targetPresetId = currentPresetId;
     if (nextMode) {
-      const presetObj = getThemePresetById(currentPresetId);
-      if (presetObj.mode === 'dark') {
-        targetPresetId = 'paper-white-minimal';
-      }
-    } else {
+      // ต้องการสลับไปโหมดมืด (Dark)
       const presetObj = getThemePresetById(currentPresetId);
       if (presetObj.mode === 'light') {
-        targetPresetId = 'hikari-classic';
+        const lastDark = localStorage.getItem('hikari_last_dark_preset') || 'hikari-classic';
+        targetPresetId = lastDark;
+      }
+    } else {
+      // ต้องการสลับไปโหมดสว่าง (Light)
+      const presetObj = getThemePresetById(currentPresetId);
+      if (presetObj.mode === 'dark') {
+        try {
+          localStorage.setItem('hikari_last_dark_preset', currentPresetId);
+        } catch (e) {
+          // ignore
+        }
+        const lastLight = localStorage.getItem('hikari_last_light_preset') || 'paper-white-minimal';
+        targetPresetId = lastLight;
       }
     }
     const nextPreset = getThemePresetById(targetPresetId);
@@ -116,7 +125,17 @@ export default function PortfolioPage() {
   // สลับโทนสีจาก 100 แบบ (Color Matrix)
   const handleSelectTheme = (preset: ColorThemePreset) => {
     setCurrentPresetId(preset.id);
-    setIsDarkMode(preset.mode === 'dark');
+    const isDark = preset.mode === 'dark';
+    setIsDarkMode(isDark);
+    try {
+      if (isDark) {
+        localStorage.setItem('hikari_last_dark_preset', preset.id);
+      } else {
+        localStorage.setItem('hikari_last_light_preset', preset.id);
+      }
+    } catch (e) {
+      // ignore
+    }
     applyThemePreset(preset);
     const updated: PortfolioData = {
       ...data,

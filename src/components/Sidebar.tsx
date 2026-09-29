@@ -65,13 +65,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
   ];
 
   return (
-    <aside className="hidden lg:flex flex-col w-72 h-screen fixed left-0 top-0 z-40 bg-[#060817] border-r-2 border-[#2b356e] text-slate-200 select-none overflow-y-auto">
+    <aside className="hidden lg:flex flex-col w-72 h-screen fixed left-0 top-0 z-40 bg-[var(--bg-primary)] border-r-2 border-[var(--border-neon)] text-[var(--text-main)] select-none overflow-y-auto">
       {/* 1. HIKARI SYSTEM BRAND HEADER (Matches Reference Image) */}
-      <div className="p-4 border-b-2 border-[#2b356e] bg-[#090b20]">
+      <div className="p-4 border-b-2 border-[var(--border-neon)] bg-[var(--bg-secondary)]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             {/* Pixel Emblem (Magenta/Pink pixel diamond cluster) */}
-            <div className="w-9 h-9 flex-shrink-0 flex items-center justify-center bg-[#18112c] border-2 border-pink-500/60 rounded p-1 shadow-[0_0_12px_rgba(236,72,153,0.3)]">
+            <div className="w-9 h-9 flex-shrink-0 flex items-center justify-center bg-[var(--bg-card)] border-2 border-pink-500/60 rounded p-1 shadow-[0_0_12px_rgba(236,72,153,0.3)]">
               <svg viewBox="0 0 24 24" className="w-full h-full text-pink-400" fill="currentColor">
                 {/* Pixel diamond shapes */}
                 <rect x="10" y="2" width="4" height="4" fill="#f472b6" />
@@ -85,10 +85,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
 
             <div>
-              <div className="font-mono text-sm font-black tracking-widest text-white uppercase leading-none">
+              <div className="font-mono text-sm font-black tracking-widest text-[var(--text-title)] uppercase leading-none">
                 HIKARI
               </div>
-              <div className="font-mono text-[11px] font-bold tracking-widest text-sky-400 uppercase leading-none mt-1">
+              <div className="font-mono text-[11px] font-bold tracking-widest text-sky-500 dark:text-sky-400 uppercase leading-none mt-1">
                 SYSTEM
               </div>
             </div>
@@ -99,21 +99,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <button
               onClick={onOpenThemeMatrix}
               title="เปลี่ยนโทนสี (100 Color Themes)"
-              className="p-1.5 rounded bg-[#101432] border border-pink-500/40 text-pink-400 hover:text-white hover:border-pink-400 hover:bg-pink-950 transition cursor-pointer flex items-center justify-center shadow-sm"
+              className="p-1.5 rounded bg-[var(--bg-card)] border border-pink-500/40 text-pink-500 dark:text-pink-400 hover:text-[var(--text-title)] hover:border-pink-400 hover:bg-pink-950/20 transition cursor-pointer flex items-center justify-center shadow-sm"
             >
               <Palette size={15} />
             </button>
             <button
               onClick={onToggleTheme}
               title={isDarkMode ? 'สลับเป็นโหมดสว่าง' : 'สลับเป็นโหมดมืด'}
-              className="p-1.5 rounded bg-[#101432] border border-[#2e3b78] text-sky-400 hover:text-white hover:border-sky-400 transition cursor-pointer"
+              className="p-1.5 rounded bg-[var(--bg-card)] border border-[var(--border-neon)] text-sky-500 dark:text-sky-400 hover:text-[var(--text-title)] hover:border-sky-400 transition cursor-pointer"
             >
               {isDarkMode ? <Sun size={15} /> : <Moon size={15} />}
             </button>
           </div>
         </div>
 
-        <p className="text-[10px] font-mono text-slate-400 mt-2.5 pt-2 border-t border-[#1d244d] uppercase tracking-wider">
+        <p className="text-[10px] font-mono text-[var(--text-muted)] mt-2.5 pt-2 border-t border-[var(--border-subtle)] uppercase tracking-wider">
           APHINAT OS 2.0 // EE EDITION
         </p>
 
@@ -121,13 +121,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div className="pt-2.5">
           <button
             onClick={onOpenThemeMatrix}
-            className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-[#0e122b] hover:bg-[#161c42] border border-pink-500/40 hover:border-pink-400 text-pink-300 hover:text-white transition text-[11px] font-mono font-bold cursor-pointer shadow-sm group"
+            className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-[var(--bg-card)] hover:bg-[var(--bg-secondary)] border border-pink-500/40 hover:border-pink-400 text-pink-500 dark:text-pink-300 hover:text-[var(--text-title)] transition text-[11px] font-mono font-bold cursor-pointer shadow-sm group"
           >
             <span className="flex items-center gap-1.5">
               <Palette size={13} className="text-pink-400 group-hover:rotate-45 transition-transform" />
               <span>COLOR MATRIX</span>
             </span>
-            <span className="bg-pink-950 text-pink-300 border border-pink-500/50 px-1.5 py-0.5 rounded text-[9px] font-mono">
+            <span className="bg-pink-500/10 text-pink-500 dark:text-pink-300 border border-pink-500/40 px-1.5 py-0.5 rounded text-[9px] font-mono">
               100 THEMES ▸
             </span>
           </button>
@@ -145,16 +145,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
               onClick={() => onNavigate(item.id)}
               className={`w-full flex items-center justify-between px-3 py-2 rounded-lg font-mono text-xs tracking-wider transition-all ${
                 isActive
-                  ? 'bg-[#15204c] text-white border-2 border-sky-400 shadow-[0_0_15px_rgba(56,189,248,0.25)] font-bold'
-                  : 'text-slate-400 hover:text-white hover:bg-[#0e122b] border-2 border-transparent'
+                  ? 'bg-[var(--bg-card)] text-[var(--text-title)] border-2 border-[var(--accent-cyan)] shadow-[0_0_15px_var(--glow-shadow)] font-bold'
+                  : 'text-[var(--text-muted)] hover:text-[var(--text-title)] hover:bg-[var(--bg-secondary)] border-2 border-transparent'
               }`}
             >
               <div className="flex items-center gap-2.5">
-                <Icon size={15} className={isActive ? 'text-sky-400' : 'text-slate-500'} />
+                <Icon size={15} className={isActive ? 'text-[var(--accent-cyan)]' : 'text-[var(--text-muted)]'} />
                 <span>{item.label}</span>
               </div>
               {isActive && (
-                <span className="text-sky-400 text-xs font-bold">▸</span>
+                <span className="text-[var(--accent-cyan)] text-xs font-bold">▸</span>
               )}
             </button>
           );
@@ -163,12 +163,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* 3. SYSTEM STATUS BOX (Matches Reference Image) */}
       <div className="px-3 pb-3">
-        <div className="p-3 bg-[#0a0d24] border-2 border-[#2b356e] rounded-lg font-mono space-y-2 text-xs">
-          <div className="text-[10px] text-slate-400 uppercase tracking-wider font-bold">
+        <div className="p-3 bg-[var(--bg-card)] border-2 border-[var(--border-neon)] rounded-lg font-mono space-y-2 text-xs">
+          <div className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider font-bold">
             SYSTEM STATUS
           </div>
           
-          <div className="flex items-center gap-2 text-emerald-400 font-semibold text-[11px]">
+          <div className="flex items-center gap-2 text-emerald-500 dark:text-emerald-400 font-semibold text-[11px]">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
@@ -176,21 +176,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <span className="truncate">ALL SYSTEMS OPERATIONAL</span>
           </div>
 
-          <div className="pt-1 text-[11px] text-slate-300 space-y-0.5">
+          <div className="pt-1 text-[11px] text-[var(--text-muted)] space-y-0.5">
             <div>
-              <span className="text-slate-500">UPTIME</span>
-              <p className="text-white font-bold">128D 07:42:{seconds < 10 ? `0${seconds}` : seconds}</p>
+              <span className="text-[var(--text-muted)]">UPTIME</span>
+              <p className="text-[var(--text-title)] font-bold">128D 07:42:{seconds < 10 ? `0${seconds}` : seconds}</p>
             </div>
             <div>
-              <span className="text-slate-500">REGION</span>
-              <p className="text-white font-semibold">EAST ASIA (RMUTI)</p>
+              <span className="text-[var(--text-muted)]">REGION</span>
+              <p className="text-[var(--text-title)] font-semibold">EAST ASIA (RMUTI)</p>
             </div>
           </div>
 
-          <div className="pt-1 border-t border-[#1d244d] flex items-center justify-between text-[10px]">
+          <div className="pt-1 border-t border-[var(--border-subtle)] flex items-center justify-between text-[10px]">
             <button 
               onClick={() => onNavigate('courses')}
-              className="text-sky-400 hover:text-white flex items-center gap-1 font-semibold uppercase"
+              className="text-sky-500 dark:text-sky-400 hover:text-[var(--text-title)] flex items-center gap-1 font-semibold uppercase"
             >
               <span>VIEW STATUS PAGE</span>
               <ExternalLink size={10} />
@@ -205,7 +205,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </div>
 
       {/* 5. ADMIN / OSCILLOSCOPE BOTTOM FOOTER */}
-      <div className="p-3 border-t-2 border-[#2b356e] bg-[#07091c] space-y-2">
+      <div className="p-3 border-t-2 border-[var(--border-neon)] bg-[var(--bg-secondary)] space-y-2">
         <OscilloscopeWave
           voltage={portfolioData.profile.circuitVoltage}
           current={portfolioData.profile.circuitCurrent}
@@ -228,13 +228,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <button
             onClick={onOpenLogin}
             title="เข้าสู่ระบบผู้ดูแลระบบ (Ctrl + Alt + P)"
-            className="w-full flex items-center justify-between px-2.5 py-1 rounded bg-[#0d1028] border border-[#242b58] text-slate-400 hover:text-sky-300 hover:border-sky-500/40 transition text-[11px] font-mono"
+            className="w-full flex items-center justify-between px-2.5 py-1 rounded bg-[var(--bg-card)] border border-[var(--border-neon)] text-[var(--text-muted)] hover:text-sky-400 hover:border-sky-500/40 transition text-[11px] font-mono"
           >
             <span className="flex items-center gap-1.5">
-              <Lock size={12} className="text-slate-500" />
+              <Lock size={12} className="text-[var(--text-muted)]" />
               <span>ADMIN ACCESS</span>
             </span>
-            <span className="text-[9px] text-slate-500 bg-slate-900 px-1 py-0.5 rounded">
+            <span className="text-[9px] text-[var(--text-muted)] bg-[var(--bg-secondary)] px-1 py-0.5 rounded">
               Ctrl+Alt+P
             </span>
           </button>

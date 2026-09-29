@@ -25,24 +25,24 @@ export const Footer: React.FC<FooterProps> = ({
   };
 
   return (
-    <footer id="footer" className="mt-16 border-t-2 border-[#2b356e] bg-[#050612] text-slate-300 relative select-none">
+    <footer id="footer" className="mt-16 border-t-2 border-[var(--border-neon)] bg-[var(--bg-secondary)] text-[var(--text-main)] relative select-none">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 space-y-8 font-mono">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
           {/* Column 1: Official University & Creator Credentials */}
           <div className="md:col-span-7 space-y-4">
             <div className="flex items-center gap-3">
-              <div className="h-9 w-9 rounded-lg bg-[#18112c] border-2 border-pink-500/60 flex items-center justify-center text-pink-400 font-bold text-base shadow-[0_0_10px_rgba(236,72,153,0.3)]">
+              <div className="h-9 w-9 rounded-lg bg-[var(--bg-card)] border-2 border-pink-500/60 flex items-center justify-center text-pink-500 dark:text-pink-400 font-bold text-base shadow-[0_0_10px_rgba(236,72,153,0.3)]">
                 ✦
               </div>
               <div>
-                <h3 className="text-base font-bold text-white tracking-wider uppercase">
+                <h3 className="text-base font-bold text-[var(--text-title)] tracking-wider uppercase">
                   <EditableText
                     value={profile.name}
                     onSave={(v) => onUpdateProfile('name', v)}
                     isAdmin={isAdmin}
                   />
                 </h3>
-                <p className="text-[11px] text-sky-400">
+                <p className="text-[11px] text-sky-500 dark:text-sky-400">
                   STUDENT ID: <EditableText
                     value={profile.studentId}
                     onSave={(v) => onUpdateProfile('studentId', v)}
@@ -52,15 +52,15 @@ export const Footer: React.FC<FooterProps> = ({
               </div>
             </div>
 
-            <div className="p-4 rounded-xl bg-[#090b20] border-2 border-[#2b356e] text-xs space-y-2 leading-relaxed">
-              <p className="font-bold text-white">
+            <div className="p-4 rounded-xl bg-[var(--bg-card)] border-2 border-[var(--border-neon)] text-xs space-y-2 leading-relaxed shadow-sm">
+              <p className="font-bold text-[var(--text-title)]">
                 <EditableText
                   value={profile.university}
                   onSave={(v) => onUpdateProfile('university', v)}
                   isAdmin={isAdmin}
                 />
               </p>
-              <p className="text-sky-300">
+              <p className="text-sky-600 dark:text-sky-300 font-semibold">
                 <EditableText
                   value={profile.faculty}
                   onSave={(v) => onUpdateProfile('faculty', v)}
@@ -73,7 +73,7 @@ export const Footer: React.FC<FooterProps> = ({
                   isAdmin={isAdmin}
                 />
               </p>
-              <p className="text-[11px] text-slate-400 pt-2 border-t border-[#1e254e] font-chakra">
+              <p className="text-[11px] text-[var(--text-muted)] pt-2 border-t border-[var(--border-subtle)] font-chakra">
                 <EditableText
                   value={siteTexts.footerNote}
                   onSave={(v) => onUpdateSiteText('footerNote', v)}
@@ -86,7 +86,7 @@ export const Footer: React.FC<FooterProps> = ({
 
           {/* Column 2: Direct Contact Channels */}
           <div className="md:col-span-5 space-y-4">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-sky-400">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-sky-500 dark:text-sky-400">
               <EditableText
                 value={siteTexts.footerContactHeading}
                 onSave={(v) => onUpdateSiteText('footerContactHeading', v)}
@@ -95,45 +95,45 @@ export const Footer: React.FC<FooterProps> = ({
             </h4>
 
             <div className="space-y-2 text-xs">
-              <div className="flex items-center justify-between p-2.5 rounded-lg bg-[#090b20] border-2 border-[#2b356e] hover:border-sky-400 transition text-slate-200">
-                <span className="flex items-center gap-2 text-slate-400">
-                  <Phone size={13} className="text-sky-400" />
+              <div className="flex items-center justify-between p-2.5 rounded-lg bg-[var(--bg-card)] border-2 border-[var(--border-neon)] hover:border-sky-400 transition text-[var(--text-main)] shadow-sm">
+                <span className="flex items-center gap-2 text-[var(--text-muted)]">
+                  <Phone size={13} className="text-sky-500 dark:text-sky-400" />
                   <span>TEL:</span>
                 </span>
                 <EditableText
                   value={profile.phone}
                   onSave={(v) => onUpdateProfile('phone', v)}
                   isAdmin={isAdmin}
-                  className="font-bold text-white"
+                  className="font-bold text-[var(--text-title)]"
                 />
               </div>
 
-              <div className="flex items-center justify-between p-2.5 rounded-lg bg-[#090b20] border-2 border-[#2b356e] hover:border-sky-400 transition text-slate-200">
-                <span className="flex items-center gap-2 text-slate-400">
-                  <Mail size={13} className="text-sky-400" />
+              <div className="flex items-center justify-between p-2.5 rounded-lg bg-[var(--bg-card)] border-2 border-[var(--border-neon)] hover:border-sky-400 transition text-[var(--text-main)] shadow-sm">
+                <span className="flex items-center gap-2 text-[var(--text-muted)]">
+                  <Mail size={13} className="text-sky-500 dark:text-sky-400" />
                   <span>EMAIL:</span>
                 </span>
                 <EditableText
                   value={profile.email}
                   onSave={(v) => onUpdateProfile('email', v)}
                   isAdmin={isAdmin}
-                  className="font-bold text-white truncate max-w-[170px]"
+                  className="font-bold text-[var(--text-title)] truncate max-w-[170px]"
                 />
               </div>
 
-              <div className="p-2.5 rounded-lg bg-[#090b20] border border-[#1f2750] flex items-center justify-between text-[11px] text-slate-400">
+              <div className="p-2.5 rounded-lg bg-[var(--bg-card)] border border-[var(--border-subtle)] flex items-center justify-between text-[11px] text-[var(--text-muted)]">
                 <span className="flex items-center gap-1.5">
-                  <MapPin size={12} className="text-sky-400" />
+                  <MapPin size={12} className="text-sky-500 dark:text-sky-400" />
                   <span>LOCATION: KHON KAEN, TH</span>
                 </span>
-                <span className="text-emerald-400 font-bold">ONLINE</span>
+                <span className="text-emerald-500 dark:text-emerald-400 font-bold">ONLINE</span>
               </div>
             </div>
           </div>
         </div>
 
         {/* Bottom Credits & Back to Top */}
-        <div className="pt-6 border-t-2 border-[#1f2750] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+        <div className="pt-6 border-t-2 border-[var(--border-subtle)] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[var(--text-muted)]">
           <p className="text-[11px]">
             <EditableText
               value={siteTexts.footerCopyright}
@@ -143,7 +143,7 @@ export const Footer: React.FC<FooterProps> = ({
           </p>
           <button
             onClick={scrollToTop}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#101432] border border-[#2b356e] text-sky-300 hover:text-white hover:border-sky-400 transition text-[11px] font-bold cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--bg-card)] border border-[var(--border-neon)] text-sky-500 dark:text-sky-300 hover:text-[var(--text-title)] hover:border-sky-400 transition text-[11px] font-bold cursor-pointer shadow-sm"
           >
             <span>TOP</span>
             <ArrowUp size={12} />

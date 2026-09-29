@@ -36,12 +36,12 @@ export const EducationSection: React.FC<EducationSectionProps> = ({
   };
 
   return (
-    <section id="education" className="py-12 border-t-2 border-[#2b356e]/60">
+    <section id="education" className="py-12 border-t-2 border-[var(--border-neon)]/60">
       <div className="space-y-6">
         {/* Section Header (Hikari OS Style) */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-2">
           <div>
-            <div className="inline-flex items-center gap-2 text-xs font-mono font-bold text-sky-400 tracking-wider uppercase mb-1">
+            <div className="inline-flex items-center gap-2 text-xs font-mono font-bold text-sky-500 dark:text-sky-400 tracking-wider uppercase mb-1">
               <span>[ 02 // ACADEMICS ]</span>
               <EditableText
                 value={siteTexts.educationBadge}
@@ -49,7 +49,7 @@ export const EducationSection: React.FC<EducationSectionProps> = ({
                 isAdmin={isAdmin}
               />
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-black text-[var(--text-title)] tracking-tight">
               <EditableText
                 value={siteTexts.educationTitle}
                 onSave={(v) => onUpdateSiteText('educationTitle', v)}
@@ -59,7 +59,7 @@ export const EducationSection: React.FC<EducationSectionProps> = ({
             </h2>
           </div>
           <div className="flex items-center gap-3">
-            <p className="text-xs sm:text-sm text-slate-400 max-w-md font-chakra">
+            <p className="text-xs sm:text-sm text-[var(--text-muted)] max-w-md font-chakra">
               <EditableText
                 value={siteTexts.educationSubtitle}
                 onSave={(v) => onUpdateSiteText('educationSubtitle', v)}
@@ -91,23 +91,23 @@ export const EducationSection: React.FC<EducationSectionProps> = ({
                 <div className={`absolute -left-[30px] sm:-left-[35px] top-2 h-6 w-6 sm:h-7 sm:w-7 rounded-lg flex items-center justify-center border-2 transition-all duration-300 ${
                   isCurrent
                     ? 'bg-sky-500 border-white shadow-[0_0_15px_#38bdf8] scale-110'
-                    : 'bg-[#090b20] border-[#2b356e] group-hover:border-sky-400'
+                    : 'bg-[var(--bg-card)] border-[var(--border-neon)] group-hover:border-sky-400'
                 }`}>
                   <span className={`h-2 w-2 rounded-sm ${isCurrent ? 'bg-white animate-ping' : 'bg-sky-400'}`} />
                 </div>
 
                 {/* Retro OS Card Content */}
-                <div className={`bg-[#090b20] rounded-xl p-5 sm:p-6 border-2 transition-all duration-300 relative shadow-lg ${
+                <div className={`bg-[var(--bg-card)] rounded-xl p-5 sm:p-6 border-2 transition-all duration-300 relative shadow-lg ${
                   isCurrent
-                    ? 'border-sky-400 shadow-[0_0_25px_rgba(56,189,248,0.25)] bg-[#0c102c]'
-                    : 'border-[#2b356e] hover:border-[#3d4a96]'
+                    ? 'border-[var(--accent-cyan)] shadow-[0_0_25px_var(--glow-shadow)] bg-[var(--bg-card)]'
+                    : 'border-[var(--border-neon)] hover:border-[var(--border-neon-glow)]'
                 }`}>
                   {/* Delete Button in Admin Mode */}
                   {isAdmin && (
                     <button
                       onClick={() => onDeleteEducation(item.id)}
                       title="ลบรายการการศึกษานี้"
-                      className="absolute top-4 right-4 p-1.5 rounded-lg bg-[#0d1028] text-rose-400 hover:bg-rose-950 border border-rose-500/30 transition z-10"
+                      className="absolute top-4 right-4 p-1.5 rounded-lg bg-[var(--bg-secondary)] text-rose-400 hover:bg-rose-950 border border-rose-500/30 transition z-10"
                     >
                       <Trash2 size={14} />
                     </button>
@@ -117,20 +117,20 @@ export const EducationSection: React.FC<EducationSectionProps> = ({
                     <div className="flex items-center gap-3">
                       <div className={`p-2.5 rounded-lg border-2 ${
                         isCurrent
-                          ? 'bg-sky-950 border-sky-400 text-sky-300'
-                          : 'bg-[#0e122b] border-[#232b58] text-slate-400 group-hover:text-sky-400'
+                          ? 'bg-sky-500/10 border-sky-400 text-sky-500 dark:text-sky-300'
+                          : 'bg-[var(--bg-secondary)] border-[var(--border-subtle)] text-[var(--text-muted)] group-hover:text-sky-400'
                       }`}>
                         <Icon size={18} />
                       </div>
                       <div>
-                        <span className="text-xs font-mono font-bold text-sky-400 uppercase tracking-wider block">
+                        <span className="text-xs font-mono font-bold text-sky-500 dark:text-sky-400 uppercase tracking-wider block">
                           <EditableText
                             value={item.level}
                             onSave={(val) => onUpdateEducationItem(item.id, 'level', val)}
                             isAdmin={isAdmin}
                           />
                         </span>
-                        <h3 className="text-base sm:text-lg font-bold text-white tracking-tight">
+                        <h3 className="text-base sm:text-lg font-bold text-[var(--text-title)] tracking-tight">
                           <EditableText
                             value={item.institution}
                             onSave={(val) => onUpdateEducationItem(item.id, 'institution', val)}
@@ -142,8 +142,8 @@ export const EducationSection: React.FC<EducationSectionProps> = ({
 
                     <span className={`inline-flex items-center self-start px-2.5 py-1 rounded font-mono text-[11px] font-semibold border uppercase ${
                       isCurrent
-                        ? 'bg-sky-950 text-sky-300 border-sky-400 shadow-[0_0_10px_rgba(56,189,248,0.4)]'
-                        : 'bg-[#0e122b] text-slate-300 border-[#232b58]'
+                        ? 'bg-sky-500/10 text-sky-600 dark:text-sky-300 border-sky-400 shadow-[0_0_10px_rgba(56,189,248,0.4)]'
+                        : 'bg-[var(--bg-secondary)] text-[var(--text-main)] border-[var(--border-subtle)]'
                     }`}>
                       <EditableText
                         value={item.badge || 'วุฒิการศึกษา'}
@@ -153,7 +153,7 @@ export const EducationSection: React.FC<EducationSectionProps> = ({
                     </span>
                   </div>
 
-                  <div className="text-xs sm:text-sm font-mono font-semibold text-sky-300 mb-2 pl-11">
+                  <div className="text-xs sm:text-sm font-mono font-semibold text-sky-500 dark:text-sky-300 mb-2 pl-11">
                     <EditableText
                       value={item.majorOrBranch || 'สาขาวิชา'}
                       onSave={(val) => onUpdateEducationItem(item.id, 'majorOrBranch', val)}
@@ -161,7 +161,7 @@ export const EducationSection: React.FC<EducationSectionProps> = ({
                     />
                   </div>
 
-                  <p className="text-xs sm:text-sm text-slate-300 leading-relaxed pl-11 font-chakra">
+                  <p className="text-xs sm:text-sm text-[var(--text-main)] leading-relaxed pl-11 font-chakra">
                     <EditableText
                       value={item.description}
                       onSave={(val) => onUpdateEducationItem(item.id, 'description', val)}

@@ -5,7 +5,7 @@ import React from 'react';
 // 1. Pixel Art Skyline SVG for the Sidebar (Matching Hikari OS reference image)
 export const PixelCitySkyline: React.FC<{ className?: string }> = ({ className = '' }) => {
   return (
-    <div className={`relative overflow-hidden rounded-lg bg-[#0b0c20] border-2 border-[#2b356e] p-2 ${className}`}>
+    <div className={`relative overflow-hidden rounded-lg bg-[var(--bg-card)] border-2 border-[var(--border-neon)] p-2 ${className}`}>
       {/* Pixelated Moon & Stars Header */}
       <svg
         viewBox="0 0 160 80"
@@ -185,7 +185,7 @@ export const PixelMeter: React.FC<{
               className={`w-2 h-3 transition-colors ${
                 isActive
                   ? currentTheme.active
-                  : 'bg-[#1b2144] border border-[#2a346e]/60'
+                  : 'bg-[var(--bg-secondary)] border border-[var(--border-neon)]/60'
               }`}
             />
           );
@@ -216,24 +216,24 @@ export const RetroWindow: React.FC<{
   contentClassName = ''
 }) => {
   const badgeClasses = {
-    pink: 'bg-pink-950/80 text-pink-300 border-pink-500/40',
-    blue: 'bg-sky-950/80 text-sky-300 border-sky-500/40',
-    green: 'bg-emerald-950/80 text-emerald-300 border-emerald-500/40',
-    amber: 'bg-amber-950/80 text-amber-300 border-amber-500/40'
+    pink: 'bg-pink-500/10 text-pink-500 dark:text-pink-300 border-pink-500/40',
+    blue: 'bg-sky-500/10 text-sky-600 dark:text-sky-300 border-sky-500/40',
+    green: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 border-emerald-500/40',
+    amber: 'bg-amber-500/10 text-amber-600 dark:text-amber-300 border-amber-500/40'
   };
 
   return (
     <div
-      className={`relative bg-[#090b1c]/95 border-2 border-[#2b356e] rounded-xl overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.6)] ${className}`}
+      className={`relative bg-[var(--bg-card)] border-2 border-[var(--border-neon)] rounded-xl overflow-hidden shadow-lg ${className}`}
     >
       {/* Outer Glow / Pixel Border Accent */}
-      <div className="absolute inset-[1px] border border-[#1b224c] pointer-events-none rounded-[10px]" />
+      <div className="absolute inset-[1px] border border-[var(--border-neon-glow)] pointer-events-none rounded-[10px]" />
 
       {/* Retro Window Header Bar */}
-      <div className="flex items-center justify-between px-3.5 py-2.5 bg-[#121636] border-b-2 border-[#2b356e] select-none">
+      <div className="flex items-center justify-between px-3.5 py-2.5 bg-[var(--bg-card-header)] border-b-2 border-[var(--border-neon)] select-none">
         <div className="flex items-center gap-2">
-          {icon && <span className="text-sky-400 flex items-center">{icon}</span>}
-          <span className="font-mono text-xs font-bold tracking-wider text-slate-200 uppercase">
+          {icon && <span className="text-[var(--accent-cyan)] flex items-center">{icon}</span>}
+          <span className="font-mono text-xs font-bold tracking-wider text-[var(--text-title)] uppercase">
             {title}
           </span>
           {badge && (
@@ -250,14 +250,14 @@ export const RetroWindow: React.FC<{
           {headerRight ? (
             headerRight
           ) : (
-            <div className="flex items-center gap-1.5 text-slate-400 font-mono text-[11px]">
-              <span className="w-3.5 h-3.5 flex items-center justify-center rounded border border-[#3b478c] hover:border-sky-400 hover:text-white cursor-pointer transition">
+            <div className="flex items-center gap-1.5 text-[var(--text-muted)] font-mono text-[11px]">
+              <span className="w-3.5 h-3.5 flex items-center justify-center rounded border border-[var(--border-neon)] hover:border-sky-400 hover:text-[var(--text-title)] cursor-pointer transition">
                 _
               </span>
-              <span className="w-3.5 h-3.5 flex items-center justify-center rounded border border-[#3b478c] hover:border-sky-400 hover:text-white cursor-pointer transition text-[9px]">
+              <span className="w-3.5 h-3.5 flex items-center justify-center rounded border border-[var(--border-neon)] hover:border-sky-400 hover:text-[var(--text-title)] cursor-pointer transition text-[9px]">
                 □
               </span>
-              <span className="w-3.5 h-3.5 flex items-center justify-center rounded border border-[#3b478c] hover:border-rose-400 hover:text-rose-400 cursor-pointer transition text-[10px]">
+              <span className="w-3.5 h-3.5 flex items-center justify-center rounded border border-[var(--border-neon)] hover:border-rose-400 hover:text-rose-400 cursor-pointer transition text-[10px]">
                 ×
               </span>
             </div>

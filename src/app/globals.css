@@ -4,10 +4,14 @@
   --bg-primary: #060713;
   --bg-secondary: #0c0e24;
   --bg-card: #090b20;
+  --bg-card-header: #121638;
+  --bg-card-sub: #0e122b;
   --bg-card-hover: #121638;
   --border-neon: #2b356e;
   --border-neon-glow: #1c224a;
+  --border-subtle: #1e254e;
   --text-main: #f1f5f9;
+  --text-title: #ffffff;
   --text-muted: #8b9ac4;
   --accent-cyan: #38bdf8;
   --accent-blue: #3b82f6;
@@ -16,16 +20,21 @@
   --accent-amber: #f59e0b;
   --accent-glow: #00d2ff;
   --glow-shadow: rgba(56, 189, 248, 0.35);
+  --grid-line: rgba(43, 53, 110, 0.25);
 }
 
 .theme-light {
   --bg-primary: #f8fafc;
-  --bg-secondary: #e2e8f0;
+  --bg-secondary: #eef2f6;
   --bg-card: #ffffff;
+  --bg-card-header: #f1f5f9;
+  --bg-card-sub: #f8fafc;
   --bg-card-hover: #f1f5f9;
-  --border-neon: #94a3b8;
-  --border-neon-glow: #0284c7;
+  --border-neon: #cbd5e1;
+  --border-neon-glow: #94a3b8;
+  --border-subtle: #e2e8f0;
   --text-main: #0f172a;
+  --text-title: #020617;
   --text-muted: #475569;
   --accent-cyan: #0284c7;
   --accent-blue: #1d4ed8;
@@ -34,6 +43,7 @@
   --accent-amber: #d97706;
   --accent-glow: #0284c7;
   --glow-shadow: rgba(2, 132, 199, 0.15);
+  --grid-line: rgba(148, 163, 184, 0.25);
 }
 
 body {
@@ -156,8 +166,8 @@ body {
 .pixel-grid {
   background-size: 32px 32px;
   background-image: 
-    linear-gradient(to right, var(--border-neon, rgba(43, 53, 110, 0.2)) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--border-neon, rgba(43, 53, 110, 0.2)) 1px, transparent 1px);
+    linear-gradient(to right, var(--grid-line, rgba(43, 53, 110, 0.2)) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line, rgba(43, 53, 110, 0.2)) 1px, transparent 1px);
 }
 
 /* Glassmorphism Classes for backward compatibility */

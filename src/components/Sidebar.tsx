@@ -67,9 +67,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
   ];
 
   return (
-    <aside className="hidden lg:flex flex-col w-72 h-screen fixed left-0 top-0 z-40 bg-[var(--bg-primary)] border-r-2 border-[var(--border-neon)] text-[var(--text-main)] select-none overflow-y-auto">
+    <aside 
+      style={{ position: 'fixed', top: 0, bottom: 0, left: 0, width: '18rem', height: '100vh', zIndex: 40 }}
+      className="hidden lg:flex flex-col w-72 h-screen max-h-screen fixed inset-y-0 left-0 top-0 bottom-0 z-40 bg-[var(--bg-primary)] border-r-2 border-[var(--border-neon)] text-[var(--text-main)] select-none overflow-hidden"
+    >
       {/* 1. HIKARI SYSTEM BRAND HEADER (Matches Reference Image) */}
-      <div className="p-4 border-b-2 border-[var(--border-neon)] bg-[var(--bg-secondary)]">
+      <div className="shrink-0 p-4 border-b-2 border-[var(--border-neon)] bg-[var(--bg-secondary)]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             {/* Pixel Emblem (Magenta/Pink pixel diamond cluster) */}
@@ -155,78 +158,81 @@ export const Sidebar: React.FC<SidebarProps> = ({
         )}
       </div>
 
-      {/* 2. NAVIGATION LIST (Matches Reference Image) */}
-      <nav className="p-3 space-y-1.5 flex-1">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = activeSection === item.id;
-          return (
-            <button
-              key={item.id}
-              onClick={() => onNavigate(item.id)}
-              className={`w-full flex items-center justify-between px-3 py-2 rounded-lg font-mono text-xs tracking-wider transition-all ${
-                isActive
-                  ? 'bg-[var(--bg-card)] text-[var(--text-title)] border-2 border-[var(--accent-cyan)] shadow-[0_0_15px_var(--glow-shadow)] font-bold'
-                  : 'text-[var(--text-muted)] hover:text-[var(--text-title)] hover:bg-[var(--bg-secondary)] border-2 border-transparent'
-              }`}
-            >
-              <div className="flex items-center gap-2.5">
-                <Icon size={15} className={isActive ? 'text-[var(--accent-cyan)]' : 'text-[var(--text-muted)]'} />
-                <span>{item.label}</span>
+      {/* Middle Scrollable Section (Nav, System Metrics, Skyline) */}
+      <div className="flex-1 overflow-y-auto min-h-0 space-y-3 py-2">
+        {/* 2. NAVIGATION LIST (Matches Reference Image) */}
+        <nav className="p-3 space-y-1.5">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = activeSection === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => onNavigate(item.id)}
+                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg font-mono text-xs tracking-wider transition-all ${
+                  isActive
+                    ? 'bg-[var(--bg-card)] text-[var(--text-title)] border-2 border-[var(--accent-cyan)] shadow-[0_0_15px_var(--glow-shadow)] font-bold'
+                    : 'text-[var(--text-muted)] hover:text-[var(--text-title)] hover:bg-[var(--bg-secondary)] border-2 border-transparent'
+                }`}
+              >
+                <div className="flex items-center gap-2.5">
+                  <Icon size={15} className={isActive ? 'text-[var(--accent-cyan)]' : 'text-[var(--text-muted)]'} />
+                  <span>{item.label}</span>
+                </div>
+                {isActive && (
+                  <span className="text-[var(--accent-cyan)] text-xs font-bold">▸</span>
+                )}
+              </button>
+            );
+          })}
+        </nav>
+
+        {/* 3. SYSTEM STATUS BOX (Matches Reference Image) */}
+        <div className="px-3 pb-1">
+          <div className="p-3 bg-[var(--bg-card)] border-2 border-[var(--border-neon)] rounded-lg font-mono space-y-2 text-xs">
+            <div className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider font-bold">
+              SYSTEM STATUS
+            </div>
+            
+            <div className="flex items-center gap-2 text-emerald-500 dark:text-emerald-400 font-semibold text-[11px]">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <span className="truncate">ALL SYSTEMS OPERATIONAL</span>
+            </div>
+
+            <div className="pt-1 text-[11px] text-[var(--text-muted)] space-y-0.5">
+              <div>
+                <span className="text-[var(--text-muted)]">UPTIME</span>
+                <p className="text-[var(--text-title)] font-bold">128D 07:42:{seconds < 10 ? `0${seconds}` : seconds}</p>
               </div>
-              {isActive && (
-                <span className="text-[var(--accent-cyan)] text-xs font-bold">▸</span>
-              )}
-            </button>
-          );
-        })}
-      </nav>
-
-      {/* 3. SYSTEM STATUS BOX (Matches Reference Image) */}
-      <div className="px-3 pb-3">
-        <div className="p-3 bg-[var(--bg-card)] border-2 border-[var(--border-neon)] rounded-lg font-mono space-y-2 text-xs">
-          <div className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider font-bold">
-            SYSTEM STATUS
-          </div>
-          
-          <div className="flex items-center gap-2 text-emerald-500 dark:text-emerald-400 font-semibold text-[11px]">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-            </span>
-            <span className="truncate">ALL SYSTEMS OPERATIONAL</span>
-          </div>
-
-          <div className="pt-1 text-[11px] text-[var(--text-muted)] space-y-0.5">
-            <div>
-              <span className="text-[var(--text-muted)]">UPTIME</span>
-              <p className="text-[var(--text-title)] font-bold">128D 07:42:{seconds < 10 ? `0${seconds}` : seconds}</p>
+              <div>
+                <span className="text-[var(--text-muted)]">REGION</span>
+                <p className="text-[var(--text-title)] font-semibold">EAST ASIA (RMUTI)</p>
+              </div>
             </div>
-            <div>
-              <span className="text-[var(--text-muted)]">REGION</span>
-              <p className="text-[var(--text-title)] font-semibold">EAST ASIA (RMUTI)</p>
+
+            <div className="pt-1 border-t border-[var(--border-subtle)] flex items-center justify-between text-[10px]">
+              <button 
+                onClick={() => onNavigate('courses')}
+                className="text-sky-500 dark:text-sky-400 hover:text-[var(--text-title)] flex items-center gap-1 font-semibold uppercase"
+              >
+                <span>VIEW STATUS PAGE</span>
+                <ExternalLink size={10} />
+              </button>
             </div>
           </div>
+        </div>
 
-          <div className="pt-1 border-t border-[var(--border-subtle)] flex items-center justify-between text-[10px]">
-            <button 
-              onClick={() => onNavigate('courses')}
-              className="text-sky-500 dark:text-sky-400 hover:text-[var(--text-title)] flex items-center gap-1 font-semibold uppercase"
-            >
-              <span>VIEW STATUS PAGE</span>
-              <ExternalLink size={10} />
-            </button>
-          </div>
+        {/* 4. PIXEL ART CITY SKYLINE (Matches Bottom of Sidebar in Image) */}
+        <div className="px-3 pb-2">
+          <PixelCitySkyline />
         </div>
       </div>
 
-      {/* 4. PIXEL ART CITY SKYLINE (Matches Bottom of Sidebar in Image) */}
-      <div className="px-3 pb-3">
-        <PixelCitySkyline />
-      </div>
-
-      {/* 5. ADMIN / OSCILLOSCOPE BOTTOM FOOTER */}
-      <div className="p-3 border-t-2 border-[var(--border-neon)] bg-[var(--bg-secondary)] space-y-2">
+      {/* 5. ADMIN / OSCILLOSCOPE BOTTOM FOOTER (Pinned to Bottom) */}
+      <div className="shrink-0 p-3 border-t-2 border-[var(--border-neon)] bg-[var(--bg-secondary)] space-y-2">
         <OscilloscopeWave
           voltage={portfolioData.profile.circuitVoltage}
           current={portfolioData.profile.circuitCurrent}

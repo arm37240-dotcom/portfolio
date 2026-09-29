@@ -184,8 +184,8 @@ export const BottomWidgets: React.FC<BottomWidgetsProps> = ({
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 pt-4">
-      {/* 1. LATEST UPDATES WIDGET (5 Cols on LG) */}
-      <div className="lg:col-span-5 bg-[var(--bg-card)] border-2 border-[var(--border-neon)] rounded-xl overflow-hidden shadow-lg flex flex-col">
+      {/* 1. LATEST UPDATES WIDGET (Full-Width 12 Cols for Spacious Cards) */}
+      <div className="col-span-12 bg-[var(--bg-card)] border-2 border-[var(--border-neon)] rounded-xl overflow-hidden shadow-lg flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-2.5 bg-[var(--bg-card-header)] border-b-2 border-[var(--border-neon)] select-none">
           <div className="flex items-center gap-2">
@@ -195,7 +195,7 @@ export const BottomWidgets: React.FC<BottomWidgetsProps> = ({
           </div>
           <button
             onClick={() => onNavigate('courses')}
-            className="flex items-center gap-1 font-mono text-[11px] text-sky-500 dark:text-sky-400 hover:text-[var(--text-title)] transition uppercase font-semibold"
+            className="flex items-center gap-1 font-mono text-[11px] text-sky-500 dark:text-sky-400 hover:text-[var(--text-title)] transition uppercase font-semibold cursor-pointer"
           >
             <span>VIEW ALL</span>
             <ChevronRight size={13} />
@@ -203,7 +203,7 @@ export const BottomWidgets: React.FC<BottomWidgetsProps> = ({
         </div>
 
         {/* 3 Sub-Cards */}
-        <div className="p-4 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-3 flex-1">
+        <div className="p-4 grid grid-cols-1 md:grid-cols-3 gap-4 flex-1">
           {/* Card 1: RELEASE */}
           <div className="flex flex-col justify-between p-3 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-subtle)] hover:border-pink-500/50 transition">
             <div>
@@ -289,8 +289,8 @@ export const BottomWidgets: React.FC<BottomWidgetsProps> = ({
         </div>
       </div>
 
-      {/* 2. QUICK SYSTEM CHECK & DEPLOYS (3 Cols on LG) */}
-      <div className="lg:col-span-3 bg-[var(--bg-card)] border-2 border-[var(--border-neon)] rounded-xl overflow-hidden shadow-lg flex flex-col">
+      {/* 2. QUICK SYSTEM CHECK & DEPLOYS (5 Cols on LG) */}
+      <div className="col-span-12 lg:col-span-5 bg-[var(--bg-card)] border-2 border-[var(--border-neon)] rounded-xl overflow-hidden shadow-lg flex flex-col">
         {/* Top Header */}
         <div className="px-4 py-2.5 bg-[var(--bg-card-header)] border-b-2 border-[var(--border-neon)] select-none">
           <span className="font-mono text-xs font-bold tracking-wider text-[var(--text-title)] uppercase">
@@ -367,8 +367,8 @@ export const BottomWidgets: React.FC<BottomWidgetsProps> = ({
         </div>
       </div>
 
-      {/* 3. TERMINAL WIDGET (4 Cols on LG) */}
-      <div className="lg:col-span-4 bg-[var(--bg-card)] border-2 border-[var(--border-neon)] rounded-xl overflow-hidden shadow-lg flex flex-col crt-screen">
+      {/* 3. TERMINAL WIDGET (7 Cols on LG) */}
+      <div className="col-span-12 lg:col-span-7 bg-[var(--bg-card)] border-2 border-[var(--border-neon)] rounded-xl overflow-hidden shadow-lg flex flex-col crt-screen">
         {/* Terminal Header */}
         <div className="flex items-center justify-between px-3.5 py-2 bg-[var(--bg-card-header)] border-b-2 border-[var(--border-neon)] select-none">
           <div className="flex items-center gap-2">

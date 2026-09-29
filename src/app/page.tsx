@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { initialPortfolioData } from '@/data/initialData';
-import { PortfolioData, SectionTextConfig, UploadedFileRecord, CourseItem, CourseProject, ActivityItem, EducationItem } from '@/types/portfolio';
+import { PortfolioData, SectionTextConfig, UploadedFileRecord, CourseItem, CourseProject, ActivityItem, EducationItem, ColorThemePreset } from '@/types/portfolio';
 import { StorageService } from '@/lib/storageService';
 import { Sidebar } from '@/components/Sidebar';
 import { NavbarMobile } from '@/components/NavbarMobile';
@@ -15,7 +15,9 @@ import { Footer } from '@/components/Footer';
 import { BottomWidgets } from '@/components/BottomWidgets';
 import { AuthModal } from '@/components/AuthModal';
 import { AdminDrawer } from '@/components/AdminDrawer';
-import { ShieldCheck, Sliders, LogOut, Sparkles } from 'lucide-react';
+import { ThemeMatrixModal } from '@/components/ThemeMatrixModal';
+import { themePresets, applyThemePreset, getThemePresetById } from '@/data/themePresets';
+import { ShieldCheck, Sliders, LogOut, Sparkles, Palette } from 'lucide-react';
 
 export default function PortfolioPage() {
   const [data, setData] = useState<PortfolioData>(initialPortfolioData);
@@ -24,15 +26,23 @@ export default function PortfolioPage() {
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
   const [isAdminDrawerOpen, setIsAdminDrawerOpen] = useState<boolean>(false);
+  const [isThemeModalOpen, setIsThemeModalOpen] = useState<boolean>(false);
+  const [currentPresetId, setCurrentPresetId] = useState<string>('hikari-classic');
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
 
-  // 1. โหลดข้อมูลจาก Dual-Engine Storage Service
+  // 1. โหลดข้อมูลจาก Dual-Engine Storage Service & Theme Preset
   useEffect(() => {
     async function loadData() {
       try {
         const loaded = await StorageService.loadPortfolioData();
         setData(loaded);
-        setIsDarkMode(loaded.themeConfig.mode === 'dark');
+        
+        // Restore saved theme preset from localStorage or saved data
+        const savedPreset = localStorage.getItem('hikari_theme_preset') || loaded.themeConfig.presetId || 'hikari-classic';
+        setCurrentPresetId(savedPreset);
+        const presetObj = getThemePresetById(savedPreset);
+        applyThemePreset(presetObj);
+        setIsDarkMode(presetObj.mode === 'dark');
       } catch (err) {
         console.warn('Load portfolio data error:', err);
       }
@@ -74,11 +84,46 @@ export default function PortfolioPage() {
   const handleToggleTheme = () => {
     const nextMode = !isDarkMode;
     setIsDarkMode(nextMode);
+    
+    let targetPresetId = currentPresetId;
+    if (nextMode) {
+      const presetObj = getThemePresetById(currentPresetId);
+      if (presetObj.mode === 'dark') {
+        targetPresetId = 'paper-white-minimal';
+      }
+    } else {
+      const presetObj = getThemePresetById(currentPresetId);
+      if (presetObj.mode === 'light') {
+        targetPresetId = 'hikari-classic';
+      }
+    }
+    const nextPreset = getThemePresetById(targetPresetId);
+    setCurrentPresetId(targetPresetId);
+    applyThemePreset(nextPreset);
+
     const updated: PortfolioData = {
       ...data,
       themeConfig: {
         ...data.themeConfig,
-        mode: nextMode ? 'dark' : 'light'
+        mode: nextMode ? 'dark' : 'light',
+        presetId: targetPresetId
+      }
+    };
+    setData(updated);
+    StorageService.savePortfolioData(updated);
+  };
+
+  // สลับโทนสีจาก 100 แบบ (Color Matrix)
+  const handleSelectTheme = (preset: ColorThemePreset) => {
+    setCurrentPresetId(preset.id);
+    setIsDarkMode(preset.mode === 'dark');
+    applyThemePreset(preset);
+    const updated: PortfolioData = {
+      ...data,
+      themeConfig: {
+        ...data.themeConfig,
+        mode: preset.mode,
+        presetId: preset.id
       }
     };
     setData(updated);
@@ -295,6 +340,7 @@ export default function PortfolioPage() {
         isAdmin={isAdmin}
         onOpenLogin={() => setIsAuthModalOpen(true)}
         onOpenAdminDrawer={() => setIsAdminDrawerOpen(true)}
+        onOpenThemeMatrix={() => setIsThemeModalOpen(true)}
       />
 
       {/* 2. Mobile Responsive Top Header & Bottom Navigation */}
@@ -306,6 +352,7 @@ export default function PortfolioPage() {
         isAdmin={isAdmin}
         onOpenLogin={() => setIsAuthModalOpen(true)}
         onOpenAdminDrawer={() => setIsAdminDrawerOpen(true)}
+        onOpenThemeMatrix={() => setIsThemeModalOpen(true)}
       />
 
       {/* 3. Floating Admin Status Bar (เมื่อโหมด Admin ทำงาน) */}
@@ -358,6 +405,7 @@ export default function PortfolioPage() {
         <BottomWidgets
           portfolioData={data}
           onNavigate={handleNavigate}
+          onOpenThemeMatrix={() => setIsThemeModalOpen(true)}
         />
 
         {/* Section 2: Personal Profile */}
@@ -427,6 +475,24 @@ export default function PortfolioPage() {
         data={data}
         onSaveData={handleSaveData}
         onLogout={handleLogout}
+      />
+
+      {/* 7. Floating Quick Theme Matrix Button (100 Themes) */}
+      <button
+        onClick={() => setIsThemeModalOpen(true)}
+        title="เลือกโทนสีจาก 100 แบบ (Hikari Color Matrix)"
+        className="fixed bottom-5 right-5 z-40 hidden sm:flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#090b20]/90 hover:bg-[#121638] border-2 border-pink-500/60 hover:border-pink-400 text-pink-300 hover:text-white shadow-[0_0_20px_rgba(236,72,153,0.35)] backdrop-blur-md font-mono text-xs font-bold transition transform hover:scale-105 active:scale-95 cursor-pointer"
+      >
+        <Palette size={15} className="text-pink-400 animate-pulse" />
+        <span>100 THEMES</span>
+      </button>
+
+      {/* 8. Hikari Theme Matrix Modal (100 Palettes Explorer) */}
+      <ThemeMatrixModal
+        isOpen={isThemeModalOpen}
+        onClose={() => setIsThemeModalOpen(false)}
+        currentPresetId={currentPresetId}
+        onSelectTheme={handleSelectTheme}
       />
     </div>
   );

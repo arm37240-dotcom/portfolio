@@ -81,8 +81,32 @@ export interface UploadedFileRecord {
   category: 'image' | 'video' | 'font' | 'document' | 'other';
 }
 
+export interface ColorThemePreset {
+  id: string;
+  name: string;
+  nameEn: string;
+  category: 'cyberpunk' | 'retro_console' | 'engineering' | 'code_matrix' | 'aesthetic' | 'minimal';
+  mode: 'dark' | 'light';
+  colors: {
+    bgPrimary: string;
+    bgSecondary: string;
+    bgCard: string;
+    borderOuter: string;
+    borderInner: string;
+    textMain: string;
+    textMuted: string;
+    accentPink: string;
+    accentCyan: string;
+    accentGreen: string;
+    accentAmber: string;
+    glowShadow: string;
+    swatches: [string, string, string, string];
+  };
+}
+
 export interface ThemeConfig {
   mode: 'dark' | 'light';
+  presetId?: string;
   accentColor: 'cyan' | 'blue' | 'emerald' | 'amber' | 'purple';
   glowIntensity: number; // 0.2 to 2.0
   oscilloscopeSpeed: number; // 1 to 5

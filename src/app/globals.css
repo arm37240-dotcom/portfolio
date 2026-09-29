@@ -3,10 +3,10 @@
 :root {
   --bg-primary: #060713;
   --bg-secondary: #0c0e24;
-  --bg-card: rgba(12, 15, 38, 0.94);
-  --bg-card-hover: rgba(18, 23, 58, 0.98);
-  --border-neon: #2a346e;
-  --border-neon-glow: #4f60b4;
+  --bg-card: #090b20;
+  --bg-card-hover: #121638;
+  --border-neon: #2b356e;
+  --border-neon-glow: #1c224a;
   --text-main: #f1f5f9;
   --text-muted: #8b9ac4;
   --accent-cyan: #38bdf8;
@@ -15,14 +15,14 @@
   --accent-green: #22c55e;
   --accent-amber: #f59e0b;
   --accent-glow: #00d2ff;
-  --glow-shadow: 0 0 25px rgba(56, 189, 248, 0.35);
+  --glow-shadow: rgba(56, 189, 248, 0.35);
 }
 
 .theme-light {
-  --bg-primary: #f1f5f9;
+  --bg-primary: #f8fafc;
   --bg-secondary: #e2e8f0;
-  --bg-card: rgba(255, 255, 255, 0.95);
-  --bg-card-hover: rgba(248, 250, 252, 1);
+  --bg-card: #ffffff;
+  --bg-card-hover: #f1f5f9;
   --border-neon: #94a3b8;
   --border-neon-glow: #0284c7;
   --text-main: #0f172a;
@@ -33,7 +33,7 @@
   --accent-green: #16a34a;
   --accent-amber: #d97706;
   --accent-glow: #0284c7;
-  --glow-shadow: 0 4px 20px rgba(2, 132, 199, 0.15);
+  --glow-shadow: rgba(2, 132, 199, 0.15);
 }
 
 body {
@@ -41,7 +41,7 @@ body {
   color: var(--text-main);
   font-family: var(--font-chakra, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans Thai', sans-serif);
   overflow-x: hidden;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 /* Pixel Typography Utilities */
@@ -64,64 +64,63 @@ body {
   height: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #080918;
-  border-left: 1px solid #1a2044;
+  background: var(--bg-primary, #080918);
+  border-left: 1px solid var(--border-neon, #1a2044);
 }
 ::-webkit-scrollbar-thumb {
-  background: #2b356e;
-  border: 2px solid #080918;
+  background: var(--border-neon, #2b356e);
+  border: 2px solid var(--bg-primary, #080918);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #38bdf8;
+  background: var(--accent-cyan, #38bdf8);
 }
 
 /* Pixel Art OS Frames */
 .pixel-panel {
-  background: #090b1e;
-  border: 2px solid #2b356e;
-  box-shadow: 0 0 0 1px #11142e inset, 0 10px 30px rgba(0, 0, 0, 0.7);
+  background: var(--bg-card, #090b1e);
+  border: 2px solid var(--border-neon, #2b356e);
+  box-shadow: 0 0 0 1px var(--border-neon-glow, #11142e) inset, 0 10px 30px rgba(0, 0, 0, 0.7);
 }
 
 .pixel-panel-header {
-  background: #121636;
-  border-bottom: 2px solid #2b356e;
+  background: var(--bg-secondary, #121636);
+  border-bottom: 2px solid var(--border-neon, #2b356e);
 }
 
 /* Retro Pixel Button Styles */
 .pixel-btn-pink {
-  background: linear-gradient(180deg, #db2777 0%, #be185d 100%);
-  border: 2px solid #f472b6;
-  box-shadow: 0 4px 0 #831843, 0 0 15px rgba(219, 39, 119, 0.35);
+  background: var(--accent-pink, #ec4899);
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.4), 0 0 15px var(--glow-shadow, rgba(236, 72, 153, 0.4));
   color: #ffffff;
   transition: all 0.15s ease;
 }
 .pixel-btn-pink:hover {
-  background: linear-gradient(180deg, #ec4899 0%, #db2777 100%);
+  filter: brightness(1.15);
   transform: translateY(-1px);
-  box-shadow: 0 5px 0 #831843, 0 0 22px rgba(236, 72, 153, 0.55);
+  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.4), 0 0 20px var(--glow-shadow, rgba(236, 72, 153, 0.6));
 }
 .pixel-btn-pink:active {
   transform: translateY(3px);
-  box-shadow: 0 1px 0 #831843;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
 }
 
 .pixel-btn-blue {
-  background: #131838;
-  border: 2px solid #3b82f6;
-  box-shadow: 0 4px 0 #1e295d, 0 0 15px rgba(59, 130, 246, 0.3);
-  color: #93c5fd;
+  background: var(--bg-secondary, #131838);
+  border: 2px solid var(--accent-cyan, #3b82f6);
+  box-shadow: 0 4px 0 var(--border-neon, #1e295d), 0 0 15px var(--glow-shadow, rgba(59, 130, 246, 0.3));
+  color: var(--accent-cyan, #93c5fd);
   transition: all 0.15s ease;
 }
 .pixel-btn-blue:hover {
-  background: #1b234e;
-  border-color: #60a5fa;
+  filter: brightness(1.2);
   color: #ffffff;
   transform: translateY(-1px);
-  box-shadow: 0 5px 0 #1e295d, 0 0 20px rgba(96, 165, 250, 0.5);
+  box-shadow: 0 5px 0 var(--border-neon, #1e295d), 0 0 20px var(--glow-shadow, rgba(96, 165, 250, 0.5));
 }
 .pixel-btn-blue:active {
   transform: translateY(3px);
-  box-shadow: 0 1px 0 #1e295d;
+  box-shadow: 0 1px 0 var(--border-neon, #1e295d);
 }
 
 /* CRT Screen Scanline Effect */
@@ -138,19 +137,6 @@ body {
   background-size: 100% 4px, 6px 100%;
 }
 
-/* Neon Text & Glow Effects */
-.pixel-glow-pink {
-  text-shadow: 0 0 8px rgba(236, 72, 153, 0.8), 0 0 16px rgba(236, 72, 153, 0.4);
-}
-
-.pixel-glow-cyan {
-  text-shadow: 0 0 8px rgba(56, 189, 248, 0.8), 0 0 16px rgba(56, 189, 248, 0.4);
-}
-
-.pixel-glow-green {
-  text-shadow: 0 0 8px rgba(34, 197, 94, 0.8), 0 0 16px rgba(34, 197, 94, 0.4);
-}
-
 /* Retro CRT Screen Glow */
 .crt-screen {
   position: relative;
@@ -160,7 +146,7 @@ body {
   display: block;
   position: absolute;
   top: 0; left: 0; bottom: 0; right: 0;
-  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 255, 0, 0.06));
   z-index: 10;
   background-size: 100% 3px, 6px 100%;
   pointer-events: none;
@@ -170,14 +156,14 @@ body {
 .pixel-grid {
   background-size: 32px 32px;
   background-image: 
-    linear-gradient(to right, rgba(43, 53, 110, 0.2) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(43, 53, 110, 0.2) 1px, transparent 1px);
+    linear-gradient(to right, var(--border-neon, rgba(43, 53, 110, 0.2)) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--border-neon, rgba(43, 53, 110, 0.2)) 1px, transparent 1px);
 }
 
 /* Glassmorphism Classes for backward compatibility */
 .electric-glass {
-  background: #090b1e;
-  border: 2px solid #2b356e;
+  background: var(--bg-card, #090b1e);
+  border: 2px solid var(--border-neon, #2b356e);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
@@ -185,7 +171,7 @@ body {
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .electric-glass-hover:hover {
-  border-color: #38bdf8;
-  box-shadow: 0 0 20px rgba(56, 189, 248, 0.25);
+  border-color: var(--accent-cyan, #38bdf8);
+  box-shadow: 0 0 20px var(--glow-shadow, rgba(56, 189, 248, 0.25));
   transform: translateY(-2px);
 }

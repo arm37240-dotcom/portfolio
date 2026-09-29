@@ -21,11 +21,13 @@ import { PortfolioData } from '@/types/portfolio';
 interface BottomWidgetsProps {
   portfolioData: PortfolioData;
   onNavigate: (sectionId: string) => void;
+  onOpenThemeMatrix?: () => void;
 }
 
 export const BottomWidgets: React.FC<BottomWidgetsProps> = ({
   portfolioData,
-  onNavigate
+  onNavigate,
+  onOpenThemeMatrix
 }) => {
   // Terminal state for interactive typing
   const [terminalInput, setTerminalInput] = useState('');
@@ -78,6 +80,7 @@ export const BottomWidgets: React.FC<BottomWidgetsProps> = ({
             <p className="text-slate-400">Available commands:</p>
             <p><span className="text-white font-bold">whoami</span> - Show user identity</p>
             <p><span className="text-white font-bold">neofetch</span> - Display system specifications</p>
+            <p><span className="text-white font-bold">theme</span> - Open 100 Color Themes Matrix</p>
             <p><span className="text-white font-bold">bio</span> - Read operator bio</p>
             <p><span className="text-white font-bold">skills</span> - List engineering skills</p>
             <p><span className="text-white font-bold">courses</span> - Navigate to coursework & projects</p>
@@ -85,6 +88,13 @@ export const BottomWidgets: React.FC<BottomWidgetsProps> = ({
             <p><span className="text-white font-bold">clear</span> - Clear terminal screen</p>
           </div>
         );
+        break;
+      case 'theme':
+      case 'themes':
+      case 'palette':
+      case 'colors':
+        if (onOpenThemeMatrix) onOpenThemeMatrix();
+        response = 'Opening Hikari Color Matrix (100 Palettes Explorer)... Select any theme to apply instantly!';
         break;
       case 'whoami':
         response = 'aphinat (อภิณัฐชรัชน์ มณีรัตน์) — นักศึกษาครุศาสตร์อุตสาหกรรมไฟฟ้า มทร.อีสาน ขอนแก่น';

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Home, User, GraduationCap, Cpu, Award, FileText, Moon, Sun, Lock, ShieldCheck } from 'lucide-react';
+import { Home, User, GraduationCap, Cpu, Award, FileText, Moon, Sun, Lock, ShieldCheck, Palette } from 'lucide-react';
 
 interface NavbarMobileProps {
   activeSection: string;
@@ -11,6 +11,7 @@ interface NavbarMobileProps {
   isAdmin: boolean;
   onOpenLogin: () => void;
   onOpenAdminDrawer: () => void;
+  onOpenThemeMatrix?: () => void;
 }
 
 export const NavbarMobile: React.FC<NavbarMobileProps> = ({
@@ -20,7 +21,8 @@ export const NavbarMobile: React.FC<NavbarMobileProps> = ({
   onToggleTheme,
   isAdmin,
   onOpenLogin,
-  onOpenAdminDrawer
+  onOpenAdminDrawer,
+  onOpenThemeMatrix
 }) => {
   const navItems = [
     { id: 'hero', label: 'HOME', icon: Home },
@@ -51,6 +53,15 @@ export const NavbarMobile: React.FC<NavbarMobileProps> = ({
         </div>
 
         <div className="flex items-center gap-1.5 font-mono">
+          {onOpenThemeMatrix && (
+            <button
+              onClick={onOpenThemeMatrix}
+              title="100 Color Themes"
+              className="p-1.5 rounded bg-[#101432] border border-pink-500/40 text-pink-400 hover:text-white transition"
+            >
+              <Palette size={14} />
+            </button>
+          )}
           <button
             onClick={onToggleTheme}
             className="p-1.5 rounded bg-[#101432] border border-[#2e3b78] text-sky-400 hover:text-white transition"

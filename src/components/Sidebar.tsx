@@ -15,7 +15,8 @@ import {
   Sliders,
   ExternalLink,
   ChevronRight,
-  Sparkles
+  Sparkles,
+  Palette
 } from 'lucide-react';
 import { OscilloscopeWave } from './OscilloscopeWave';
 import { PixelCitySkyline } from './PixelDecorations';
@@ -30,6 +31,7 @@ interface SidebarProps {
   isAdmin: boolean;
   onOpenLogin: () => void;
   onOpenAdminDrawer: () => void;
+  onOpenThemeMatrix: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -40,7 +42,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onToggleTheme,
   isAdmin,
   onOpenLogin,
-  onOpenAdminDrawer
+  onOpenAdminDrawer,
+  onOpenThemeMatrix
 }) => {
   // Live uptime counter (starts at 128D 07:42:18 and ticks)
   const [seconds, setSeconds] = useState(18);
@@ -91,19 +94,44 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
           </div>
 
-          {/* Theme Switcher */}
-          <button
-            onClick={onToggleTheme}
-            title={isDarkMode ? 'สลับเป็นโหมดสว่าง' : 'สลับเป็นโหมดมืด'}
-            className="p-1.5 rounded bg-[#101432] border border-[#2e3b78] text-sky-400 hover:text-white hover:border-sky-400 transition"
-          >
-            {isDarkMode ? <Sun size={15} /> : <Moon size={15} />}
-          </button>
+          {/* Theme & Palette Switchers */}
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={onOpenThemeMatrix}
+              title="เปลี่ยนโทนสี (100 Color Themes)"
+              className="p-1.5 rounded bg-[#101432] border border-pink-500/40 text-pink-400 hover:text-white hover:border-pink-400 hover:bg-pink-950 transition cursor-pointer flex items-center justify-center shadow-sm"
+            >
+              <Palette size={15} />
+            </button>
+            <button
+              onClick={onToggleTheme}
+              title={isDarkMode ? 'สลับเป็นโหมดสว่าง' : 'สลับเป็นโหมดมืด'}
+              className="p-1.5 rounded bg-[#101432] border border-[#2e3b78] text-sky-400 hover:text-white hover:border-sky-400 transition cursor-pointer"
+            >
+              {isDarkMode ? <Sun size={15} /> : <Moon size={15} />}
+            </button>
+          </div>
         </div>
 
         <p className="text-[10px] font-mono text-slate-400 mt-2.5 pt-2 border-t border-[#1d244d] uppercase tracking-wider">
           APHINAT OS 2.0 // EE EDITION
         </p>
+
+        {/* Quick Theme Matrix Button */}
+        <div className="pt-2.5">
+          <button
+            onClick={onOpenThemeMatrix}
+            className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-[#0e122b] hover:bg-[#161c42] border border-pink-500/40 hover:border-pink-400 text-pink-300 hover:text-white transition text-[11px] font-mono font-bold cursor-pointer shadow-sm group"
+          >
+            <span className="flex items-center gap-1.5">
+              <Palette size={13} className="text-pink-400 group-hover:rotate-45 transition-transform" />
+              <span>COLOR MATRIX</span>
+            </span>
+            <span className="bg-pink-950 text-pink-300 border border-pink-500/50 px-1.5 py-0.5 rounded text-[9px] font-mono">
+              100 THEMES ▸
+            </span>
+          </button>
+        </div>
       </div>
 
       {/* 2. NAVIGATION LIST (Matches Reference Image) */}

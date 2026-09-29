@@ -35,6 +35,7 @@ interface AdminDrawerProps {
   onSaveData: (newData: PortfolioData) => void;
   onLogout: () => void;
   onOpenThemeMatrix?: () => void;
+  onOpenVfxLab?: () => void;
 }
 
 export const AdminDrawer: React.FC<AdminDrawerProps> = ({
@@ -43,7 +44,8 @@ export const AdminDrawer: React.FC<AdminDrawerProps> = ({
   data,
   onSaveData,
   onLogout,
-  onOpenThemeMatrix
+  onOpenThemeMatrix,
+  onOpenVfxLab
 }) => {
   const [activeTab, setActiveTab] = useState<'files' | 'content' | 'fx' | 'db'>('files');
   const [isUploading, setIsUploading] = useState(false);
@@ -555,6 +557,31 @@ export const AdminDrawer: React.FC<AdminDrawerProps> = ({
                     >
                       <Palette size={14} />
                       <span>เปิดแผงเลือก 10,000 ธีมสี (Open Quantum Matrix)</span>
+                    </button>
+                  )}
+                </div>
+
+                {/* 100 Retro VFX Suite Card */}
+                <div className="p-4 rounded-xl electric-glass border-2 border-sky-400/50 bg-[#0d122e] space-y-2 text-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-white flex items-center gap-1.5 font-mono">
+                      <Sparkles size={14} className="text-sky-400" />
+                      <span>100 RETRO VFX LABORATORY</span>
+                    </span>
+                    <span className="text-[10px] bg-sky-950 text-sky-200 border border-sky-400/50 px-2 py-0.5 rounded font-mono font-bold">
+                      100 EFFECTS
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-300">
+                    เปิด/ปิดและปรับแต่งเอฟเฟกต์ภาพและเสียง 100 แบบ (CRT, ประกายไฟ, เลเซอร์, เมทริกซ์, วาร์ปดวงดาว, เสียง 8-บิต)
+                  </p>
+                  {onOpenVfxLab && (
+                    <button
+                      onClick={onOpenVfxLab}
+                      className="w-full mt-2 py-2 px-3 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-mono font-bold text-xs transition flex items-center justify-center gap-2 cursor-pointer shadow-md"
+                    >
+                      <Sliders size={14} />
+                      <span>เปิดห้องทดลอง 100 เอฟเฟกต์ (Open 100 FX Lab)</span>
                     </button>
                   )}
                 </div>

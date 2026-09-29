@@ -32,6 +32,7 @@ interface SidebarProps {
   onOpenLogin: () => void;
   onOpenAdminDrawer: () => void;
   onOpenThemeMatrix: () => void;
+  onOpenVfxLab?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -43,7 +44,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   isAdmin,
   onOpenLogin,
   onOpenAdminDrawer,
-  onOpenThemeMatrix
+  onOpenThemeMatrix,
+  onOpenVfxLab
 }) => {
   // Live uptime counter (starts at 128D 07:42:18 and ticks)
   const [seconds, setSeconds] = useState(18);
@@ -134,6 +136,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 10,000 THEMES ▸
               </span>
             </button>
+
+            {onOpenVfxLab && (
+              <button
+                onClick={onOpenVfxLab}
+                className="w-full mt-1.5 flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-[var(--bg-card)] hover:bg-[var(--bg-secondary)] border border-sky-500/40 hover:border-sky-400 text-sky-500 dark:text-sky-300 hover:text-[var(--text-title)] transition text-[11px] font-mono font-bold cursor-pointer shadow-sm group"
+              >
+                <span className="flex items-center gap-1.5">
+                  <Sparkles size={13} className="text-sky-400 group-hover:rotate-45 transition-transform" />
+                  <span>100 VFX SUITE</span>
+                </span>
+                <span className="bg-sky-500/10 text-sky-500 dark:text-sky-300 border border-sky-500/40 px-1.5 py-0.5 rounded text-[9px] font-mono">
+                  100 FX ▸
+                </span>
+              </button>
+            )}
           </div>
         )}
       </div>

@@ -235,3 +235,255 @@ body {
 .animate-neon-pulse {
   animation: neonPulse 2.5s ease-in-out infinite;
 }
+
+/* =========================================
+   HIKARI 100 RETRO VFX SUITE CSS EXTENSIONS
+   ========================================= */
+
+/* 1. CRT Micro Flicker (fx-004) */
+@keyframes crtFlicker {
+  0% { opacity: 0.985; }
+  50% { opacity: 1; }
+  52% { opacity: 0.96; }
+  54% { opacity: 1; }
+  80% { opacity: 0.99; }
+  100% { opacity: 1; }
+}
+.vfx-crt-flicker {
+  animation: crtFlicker 0.15s infinite;
+}
+
+/* 2. Text Horizontal Glitch Slice Displacement (fx-081) */
+@keyframes textGlitch {
+  0%, 92%, 100% { transform: translate(0, 0); text-shadow: none; }
+  93% { transform: translate(-2px, 1px); text-shadow: 2px 0 #ec4899, -2px 0 #06b6d4; }
+  95% { transform: translate(2px, -1px); text-shadow: -2px 0 #ec4899, 2px 0 #06b6d4; }
+  97% { transform: translate(-1px, 2px); text-shadow: 1px 0 #3b82f6; }
+}
+.vfx-glitch-text {
+  animation: textGlitch 3.5s infinite;
+}
+
+/* 3. Faulty Neon Sign Tube Flicker (fx-082) */
+@keyframes neonTubeFlicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+    opacity: 1;
+    filter: drop-shadow(0 0 8px currentColor);
+  }
+  20%, 24%, 55% {
+    opacity: 0.25;
+    filter: none;
+  }
+}
+.vfx-neon-flicker {
+  animation: neonTubeFlicker 4s infinite;
+}
+
+/* 4. Flowing Liquid Gradient Text (fx-083) */
+@keyframes liquidGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.vfx-liquid-gradient {
+  background: linear-gradient(90deg, var(--accent-cyan, #38bdf8), var(--accent-pink, #ec4899), #a855f7, var(--accent-cyan, #38bdf8));
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: liquidGradient 6s ease infinite;
+}
+
+/* 5. Isometric 3D Extruded Pixel Drop Shadow (fx-085) */
+.vfx-isometric-shadow {
+  text-shadow: 
+    1px 1px 0px rgba(0, 0, 0, 0.8),
+    2px 2px 0px var(--accent-blue, #1d4ed8),
+    3px 3px 0px var(--border-neon, #1e295d),
+    4px 4px 0px rgba(0, 0, 0, 0.9);
+}
+
+/* 6. Continuous Stock Ticker News Tape Marquee (fx-086) */
+@keyframes tickerScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.vfx-marquee-container {
+  overflow: hidden;
+  white-space: nowrap;
+}
+.vfx-marquee-content {
+  display: inline-flex;
+  animation: tickerScroll 25s linear infinite;
+}
+
+/* 7. High-Energy Laser Beam Headline Sweep (fx-088) */
+@keyframes laserSweep {
+  0% { left: -30%; opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { left: 130%; opacity: 0; }
+}
+.vfx-laser-sweep {
+  position: relative;
+  overflow: hidden;
+}
+.vfx-laser-sweep::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 40px;
+  background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.8), #ffffff, rgba(236, 72, 153, 0.8), transparent);
+  filter: blur(2px);
+  animation: laserSweep 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  pointer-events: none;
+}
+
+/* 8. Hollow Wireframe Typography (fx-089) */
+.vfx-wireframe-text {
+  color: transparent !important;
+  -webkit-text-stroke: 1.5px var(--accent-cyan, #38bdf8);
+  letter-spacing: 0.08em;
+}
+
+/* 9. High-Speed Light Border Beam Racer (fx-097) */
+@keyframes borderBeamRotate {
+  0% { offset-distance: 0%; }
+  100% { offset-distance: 100%; }
+}
+.vfx-border-beam {
+  position: relative;
+}
+.vfx-border-beam::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(90deg, transparent 40%, var(--accent-cyan, #38bdf8), var(--accent-pink, #ec4899), transparent 70%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: borderBeamRotate 4s linear infinite;
+  pointer-events: none;
+}
+
+/* 10. Screen Shake on Impact (fx-100) */
+@keyframes screenShakeAnim {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  20% { transform: translate(-3px, 2px) rotate(-0.2deg); }
+  40% { transform: translate(3px, -2px) rotate(0.2deg); }
+  60% { transform: translate(-2px, -1px) rotate(0deg); }
+  80% { transform: translate(2px, 1px) rotate(0.1deg); }
+}
+.vfx-screen-shake {
+  animation: screenShakeAnim 0.25s ease-out;
+}
+
+/* 11. Overload Warning Hazard Stripes (fx-018) */
+@keyframes hazardStripeMove {
+  0% { background-position: 0 0; }
+  100% { background-position: 40px 0; }
+}
+.vfx-hazard-stripes {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    rgba(234, 179, 8, 0.15),
+    rgba(234, 179, 8, 0.15) 12px,
+    rgba(0, 0, 0, 0.4) 12px,
+    rgba(0, 0, 0, 0.4) 24px
+  );
+  animation: hazardStripeMove 2s linear infinite;
+}
+
+/* 12. Prism Refraction Rainbow Edge (fx-062) */
+.vfx-prism-edge {
+  box-shadow: 
+    -2px 0 8px -1px rgba(236, 72, 153, 0.45),
+    2px 0 8px -1px rgba(56, 189, 248, 0.45),
+    0 -2px 8px -1px rgba(168, 85, 247, 0.35);
+}
+
+/* 13. Anamorphic Cine Blue Flare (fx-066) */
+.vfx-anamorphic-flare {
+  position: relative;
+}
+.vfx-anamorphic-flare::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 140%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.7) 40%, #ffffff 50%, rgba(56, 189, 248, 0.7) 60%, transparent);
+  transform: translate(-50%, -50%);
+  filter: blur(1px) drop-shadow(0 0 6px rgba(56, 189, 248, 0.8));
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+/* 14. Organic Sinusoidal Neon Breathing (fx-068) */
+@keyframes neonBreathe {
+  0%, 100% { filter: drop-shadow(0 0 4px var(--accent-cyan, #38bdf8)); }
+  50% { filter: drop-shadow(0 0 16px var(--accent-cyan, #38bdf8)) drop-shadow(0 0 28px var(--accent-pink, #ec4899)); }
+}
+.vfx-neon-breathe {
+  animation: neonBreathe 3.5s ease-in-out infinite;
+}
+
+/* 15. Red Boss Alert Flashing Siren (fx-044) */
+@keyframes bossAlertFlash {
+  0%, 100% { background-color: rgba(225, 29, 72, 0.15); border-color: rgba(225, 29, 72, 0.8); }
+  50% { background-color: rgba(225, 29, 72, 0.4); border-color: #ff0055; box-shadow: 0 0 25px rgba(255, 0, 85, 0.5); }
+}
+.vfx-boss-alert {
+  animation: bossAlertFlash 0.8s ease-in-out infinite;
+}
+
+/* Dynamic Body FX Classes Triggered by 100 VFX Laboratory */
+body.vfx-active-glitch h1 .pixel-font {
+  animation: textGlitch 3.5s infinite;
+}
+
+body.vfx-active-liquid h1 .pixel-font {
+  background: linear-gradient(90deg, var(--accent-cyan, #38bdf8), var(--accent-pink, #ec4899), #a855f7, var(--accent-cyan, #38bdf8));
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: liquidGradient 6s ease infinite;
+}
+
+body.vfx-active-isometric h1 .pixel-font {
+  text-shadow: 
+    1px 1px 0px rgba(0, 0, 0, 0.8),
+    2px 2px 0px var(--accent-blue, #1d4ed8),
+    3px 3px 0px var(--border-neon, #1e295d),
+    4px 4px 0px rgba(0, 0, 0, 0.9);
+}
+
+body.vfx-active-border-beam .holo-card {
+  position: relative;
+}
+body.vfx-active-border-beam .holo-card::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: linear-gradient(90deg, transparent 40%, var(--accent-cyan, #38bdf8), var(--accent-pink, #ec4899), transparent 70%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: borderBeamRotate 4s linear infinite;
+  pointer-events: none;
+}
+
+body.vfx-active-neon-breathe .pixel-panel {
+  animation: neonBreathe 3.5s ease-in-out infinite;
+}
+
+body.vfx-active-chromatic {
+  filter: drop-shadow(1px 0px 0px rgba(255, 0, 85, 0.3)) drop-shadow(-1px 0px 0px rgba(0, 210, 255, 0.3));
+}
+
+

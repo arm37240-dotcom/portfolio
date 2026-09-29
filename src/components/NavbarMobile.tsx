@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Home, User, GraduationCap, Cpu, Award, FileText, Moon, Sun, Lock, ShieldCheck, Palette } from 'lucide-react';
+import { Home, User, GraduationCap, Cpu, Award, FileText, Moon, Sun, Lock, ShieldCheck, Palette, Sparkles } from 'lucide-react';
 
 interface NavbarMobileProps {
   activeSection: string;
@@ -12,6 +12,7 @@ interface NavbarMobileProps {
   onOpenLogin: () => void;
   onOpenAdminDrawer: () => void;
   onOpenThemeMatrix?: () => void;
+  onOpenVfxLab?: () => void;
 }
 
 export const NavbarMobile: React.FC<NavbarMobileProps> = ({
@@ -22,7 +23,8 @@ export const NavbarMobile: React.FC<NavbarMobileProps> = ({
   isAdmin,
   onOpenLogin,
   onOpenAdminDrawer,
-  onOpenThemeMatrix
+  onOpenThemeMatrix,
+  onOpenVfxLab
 }) => {
   const navItems = [
     { id: 'hero', label: 'HOME', icon: Home },
@@ -60,6 +62,15 @@ export const NavbarMobile: React.FC<NavbarMobileProps> = ({
               className="p-1.5 rounded bg-[var(--bg-card)] border border-pink-500/40 text-pink-500 dark:text-pink-400 hover:text-[var(--text-title)] transition shadow-sm cursor-pointer"
             >
               <Palette size={14} />
+            </button>
+          )}
+          {isAdmin && onOpenVfxLab && (
+            <button
+              onClick={onOpenVfxLab}
+              title="100 Retro VFX Suite"
+              className="p-1.5 rounded bg-[var(--bg-card)] border border-sky-500/40 text-sky-500 dark:text-sky-400 hover:text-[var(--text-title)] transition shadow-sm cursor-pointer"
+            >
+              <Sparkles size={14} />
             </button>
           )}
           {isAdmin && (

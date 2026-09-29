@@ -18,10 +18,10 @@ import { AdminDrawer } from '@/components/AdminDrawer';
 import { ThemeMatrixModal } from '@/components/ThemeMatrixModal';
 import { themePresets, applyThemePreset, getThemePresetById } from '@/data/themePresets';
 import { getTheme10kById } from '@/lib/themeEngine10k';
-import { CrtOverlay } from '@/components/CrtOverlay';
-import { ElectricSparkCursor } from '@/components/ElectricSparkCursor';
-import { MatrixDigitalRain } from '@/components/MatrixDigitalRain';
+import { VfxLaboratoryOverlay } from '@/components/VfxLaboratoryOverlay';
+import { VfxLaboratoryModal } from '@/components/VfxLaboratoryModal';
 import { VfxControlDock } from '@/components/VfxControlDock';
+import { ALL_100_VFX, VfxPresetCombo } from '@/lib/vfxEngine100';
 import { retroAudio } from '@/lib/retroAudio';
 import { ShieldCheck, Sliders, LogOut, Sparkles, Palette } from 'lucide-react';
 
@@ -33,16 +33,15 @@ export default function PortfolioPage() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
   const [isAdminDrawerOpen, setIsAdminDrawerOpen] = useState<boolean>(false);
   const [isThemeModalOpen, setIsThemeModalOpen] = useState<boolean>(false);
+  const [isVfxLabOpen, setIsVfxLabOpen] = useState<boolean>(false);
   const [currentPresetId, setCurrentPresetId] = useState<string>('hikari-classic');
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
 
-  // VFX Suite Settings
-  const [vfxConfig, setVfxConfig] = useState({
-    crtScanlines: true,
-    electricSparks: true,
-    matrixRain: true,
-    soundFx: false
-  });
+  // 100 VFX Suite Active State
+  const [activeVfxIds, setActiveVfxIds] = useState<Set<string>>(() => new Set(
+    ALL_100_VFX.filter(f => f.defaultEnabled).map(f => f.id)
+  ));
+  const [isAudioEnabled, setIsAudioEnabled] = useState<boolean>(false);
 
   // 1. โหลดข้อมูลจาก Dual-Engine Storage Service & Theme Preset
   useEffect(() => {
@@ -59,18 +58,13 @@ export default function PortfolioPage() {
         const presetObj = getTheme10kById(savedPreset);
         applyThemePreset(presetObj, savedMode);
 
-        // Restore VFX suite settings
+        // Restore 100 VFX suite settings
         try {
-          const savedCrt = localStorage.getItem('hikari_crtScanlines_enabled');
-          const savedSparks = localStorage.getItem('hikari_electricSparks_enabled');
-          const savedRain = localStorage.getItem('hikari_matrixRain_enabled');
-          setVfxConfig(prev => ({
-            ...prev,
-            crtScanlines: savedCrt !== null ? savedCrt === 'true' : prev.crtScanlines,
-            electricSparks: savedSparks !== null ? savedSparks === 'true' : prev.electricSparks,
-            matrixRain: savedRain !== null ? savedRain === 'true' : prev.matrixRain,
-            soundFx: retroAudio.getIsAudioEnabled()
-          }));
+          const savedVfx = localStorage.getItem('hikari_active_100_vfx');
+          if (savedVfx) {
+            setActiveVfxIds(new Set(JSON.parse(savedVfx)));
+          }
+          setIsAudioEnabled(retroAudio.getIsAudioEnabled());
         } catch {}
       } catch (err) {
         console.warn('Load portfolio data error:', err);
@@ -148,6 +142,48 @@ export default function PortfolioPage() {
     };
     setData(updated);
     StorageService.savePortfolioData(updated);
+  };
+
+  // 100 VFX Suite Control Handlers
+  const handleToggleVfx = (id: string) => {
+    setActiveVfxIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      try {
+        localStorage.setItem('hikari_active_100_vfx', JSON.stringify(Array.from(next)));
+      } catch {}
+      return next;
+    });
+  };
+
+  const handleApplyVfxPreset = (combo: VfxPresetCombo) => {
+    const next = new Set(combo.effectIds);
+    setActiveVfxIds(next);
+    try {
+      localStorage.setItem('hikari_active_100_vfx', JSON.stringify(Array.from(next)));
+    } catch {}
+  };
+
+  const handleEnableAllVfx = () => {
+    const all = new Set(ALL_100_VFX.map(f => f.id));
+    setActiveVfxIds(all);
+    try {
+      localStorage.setItem('hikari_active_100_vfx', JSON.stringify(Array.from(all)));
+    } catch {}
+  };
+
+  const handleDisableAllVfx = () => {
+    const empty = new Set<string>();
+    setActiveVfxIds(empty);
+    try {
+      localStorage.setItem('hikari_active_100_vfx', JSON.stringify([]));
+    } catch {}
+  };
+
+  const handleToggleSound = () => {
+    const active = retroAudio.toggleMute();
+    setIsAudioEnabled(active);
   };
 
 
@@ -351,13 +387,20 @@ export default function PortfolioPage() {
 
   return (
     <div className={`min-h-screen bg-[var(--bg-primary)] text-[var(--text-main)] pixel-grid flex flex-col selection:bg-pink-500 selection:text-white relative`}>
-      {/* Visual FX Layers */}
-      <CrtOverlay enabled={vfxConfig.crtScanlines} />
-      <ElectricSparkCursor enabled={vfxConfig.electricSparks} />
-      <MatrixDigitalRain enabled={vfxConfig.matrixRain} />
+      {/* 100 Retro VFX Suite Multi-Layer Canvas & DOM Overlay */}
+      <VfxLaboratoryOverlay activeIds={activeVfxIds} />
 
-      {/* Floating Interactive VFX Control Dock */}
-      <VfxControlDock config={vfxConfig} onChangeConfig={setVfxConfig} />
+      {/* Floating Interactive 100 VFX Control Dock */}
+      <VfxControlDock
+        activeCount={activeVfxIds.size}
+        onOpenVfxLab={() => setIsVfxLabOpen(true)}
+        isCrtActive={activeVfxIds.has('fx-001')}
+        isSparksActive={activeVfxIds.has('fx-011')}
+        isMatrixActive={activeVfxIds.has('fx-021')}
+        isSoundActive={isAudioEnabled}
+        onToggleEffect={handleToggleVfx}
+        onToggleSound={handleToggleSound}
+      />
 
       {/* 1. Desktop Left Sidebar Navigation */}
       <Sidebar
@@ -370,6 +413,7 @@ export default function PortfolioPage() {
         onOpenLogin={() => setIsAuthModalOpen(true)}
         onOpenAdminDrawer={() => setIsAdminDrawerOpen(true)}
         onOpenThemeMatrix={() => setIsThemeModalOpen(true)}
+        onOpenVfxLab={() => setIsVfxLabOpen(true)}
       />
 
       {/* 2. Mobile Responsive Top Header & Bottom Navigation */}
@@ -382,6 +426,7 @@ export default function PortfolioPage() {
         onOpenLogin={() => setIsAuthModalOpen(true)}
         onOpenAdminDrawer={() => setIsAdminDrawerOpen(true)}
         onOpenThemeMatrix={() => setIsThemeModalOpen(true)}
+        onOpenVfxLab={() => setIsVfxLabOpen(true)}
       />
 
       {/* 3. Floating Admin Status Bar (เมื่อโหมด Admin ทำงาน) */}
@@ -435,6 +480,7 @@ export default function PortfolioPage() {
           portfolioData={data}
           onNavigate={handleNavigate}
           onOpenThemeMatrix={() => setIsThemeModalOpen(true)}
+          onOpenVfxLab={() => setIsVfxLabOpen(true)}
           isAdmin={isAdmin}
         />
 
@@ -506,6 +552,7 @@ export default function PortfolioPage() {
         onSaveData={handleSaveData}
         onLogout={handleLogout}
         onOpenThemeMatrix={() => setIsThemeModalOpen(true)}
+        onOpenVfxLab={() => setIsVfxLabOpen(true)}
       />
 
       {/* 7. Floating Quick Theme Matrix Button (10,000 Themes) - Admin Only */}
@@ -536,6 +583,17 @@ export default function PortfolioPage() {
           applyThemePreset(presetObj, mode);
           retroAudio.playChime(mode === 'light');
         }}
+      />
+
+      {/* 9. Hikari 100 Retro VFX Laboratory Modal */}
+      <VfxLaboratoryModal
+        isOpen={isVfxLabOpen}
+        onClose={() => setIsVfxLabOpen(false)}
+        activeIds={activeVfxIds}
+        onToggleVfx={handleToggleVfx}
+        onApplyPreset={handleApplyVfxPreset}
+        onEnableAll={handleEnableAllVfx}
+        onDisableAll={handleDisableAllVfx}
       />
 
     </div>

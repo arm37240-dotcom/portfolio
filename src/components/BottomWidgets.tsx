@@ -22,6 +22,7 @@ interface BottomWidgetsProps {
   portfolioData: PortfolioData;
   onNavigate: (sectionId: string) => void;
   onOpenThemeMatrix?: () => void;
+  onOpenVfxLab?: () => void;
   isAdmin?: boolean;
 }
 
@@ -29,6 +30,7 @@ export const BottomWidgets: React.FC<BottomWidgetsProps> = ({
   portfolioData,
   onNavigate,
   onOpenThemeMatrix,
+  onOpenVfxLab,
   isAdmin = false
 }) => {
   // Terminal state for interactive typing
@@ -83,6 +85,7 @@ export const BottomWidgets: React.FC<BottomWidgetsProps> = ({
             <p><span className="text-white font-bold">whoami</span> - Show user identity</p>
             <p><span className="text-white font-bold">neofetch</span> - Display system specifications</p>
             {isAdmin && <p><span className="text-white font-bold">theme</span> - Open 10,000 Color Themes Matrix</p>}
+            <p><span className="text-white font-bold">vfx</span> - Open 100 Retro VFX Laboratory</p>
             <p><span className="text-white font-bold">bio</span> - Read operator bio</p>
             <p><span className="text-white font-bold">skills</span> - List engineering skills</p>
             <p><span className="text-white font-bold">courses</span> - Navigate to coursework & projects</p>
@@ -100,6 +103,17 @@ export const BottomWidgets: React.FC<BottomWidgetsProps> = ({
           response = 'Opening Hikari Quantum Color Matrix (10,000 Palettes Explorer)... Select any theme to apply instantly!';
         } else {
           response = '🔒 การปรับแต่งโทนสีสงวนสิทธิ์สำหรับโหมดผู้ดูแลเท่านั้น (Admin Mode Only) — กด Ctrl + Alt + P เพื่อเข้าสู่ระบบ';
+        }
+        break;
+      case 'vfx':
+      case 'fx':
+      case 'lab':
+      case 'effects':
+        if (onOpenVfxLab) {
+          onOpenVfxLab();
+          response = 'Opening Hikari 100 Retro VFX Laboratory... Explore all 100 visual and audio effects!';
+        } else {
+          response = '100 Retro VFX Suite is active and running.';
         }
         break;
       case 'whoami':

@@ -15,8 +15,8 @@ export const initialPortfolioData: PortfolioData = {
     nationality: 'ไทย',
     ethnicity: 'ไทย',
     avatarUrl: '/images/rmuti_logo.jpg',
-    heroHeadline: 'Turn Power Into Knowledge & Engineering',
-    heroSubheadline: 'ก้าวสู่อนาคตวิศวกรรมไฟฟ้าและนวัตกรรมวิชาชีพครูช่าง ผสานเทคโนโลยี วงจรพลังงาน และการถ่ายทอดองค์ความรู้สู่สังคมอย่างทรงคุณค่า',
+    heroHeadline: 'BUILD CALM. SHIP CONFIDENTLY.',
+    heroSubheadline: 'Hikari System OS is a modern developer & electrical engineering platform that keeps you in flow from laboratory circuits to deployment. ครุศาสตร์อุตสาหกรรมไฟฟ้า มทร.อีสาน ขอนแก่น',
     bio: 'มุ่งมั่นพัฒนาตนเองสู่ความเป็นเลิศทั้งในด้านทักษะเชิงช่างวิศวกรรมไฟฟ้า การออกแบบระบบควบคุมอัตโนมัติ และศาสตร์การสอนวิชาชีพ (Pedagogy) พร้อมประยุกต์ใช้นวัตกรรมสมัยใหม่ในการยกระดับคุณภาพการเรียนรู้และขับเคลื่อนการพัฒนาอุตสาหกรรมอย่างยั่งยืน',
     specialSkills: [
       'การออกแบบและติดตั้งระบบไฟฟ้ากำลัง (Electrical Power System Design)',

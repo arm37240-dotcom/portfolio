@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Phone, Mail, MapPin, ArrowUp } from 'lucide-react';
+import { Phone, Mail, MapPin, ArrowUp, Sparkles, Terminal } from 'lucide-react';
 import { PortfolioData, SectionTextConfig } from '@/types/portfolio';
 import { EditableText } from './EditableText';
 
@@ -25,28 +25,25 @@ export const Footer: React.FC<FooterProps> = ({
   };
 
   return (
-    <footer id="footer" className="mt-20 border-t border-sky-500/20 bg-[#02050c]/90 text-slate-300 relative overflow-hidden">
-      {/* Top Ambient Glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-sky-400 to-transparent shadow-[0_0_15px_#38bdf8]"></div>
-
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12 lg:py-16 space-y-10">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+    <footer id="footer" className="mt-16 border-t-2 border-[#2b356e] bg-[#050612] text-slate-300 relative select-none">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 space-y-8 font-mono">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
           {/* Column 1: Official University & Creator Credentials */}
           <div className="md:col-span-7 space-y-4">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-xl bg-sky-950/80 border border-sky-400/40 flex items-center justify-center text-sky-400 font-bold text-lg shadow-[0_0_12px_rgba(56,189,248,0.3)]">
-                ⚡
+              <div className="h-9 w-9 rounded-lg bg-[#18112c] border-2 border-pink-500/60 flex items-center justify-center text-pink-400 font-bold text-base shadow-[0_0_10px_rgba(236,72,153,0.3)]">
+                ✦
               </div>
               <div>
-                <h3 className="text-lg font-bold text-white tracking-tight">
+                <h3 className="text-base font-bold text-white tracking-wider uppercase">
                   <EditableText
                     value={profile.name}
                     onSave={(v) => onUpdateProfile('name', v)}
                     isAdmin={isAdmin}
                   />
                 </h3>
-                <p className="text-xs font-mono text-sky-400">
-                  รหัสนักศึกษา: <EditableText
+                <p className="text-[11px] text-sky-400">
+                  STUDENT ID: <EditableText
                     value={profile.studentId}
                     onSave={(v) => onUpdateProfile('studentId', v)}
                     isAdmin={isAdmin}
@@ -55,8 +52,8 @@ export const Footer: React.FC<FooterProps> = ({
               </div>
             </div>
 
-            <div className="p-4 rounded-xl electric-glass border border-sky-500/20 text-xs sm:text-sm space-y-2 leading-relaxed">
-              <p className="font-semibold text-slate-200">
+            <div className="p-4 rounded-xl bg-[#090b20] border-2 border-[#2b356e] text-xs space-y-2 leading-relaxed">
+              <p className="font-bold text-white">
                 <EditableText
                   value={profile.university}
                   onSave={(v) => onUpdateProfile('university', v)}
@@ -76,7 +73,7 @@ export const Footer: React.FC<FooterProps> = ({
                   isAdmin={isAdmin}
                 />
               </p>
-              <p className="text-[11px] text-slate-400 pt-1 border-t border-sky-500/10">
+              <p className="text-[11px] text-slate-400 pt-2 border-t border-[#1e254e] font-chakra">
                 <EditableText
                   value={siteTexts.footerNote}
                   onSave={(v) => onUpdateSiteText('footerNote', v)}
@@ -89,7 +86,7 @@ export const Footer: React.FC<FooterProps> = ({
 
           {/* Column 2: Direct Contact Channels */}
           <div className="md:col-span-5 space-y-4">
-            <h4 className="text-xs font-mono font-semibold uppercase tracking-wider text-sky-400">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-sky-400">
               <EditableText
                 value={siteTexts.footerContactHeading}
                 onSave={(v) => onUpdateSiteText('footerContactHeading', v)}
@@ -97,47 +94,47 @@ export const Footer: React.FC<FooterProps> = ({
               />
             </h4>
 
-            <div className="space-y-2.5 text-xs sm:text-sm">
-              <div className="flex items-center justify-between p-3 rounded-xl bg-slate-900/60 border border-sky-500/20 hover:border-sky-400/50 hover:bg-slate-900 transition text-slate-200">
-                <span className="flex items-center gap-2.5">
-                  <Phone size={15} className="text-sky-400" />
-                  <span>เบอร์โทรศัพท์:</span>
+            <div className="space-y-2 text-xs">
+              <div className="flex items-center justify-between p-2.5 rounded-lg bg-[#090b20] border-2 border-[#2b356e] hover:border-sky-400 transition text-slate-200">
+                <span className="flex items-center gap-2 text-slate-400">
+                  <Phone size={13} className="text-sky-400" />
+                  <span>TEL:</span>
                 </span>
                 <EditableText
                   value={profile.phone}
                   onSave={(v) => onUpdateProfile('phone', v)}
                   isAdmin={isAdmin}
-                  className="font-mono font-semibold text-white"
+                  className="font-bold text-white"
                 />
               </div>
 
-              <div className="flex items-center justify-between p-3 rounded-xl bg-slate-900/60 border border-sky-500/20 hover:border-sky-400/50 hover:bg-slate-900 transition text-slate-200">
-                <span className="flex items-center gap-2.5">
-                  <Mail size={15} className="text-sky-400" />
-                  <span>อีเมล:</span>
+              <div className="flex items-center justify-between p-2.5 rounded-lg bg-[#090b20] border-2 border-[#2b356e] hover:border-sky-400 transition text-slate-200">
+                <span className="flex items-center gap-2 text-slate-400">
+                  <Mail size={13} className="text-sky-400" />
+                  <span>EMAIL:</span>
                 </span>
                 <EditableText
                   value={profile.email}
                   onSave={(v) => onUpdateProfile('email', v)}
                   isAdmin={isAdmin}
-                  className="font-mono font-semibold text-white"
+                  className="font-bold text-white truncate max-w-[170px]"
                 />
               </div>
 
-              <div className="p-3 rounded-xl bg-slate-900/40 border border-sky-500/10 flex items-center justify-between text-xs text-slate-400">
-                <span className="flex items-center gap-2">
-                  <MapPin size={14} className="text-sky-400" />
-                  <span>ที่ตั้ง: ขอนแก่น, ประเทศไทย</span>
+              <div className="p-2.5 rounded-lg bg-[#090b20] border border-[#1f2750] flex items-center justify-between text-[11px] text-slate-400">
+                <span className="flex items-center gap-1.5">
+                  <MapPin size={12} className="text-sky-400" />
+                  <span>LOCATION: KHON KAEN, TH</span>
                 </span>
-                <span className="text-sky-400 font-mono">RMUTI KKC</span>
+                <span className="text-emerald-400 font-bold">ONLINE</span>
               </div>
             </div>
           </div>
         </div>
 
         {/* Bottom Credits & Back to Top */}
-        <div className="pt-8 border-t border-sky-500/15 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
-          <p>
+        <div className="pt-6 border-t-2 border-[#1f2750] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+          <p className="text-[11px]">
             <EditableText
               value={siteTexts.footerCopyright}
               onSave={(v) => onUpdateSiteText('footerCopyright', v)}
@@ -146,10 +143,10 @@ export const Footer: React.FC<FooterProps> = ({
           </p>
           <button
             onClick={scrollToTop}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-900 border border-sky-500/30 text-sky-300 hover:text-white hover:border-sky-400 transition"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#101432] border border-[#2b356e] text-sky-300 hover:text-white hover:border-sky-400 transition text-[11px] font-bold cursor-pointer"
           >
-            <span>กลับสู่ด้านบน</span>
-            <ArrowUp size={13} />
+            <span>TOP</span>
+            <ArrowUp size={12} />
           </button>
         </div>
       </div>

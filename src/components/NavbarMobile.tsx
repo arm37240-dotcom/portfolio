@@ -23,55 +23,61 @@ export const NavbarMobile: React.FC<NavbarMobileProps> = ({
   onOpenAdminDrawer
 }) => {
   const navItems = [
-    { id: 'hero', label: 'หน้าแรก', icon: Home },
-    { id: 'profile', label: 'โปรไฟล์', icon: User },
-    { id: 'education', label: 'การศึกษา', icon: GraduationCap },
-    { id: 'courses', label: 'วิชา & งาน', icon: Cpu },
-    { id: 'activities', label: 'ผลงาน', icon: Award },
-    { id: 'footer', label: 'ติดต่อ', icon: FileText }
+    { id: 'hero', label: 'HOME', icon: Home },
+    { id: 'profile', label: 'PROFILE', icon: User },
+    { id: 'education', label: 'EDU', icon: GraduationCap },
+    { id: 'courses', label: 'COURSES', icon: Cpu },
+    { id: 'activities', label: 'ACTIVITIES', icon: Award },
+    { id: 'footer', label: 'CONTACT', icon: FileText }
   ];
 
   return (
     <>
-      {/* Top Mobile Bar */}
-      <header className="lg:hidden sticky top-0 left-0 right-0 z-40 bg-[#030712]/95 border-b border-sky-500/20 backdrop-blur-xl px-4 py-3 flex items-center justify-between">
+      {/* Top Mobile Bar (Hikari OS Header) */}
+      <header className="lg:hidden sticky top-0 left-0 right-0 z-40 bg-[#060817] border-b-2 border-[#2b356e] px-4 py-2.5 flex items-center justify-between shadow-lg select-none">
         <div className="flex items-center gap-2">
-          <span className="text-xl font-bold bg-gradient-to-r from-sky-400 to-blue-300 bg-clip-text text-transparent">
-            ⚡ Aphinat.M
-          </span>
-          <span className="text-[10px] text-sky-400/80 bg-sky-950/60 border border-sky-500/30 px-2 py-0.5 rounded-full">
-            EE-Edu
-          </span>
+          {/* Mini Pixel Emblem */}
+          <div className="w-6 h-6 flex items-center justify-center bg-[#18112c] border border-pink-500 rounded">
+            <span className="text-[10px] text-pink-400 font-bold">✦</span>
+          </div>
+          <div>
+            <span className="text-xs font-mono font-bold tracking-widest text-white uppercase">
+              HIKARI OS
+            </span>
+            <span className="ml-1.5 text-[9px] font-mono text-sky-400 bg-sky-950/80 px-1.5 py-0.5 rounded border border-sky-500/30">
+              APHINAT
+            </span>
+          </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 font-mono">
           <button
             onClick={onToggleTheme}
-            className="p-2 rounded-lg bg-slate-900 border border-sky-500/30 text-sky-400 hover:text-white transition"
+            className="p-1.5 rounded bg-[#101432] border border-[#2e3b78] text-sky-400 hover:text-white transition"
           >
-            {isDarkMode ? <Sun size={15} /> : <Moon size={15} />}
+            {isDarkMode ? <Sun size={14} /> : <Moon size={14} />}
           </button>
           
           {isAdmin ? (
             <button
               onClick={onOpenAdminDrawer}
-              className="p-2 rounded-lg bg-emerald-950/80 border border-emerald-500 text-emerald-300 shadow-sm"
+              className="p-1.5 rounded bg-emerald-950 border border-emerald-500 text-emerald-300 shadow-sm"
             >
-              <ShieldCheck size={16} />
+              <ShieldCheck size={14} />
             </button>
           ) : (
             <button
               onClick={onOpenLogin}
-              className="p-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-400 hover:text-sky-300 transition"
+              className="p-1.5 rounded bg-[#0d1028] border border-[#242b58] text-slate-400 hover:text-sky-300 transition text-[11px]"
             >
-              <Lock size={15} />
+              <Lock size={13} />
             </button>
           )}
         </div>
       </header>
 
-      {/* Bottom Sticky Mobile Navigation */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#030712]/95 border-t border-sky-500/20 backdrop-blur-2xl px-2 py-2 flex items-center justify-around shadow-2xl">
+      {/* Bottom Sticky Mobile Navigation (Retro Dock) */}
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#060817]/95 border-t-2 border-[#2b356e] backdrop-blur-xl px-2 py-1.5 flex items-center justify-around shadow-2xl select-none font-mono">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeSection === item.id;
@@ -79,13 +85,13 @@ export const NavbarMobile: React.FC<NavbarMobileProps> = ({
             <button
               key={item.id}
               onClick={() => onNavigate(item.id)}
-              className={`flex flex-col items-center gap-1 py-1 px-2 rounded-lg text-[10px] transition-all ${
+              className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded text-[9px] font-semibold transition-all ${
                 isActive
-                  ? 'text-sky-400 font-semibold'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'text-sky-300 bg-[#15204c] border border-sky-400/60 shadow-[0_0_10px_rgba(56,189,248,0.25)]'
+                  : 'text-slate-400 hover:text-white border border-transparent'
               }`}
             >
-              <Icon size={18} className={isActive ? 'text-sky-400 scale-110 drop-shadow-[0_0_8px_#38bdf8]' : 'text-slate-400'} />
+              <Icon size={16} className={isActive ? 'text-sky-400 scale-105' : 'text-slate-500'} />
               <span>{item.label}</span>
             </button>
           );

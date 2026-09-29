@@ -12,6 +12,7 @@ import { EducationSection } from '@/components/EducationSection';
 import { CoursesSection } from '@/components/CoursesSection';
 import { ActivitiesSection } from '@/components/ActivitiesSection';
 import { Footer } from '@/components/Footer';
+import { BottomWidgets } from '@/components/BottomWidgets';
 import { AuthModal } from '@/components/AuthModal';
 import { AdminDrawer } from '@/components/AdminDrawer';
 import { ShieldCheck, Sliders, LogOut, Sparkles } from 'lucide-react';
@@ -283,7 +284,7 @@ export default function PortfolioPage() {
   };
 
   return (
-    <div className={`min-h-screen bg-[var(--bg-primary)] text-[var(--text-main)] circuit-grid flex flex-col selection:bg-sky-500 selection:text-white`}>
+    <div className={`min-h-screen bg-[var(--bg-primary)] text-[var(--text-main)] pixel-grid flex flex-col selection:bg-pink-500 selection:text-white`}>
       {/* 1. Desktop Left Sidebar Navigation */}
       <Sidebar
         activeSection={activeSection}
@@ -350,6 +351,12 @@ export default function PortfolioPage() {
           isAdmin={isAdmin}
           onUpdateProfile={handleUpdateProfile}
           onUpdateSiteText={handleUpdateSiteText}
+          onNavigate={handleNavigate}
+        />
+
+        {/* Hikari System OS Bottom Widgets (Updates, Health Check, Terminal) */}
+        <BottomWidgets
+          portfolioData={data}
           onNavigate={handleNavigate}
         />
 

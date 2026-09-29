@@ -1,4 +1,4 @@
-import { ColorThemePreset } from '@/types/portfolio';
+import { ColorThemePreset, ThemeColors, PresetMode } from '@/types/portfolio';
 
 export const themePresets: ColorThemePreset[] = [
   // ==========================================
@@ -2231,14 +2231,611 @@ export const getThemePresetById = (id: string): ColorThemePreset => {
   return found || themePresets[0];
 };
 
-export const applyThemePreset = (preset: ColorThemePreset): void => {
+// ==========================================
+// DYNAMIC COLOR ENGINE (Morning & Night Mode)
+// ==========================================
+
+function hexToHsl(hex: string): [number, number, number] {
+  if (!hex || typeof hex !== 'string') return [210, 50, 50];
+  let c = hex.replace('#', '');
+  if (c.length === 3) c = c.split('').map(x => x + x).join('');
+  const r = parseInt(c.substring(0, 2), 16) / 255 || 0;
+  const g = parseInt(c.substring(2, 4), 16) / 255 || 0;
+  const b = parseInt(c.substring(4, 6), 16) / 255 || 0;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  let h = 0, s = 0;
+  const l = (max + min) / 2;
+  if (max !== min) {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+      case g: h = ((b - r) / d + 2) / 6; break;
+      case b: h = ((r - g) / d + 4) / 6; break;
+    }
+  }
+  return [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)];
+}
+
+function hslToHex(h: number, s: number, l: number): string {
+  h = ((h % 360) + 360) % 360;
+  s = Math.max(0, Math.min(100, s)) / 100;
+  l = Math.max(0, Math.min(100, l)) / 100;
+  const c = (1 - Math.abs(2 * l - 1)) * s;
+  const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+  const m = l - c / 2;
+  let r = 0, g = 0, b = 0;
+  if (h >= 0 && h < 60) { r = c; g = x; b = 0; }
+  else if (h >= 60 && h < 120) { r = x; g = c; b = 0; }
+  else if (h >= 120 && h < 180) { r = 0; g = c; b = x; }
+  else if (h >= 180 && h < 240) { r = 0; g = x; b = c; }
+  else if (h >= 240 && h < 300) { r = x; g = 0; b = c; }
+  else { r = c; g = 0; b = x; }
+  const toHex = (n: number) => Math.max(0, Math.min(255, Math.round((n + m) * 255))).toString(16).padStart(2, '0');
+  return '#' + toHex(r) + toHex(g) + toHex(b);
+}
+
+function makeReadableOnLight(hex: string, maxL = 40): string {
+  const [h, s, l] = hexToHsl(hex);
+  if (l <= maxL) return hex;
+  const newS = Math.min(100, Math.max(s, 65));
+  return hslToHex(h, newS, maxL);
+}
+
+function makeReadableOnDark(hex: string, minL = 60): string {
+  const [h, s, l] = hexToHsl(hex);
+  if (l >= minL) return hex;
+  const newS = Math.min(100, Math.max(s, 70));
+  return hslToHex(h, newS, minL);
+}
+
+function hexToRgb(hex: string): string {
+  let c = hex.replace('#', '');
+  if (c.length === 3) c = c.split('').map(x => x + x).join('');
+  const r = parseInt(c.substring(0, 2), 16) || 0;
+  const g = parseInt(c.substring(2, 4), 16) || 0;
+  const b = parseInt(c.substring(4, 6), 16) || 0;
+  return `${r}, ${g}, ${b}`;
+}
+
+const BESPOKE_LIGHT_VARIANTS: Record<string, ThemeColors> = {
+  'hikari-classic': {
+    bgPrimary: '#f8faff',
+    bgSecondary: '#edf2ff',
+    bgCard: '#ffffff',
+    borderOuter: '#2563eb',
+    borderInner: '#cbd5e1',
+    textMain: '#0f172a',
+    textMuted: '#475569',
+    accentPink: '#db2777',
+    accentCyan: '#0284c7',
+    accentGreen: '#16a34a',
+    accentAmber: '#d97706',
+    glowShadow: 'rgba(37, 99, 235, 0.2)',
+    swatches: ['#f8faff', '#2563eb', '#db2777', '#0284c7']
+  },
+  'tektronix-oscilloscope': {
+    bgPrimary: '#f0fdf4',
+    bgSecondary: '#dcfce7',
+    bgCard: '#ffffff',
+    borderOuter: '#059669',
+    borderInner: '#86efac',
+    textMain: '#022c22',
+    textMuted: '#047857',
+    accentPink: '#d97706',
+    accentCyan: '#0284c7',
+    accentGreen: '#059669',
+    accentAmber: '#d97706',
+    glowShadow: 'rgba(5, 150, 105, 0.25)',
+    swatches: ['#f0fdf4', '#059669', '#0284c7', '#d97706']
+  },
+  'matrix-code-rain': {
+    bgPrimary: '#f0fdf4',
+    bgSecondary: '#dcfce7',
+    bgCard: '#ffffff',
+    borderOuter: '#16a34a',
+    borderInner: '#86efac',
+    textMain: '#052e16',
+    textMuted: '#15803d',
+    accentPink: '#16a34a',
+    accentCyan: '#059669',
+    accentGreen: '#16a34a',
+    accentAmber: '#65a30d',
+    glowShadow: 'rgba(22, 163, 74, 0.25)',
+    swatches: ['#f0fdf4', '#16a34a', '#86efac', '#052e16']
+  },
+  'dracula-theme': {
+    bgPrimary: '#faf7fd',
+    bgSecondary: '#f3e8ff',
+    bgCard: '#ffffff',
+    borderOuter: '#7c3aed',
+    borderInner: '#c4b5fd',
+    textMain: '#2e1065',
+    textMuted: '#6b21a8',
+    accentPink: '#db2777',
+    accentCyan: '#0284c7',
+    accentGreen: '#16a34a',
+    accentAmber: '#d97706',
+    glowShadow: 'rgba(124, 58, 237, 0.2)',
+    swatches: ['#faf7fd', '#7c3aed', '#db2777', '#0284c7']
+  },
+  'gameboy-dmg-1989': {
+    bgPrimary: '#e5ec9c',
+    bgSecondary: '#d6df8b',
+    bgCard: '#edf3a8',
+    borderOuter: '#3b491b',
+    borderInner: '#859344',
+    textMain: '#192207',
+    textMuted: '#4a5a22',
+    accentPink: '#991b1b',
+    accentCyan: '#3b491b',
+    accentGreen: '#3b491b',
+    accentAmber: '#859344',
+    glowShadow: 'rgba(59, 73, 27, 0.25)',
+    swatches: ['#e5ec9c', '#3b491b', '#991b1b', '#859344']
+  },
+  'nintendo-famicom-83': {
+    bgPrimary: '#faf6f0',
+    bgSecondary: '#ede5d8',
+    bgCard: '#ffffff',
+    borderOuter: '#b91c1c',
+    borderInner: '#d97706',
+    textMain: '#1c1917',
+    textMuted: '#78716c',
+    accentPink: '#b91c1c',
+    accentCyan: '#0369a1',
+    accentGreen: '#15803d',
+    accentAmber: '#d97706',
+    glowShadow: 'rgba(185, 28, 28, 0.25)',
+    swatches: ['#faf6f0', '#b91c1c', '#d97706', '#1c1917']
+  },
+  'pcb-circuit-green': {
+    bgPrimary: '#f0fdf4',
+    bgSecondary: '#dcfce7',
+    bgCard: '#ffffff',
+    borderOuter: '#047857',
+    borderInner: '#6ee7b7',
+    textMain: '#064e3b',
+    textMuted: '#047857',
+    accentPink: '#b45309',
+    accentCyan: '#0284c7',
+    accentGreen: '#047857',
+    accentAmber: '#b45309',
+    glowShadow: 'rgba(4, 120, 87, 0.25)',
+    swatches: ['#f0fdf4', '#047857', '#b45309', '#064e3b']
+  },
+  'cyberpunk-2077': {
+    bgPrimary: '#fefce8',
+    bgSecondary: '#fef08a',
+    bgCard: '#ffffff',
+    borderOuter: '#ca8a04',
+    borderInner: '#0284c7',
+    textMain: '#18181b',
+    textMuted: '#71717a',
+    accentPink: '#db2777',
+    accentCyan: '#0284c7',
+    accentGreen: '#16a34a',
+    accentAmber: '#ca8a04',
+    glowShadow: 'rgba(202, 138, 4, 0.25)',
+    swatches: ['#fefce8', '#ca8a04', '#0284c7', '#db2777']
+  },
+  'solarized-dark': {
+    bgPrimary: '#fdf6e3',
+    bgSecondary: '#eee8d5',
+    bgCard: '#ffffff',
+    borderOuter: '#268bd2',
+    borderInner: '#93a1a1',
+    textMain: '#073642',
+    textMuted: '#586e75',
+    accentPink: '#d33682',
+    accentCyan: '#2aa198',
+    accentGreen: '#859900',
+    accentAmber: '#b58900',
+    glowShadow: 'rgba(38, 139, 210, 0.2)',
+    swatches: ['#fdf6e3', '#268bd2', '#2aa198', '#b58900']
+  },
+  'monokai-pro': {
+    bgPrimary: '#fcfbfa',
+    bgSecondary: '#f4efe6',
+    bgCard: '#ffffff',
+    borderOuter: '#f43f5e',
+    borderInner: '#e2e8f0',
+    textMain: '#27272a',
+    textMuted: '#71717a',
+    accentPink: '#e11d48',
+    accentCyan: '#0284c7',
+    accentGreen: '#16a34a',
+    accentAmber: '#d97706',
+    glowShadow: 'rgba(244, 63, 94, 0.2)',
+    swatches: ['#fcfbfa', '#f43f5e', '#16a34a', '#0284c7']
+  },
+  'matcha-green-tea': {
+    bgPrimary: '#f4f8f3',
+    bgSecondary: '#e2ede1',
+    bgCard: '#ffffff',
+    borderOuter: '#2d6a4f',
+    borderInner: '#95d5b2',
+    textMain: '#1b4332',
+    textMuted: '#2d6a4f',
+    accentPink: '#d97706',
+    accentCyan: '#0284c7',
+    accentGreen: '#2d6a4f',
+    accentAmber: '#b45309',
+    glowShadow: 'rgba(45, 106, 79, 0.2)',
+    swatches: ['#f4f8f3', '#2d6a4f', '#95d5b2', '#1b4332']
+  },
+  'neo-tokyo-2077': {
+    bgPrimary: '#fff1f2',
+    bgSecondary: '#ffe4e6',
+    bgCard: '#ffffff',
+    borderOuter: '#e11d48',
+    borderInner: '#fda4af',
+    textMain: '#4c0519',
+    textMuted: '#9f1239',
+    accentPink: '#e11d48',
+    accentCyan: '#0284c7',
+    accentGreen: '#16a34a',
+    accentAmber: '#d97706',
+    glowShadow: 'rgba(225, 29, 72, 0.2)',
+    swatches: ['#fff1f2', '#e11d48', '#0284c7', '#4c0519']
+  },
+  'outrun-sunset': {
+    bgPrimary: '#fff7ed',
+    bgSecondary: '#ffedd5',
+    bgCard: '#ffffff',
+    borderOuter: '#ea580c',
+    borderInner: '#fed7aa',
+    textMain: '#431407',
+    textMuted: '#9a3412',
+    accentPink: '#db2777',
+    accentCyan: '#0284c7',
+    accentGreen: '#16a34a',
+    accentAmber: '#ea580c',
+    glowShadow: 'rgba(234, 88, 12, 0.2)',
+    swatches: ['#fff7ed', '#ea580c', '#db2777', '#0284c7']
+  },
+  'playstation-one': {
+    bgPrimary: '#f1f1f4',
+    bgSecondary: '#e4e4e9',
+    bgCard: '#ffffff',
+    borderOuter: '#2563eb',
+    borderInner: '#cbd5e1',
+    textMain: '#1e293b',
+    textMuted: '#64748b',
+    accentPink: '#e11d48',
+    accentCyan: '#0284c7',
+    accentGreen: '#16a34a',
+    accentAmber: '#d97706',
+    glowShadow: 'rgba(37, 99, 235, 0.2)',
+    swatches: ['#f1f1f4', '#2563eb', '#e11d48', '#16a34a']
+  },
+  'snes-super-famicom': {
+    bgPrimary: '#f5f3ff',
+    bgSecondary: '#ede9fe',
+    bgCard: '#ffffff',
+    borderOuter: '#6366f1',
+    borderInner: '#c4b5fd',
+    textMain: '#1e1b4b',
+    textMuted: '#4338ca',
+    accentPink: '#db2777',
+    accentCyan: '#0284c7',
+    accentGreen: '#16a34a',
+    accentAmber: '#d97706',
+    glowShadow: 'rgba(99, 102, 241, 0.2)',
+    swatches: ['#f5f3ff', '#6366f1', '#4338ca', '#1e1b4b']
+  },
+  'macintosh-1984': {
+    bgPrimary: '#eae8e1',
+    bgSecondary: '#dedbd2',
+    bgCard: '#f7f6f2',
+    borderOuter: '#374151',
+    borderInner: '#9ca3af',
+    textMain: '#111827',
+    textMuted: '#4b5563',
+    accentPink: '#db2777',
+    accentCyan: '#0284c7',
+    accentGreen: '#16a34a',
+    accentAmber: '#d97706',
+    glowShadow: 'rgba(55, 65, 81, 0.2)',
+    swatches: ['#eae8e1', '#374151', '#dedbd2', '#111827']
+  },
+  'windows-95-classic': {
+    bgPrimary: '#f0f4f4',
+    bgSecondary: '#d8e4e4',
+    bgCard: '#ffffff',
+    borderOuter: '#008080',
+    borderInner: '#808080',
+    textMain: '#000000',
+    textMuted: '#4b5563',
+    accentPink: '#b91c1c',
+    accentCyan: '#000080',
+    accentGreen: '#15803d',
+    accentAmber: '#b45309',
+    glowShadow: 'rgba(0, 128, 128, 0.2)',
+    swatches: ['#f0f4f4', '#008080', '#000080', '#000000']
+  },
+  'fluke-multimeter': {
+    bgPrimary: '#fffbeb',
+    bgSecondary: '#fef3c7',
+    bgCard: '#ffffff',
+    borderOuter: '#d97706',
+    borderInner: '#fde68a',
+    textMain: '#1c1917',
+    textMuted: '#78716c',
+    accentPink: '#b91c1c',
+    accentCyan: '#0284c7',
+    accentGreen: '#15803d',
+    accentAmber: '#d97706',
+    glowShadow: 'rgba(217, 119, 6, 0.25)',
+    swatches: ['#fffbeb', '#d97706', '#1c1917', '#b91c1c']
+  },
+  'arduino-uno-blue': {
+    bgPrimary: '#f0f9ff',
+    bgSecondary: '#e0f2fe',
+    bgCard: '#ffffff',
+    borderOuter: '#008784',
+    borderInner: '#7dd3fc',
+    textMain: '#082f49',
+    textMuted: '#0369a1',
+    accentPink: '#db2777',
+    accentCyan: '#008784',
+    accentGreen: '#16a34a',
+    accentAmber: '#d97706',
+    glowShadow: 'rgba(0, 135, 132, 0.25)',
+    swatches: ['#f0f9ff', '#008784', '#0369a1', '#082f49']
+  },
+  'one-dark-pro': {
+    bgPrimary: '#f8fafc',
+    bgSecondary: '#eef2f6',
+    bgCard: '#ffffff',
+    borderOuter: '#0969da',
+    borderInner: '#d0d7de',
+    textMain: '#1f2328',
+    textMuted: '#656d76',
+    accentPink: '#cf222e',
+    accentCyan: '#0969da',
+    accentGreen: '#1a7f37',
+    accentAmber: '#9a6700',
+    glowShadow: 'rgba(9, 105, 218, 0.2)',
+    swatches: ['#f8fafc', '#0969da', '#cf222e', '#1a7f37']
+  }
+};
+
+const BESPOKE_DARK_VARIANTS: Record<string, ThemeColors> = {
+  'paper-white-minimal': {
+    bgPrimary: '#090a0f',
+    bgSecondary: '#12141c',
+    bgCard: '#0d0f17',
+    borderOuter: '#38bdf8',
+    borderInner: '#1e293b',
+    textMain: '#f8fafc',
+    textMuted: '#94a3b8',
+    accentPink: '#f43f5e',
+    accentCyan: '#38bdf8',
+    accentGreen: '#4ade80',
+    accentAmber: '#fbbf24',
+    glowShadow: 'rgba(56, 189, 248, 0.3)',
+    swatches: ['#090a0f', '#38bdf8', '#f8fafc', '#1e293b']
+  },
+  'solarized-light': {
+    bgPrimary: '#002b36',
+    bgSecondary: '#073642',
+    bgCard: '#04222a',
+    borderOuter: '#268bd2',
+    borderInner: '#586e75',
+    textMain: '#839496',
+    textMuted: '#586e75',
+    accentPink: '#d33682',
+    accentCyan: '#2aa198',
+    accentGreen: '#859900',
+    accentAmber: '#b58900',
+    glowShadow: 'rgba(38, 139, 210, 0.35)',
+    swatches: ['#002b36', '#268bd2', '#2aa198', '#b58900']
+  },
+  'github-light': {
+    bgPrimary: '#0d1117',
+    bgSecondary: '#161b22',
+    bgCard: '#0d1117',
+    borderOuter: '#58a6ff',
+    borderInner: '#30363d',
+    textMain: '#e6edf3',
+    textMuted: '#8b949e',
+    accentPink: '#ff7b72',
+    accentCyan: '#58a6ff',
+    accentGreen: '#3fb950',
+    accentAmber: '#d29922',
+    glowShadow: 'rgba(88, 166, 255, 0.35)',
+    swatches: ['#0d1117', '#58a6ff', '#3fb950', '#e6edf3']
+  },
+  'catppuccin-latte': {
+    bgPrimary: '#1e1e2e',
+    bgSecondary: '#181825',
+    bgCard: '#11111b',
+    borderOuter: '#cba6f7',
+    borderInner: '#313244',
+    textMain: '#cdd6f4',
+    textMuted: '#a6adc8',
+    accentPink: '#f5c2e7',
+    accentCyan: '#89dceb',
+    accentGreen: '#a6e3a1',
+    accentAmber: '#f9e2af',
+    glowShadow: 'rgba(203, 166, 247, 0.35)',
+    swatches: ['#1e1e2e', '#cba6f7', '#f5c2e7', '#89dceb']
+  },
+  'nord-snow-light': {
+    bgPrimary: '#2e3440',
+    bgSecondary: '#3b4252',
+    bgCard: '#2e3440',
+    borderOuter: '#88c0d0',
+    borderInner: '#4c566a',
+    textMain: '#eceff4',
+    textMuted: '#d8dee9',
+    accentPink: '#b48ead',
+    accentCyan: '#88c0d0',
+    accentGreen: '#a3be8c',
+    accentAmber: '#ebcb8b',
+    glowShadow: 'rgba(136, 192, 208, 0.35)',
+    swatches: ['#2e3440', '#88c0d0', '#81a1c1', '#eceff4']
+  },
+  'e-ink-paper': {
+    bgPrimary: '#121212',
+    bgSecondary: '#1e1e1e',
+    bgCard: '#181818',
+    borderOuter: '#737373',
+    borderInner: '#404040',
+    textMain: '#e5e5e5',
+    textMuted: '#a3a3a3',
+    accentPink: '#d4d4d4',
+    accentCyan: '#a3a3a3',
+    accentGreen: '#d4d4d4',
+    accentAmber: '#a3a3a3',
+    glowShadow: 'rgba(255, 255, 255, 0.1)',
+    swatches: ['#121212', '#737373', '#e5e5e5', '#404040']
+  },
+  'retro-newsprint': {
+    bgPrimary: '#14120f',
+    bgSecondary: '#201d18',
+    bgCard: '#181612',
+    borderOuter: '#b45309',
+    borderInner: '#451a03',
+    textMain: '#fef3c7',
+    textMuted: '#d97706',
+    accentPink: '#b45309',
+    accentCyan: '#d97706',
+    accentGreen: '#65a30d',
+    accentAmber: '#d97706',
+    glowShadow: 'rgba(180, 83, 9, 0.3)',
+    swatches: ['#14120f', '#b45309', '#fef3c7', '#d97706']
+  },
+  'minimal-rose-light': {
+    bgPrimary: '#16080e',
+    bgSecondary: '#260e18',
+    bgCard: '#1d0b13',
+    borderOuter: '#fb7185',
+    borderInner: '#4c0519',
+    textMain: '#fff1f2',
+    textMuted: '#fda4af',
+    accentPink: '#fb7185',
+    accentCyan: '#38bdf8',
+    accentGreen: '#4ade80',
+    accentAmber: '#fbbf24',
+    glowShadow: 'rgba(251, 113, 133, 0.35)',
+    swatches: ['#16080e', '#fb7185', '#fff1f2', '#38bdf8']
+  },
+  'neon-white-cyber': {
+    bgPrimary: '#050714',
+    bgSecondary: '#0c0f2b',
+    bgCard: '#080a1e',
+    borderOuter: '#38bdf8',
+    borderInner: '#1e293b',
+    textMain: '#f1f5f9',
+    textMuted: '#94a3b8',
+    accentPink: '#ec4899',
+    accentCyan: '#38bdf8',
+    accentGreen: '#22c55e',
+    accentAmber: '#f59e0b',
+    glowShadow: 'rgba(56, 189, 248, 0.4)',
+    swatches: ['#050714', '#38bdf8', '#ec4899', '#ffffff']
+  }
+};
+
+function generateAdaptiveLight(colors: ThemeColors): ThemeColors {
+  const [h, s] = hexToHsl(colors.borderOuter);
+  const effectiveS = s < 10 ? 0 : s;
+
+  const bgPrimary = effectiveS === 0 ? '#f8fafc' : hslToHex(h, Math.min(effectiveS * 0.35, 24), 97.5);
+  const bgSecondary = effectiveS === 0 ? '#eef2f6' : hslToHex(h, Math.min(effectiveS * 0.45, 30), 93.5);
+  const bgCard = '#ffffff';
+  const borderOuter = makeReadableOnLight(colors.borderOuter, 42);
+  const borderInner = effectiveS === 0 ? '#cbd5e1' : hslToHex(h, Math.min(effectiveS * 0.35, 22), 80);
+  const textMain = '#0f172a';
+  const textMuted = '#475569';
+  const accentPink = makeReadableOnLight(colors.accentPink, 42);
+  const accentCyan = makeReadableOnLight(colors.accentCyan, 40);
+  const accentGreen = makeReadableOnLight(colors.accentGreen, 38);
+  const accentAmber = makeReadableOnLight(colors.accentAmber, 42);
+  const glowShadow = `rgba(${hexToRgb(borderOuter)}, 0.16)`;
+  const swatches: [string, string, string, string] = [bgPrimary, borderOuter, accentPink, accentCyan];
+
+  return {
+    bgPrimary,
+    bgSecondary,
+    bgCard,
+    borderOuter,
+    borderInner,
+    textMain,
+    textMuted,
+    accentPink,
+    accentCyan,
+    accentGreen,
+    accentAmber,
+    glowShadow,
+    swatches
+  };
+}
+
+function generateAdaptiveDark(colors: ThemeColors): ThemeColors {
+  const [h, s] = hexToHsl(colors.borderOuter);
+  const effectiveS = s < 10 ? 0 : s;
+
+  const bgPrimary = effectiveS === 0 ? '#0b0c10' : hslToHex(h, Math.min(effectiveS * 0.4, 25), 5);
+  const bgSecondary = effectiveS === 0 ? '#161820' : hslToHex(h, Math.min(effectiveS * 0.5, 30), 10);
+  const bgCard = effectiveS === 0 ? '#10121a' : hslToHex(h, Math.min(effectiveS * 0.45, 28), 7);
+  const borderOuter = makeReadableOnDark(colors.borderOuter, 60);
+  const borderInner = effectiveS === 0 ? '#262936' : hslToHex(h, Math.min(effectiveS * 0.4, 25), 20);
+  const textMain = '#f8fafc';
+  const textMuted = '#94a3b8';
+  const accentPink = makeReadableOnDark(colors.accentPink, 60);
+  const accentCyan = makeReadableOnDark(colors.accentCyan, 60);
+  const accentGreen = makeReadableOnDark(colors.accentGreen, 55);
+  const accentAmber = makeReadableOnDark(colors.accentAmber, 58);
+  const glowShadow = `rgba(${hexToRgb(borderOuter)}, 0.35)`;
+  const swatches: [string, string, string, string] = [bgPrimary, borderOuter, accentPink, accentCyan];
+
+  return {
+    bgPrimary,
+    bgSecondary,
+    bgCard,
+    borderOuter,
+    borderInner,
+    textMain,
+    textMuted,
+    accentPink,
+    accentCyan,
+    accentGreen,
+    accentAmber,
+    glowShadow,
+    swatches
+  };
+}
+
+export const getThemeColors = (preset: ColorThemePreset, mode: PresetMode): ThemeColors => {
+  if (preset.mode === mode) {
+    return preset.colors;
+  }
+
+  if (mode === 'light') {
+    if (BESPOKE_LIGHT_VARIANTS[preset.id]) {
+      return BESPOKE_LIGHT_VARIANTS[preset.id];
+    }
+    return generateAdaptiveLight(preset.colors);
+  } else {
+    if (BESPOKE_DARK_VARIANTS[preset.id]) {
+      return BESPOKE_DARK_VARIANTS[preset.id];
+    }
+    return generateAdaptiveDark(preset.colors);
+  }
+};
+
+export const applyThemePreset = (preset: ColorThemePreset, forcedMode?: PresetMode): void => {
   if (typeof document === 'undefined') return;
 
+  const targetMode: PresetMode = forcedMode || preset.mode;
+  const colors = getThemeColors(preset, targetMode);
   const root = document.documentElement;
-  const { colors, mode } = preset;
 
   // 1. Toggle theme-light class
-  if (mode === 'light') {
+  if (targetMode === 'light') {
     root.classList.add('theme-light');
     document.body.classList.add('theme-light');
   } else {
@@ -2251,24 +2848,29 @@ export const applyThemePreset = (preset: ColorThemePreset): void => {
   root.style.setProperty('--bg-secondary', colors.bgSecondary);
   root.style.setProperty('--bg-card', colors.bgCard);
   root.style.setProperty('--bg-card-header', colors.bgSecondary);
-  root.style.setProperty('--bg-card-sub', mode === 'light' ? colors.bgSecondary : colors.bgPrimary);
+  root.style.setProperty('--bg-card-sub', targetMode === 'light' ? colors.bgSecondary : colors.bgPrimary);
+  root.style.setProperty('--bg-card-hover', colors.bgSecondary);
   root.style.setProperty('--border-neon', colors.borderOuter);
   root.style.setProperty('--border-neon-glow', colors.borderInner);
-  root.style.setProperty('--border-subtle', mode === 'light' ? colors.borderOuter : colors.borderInner);
+  root.style.setProperty('--border-subtle', colors.borderInner);
   root.style.setProperty('--text-main', colors.textMain);
-  root.style.setProperty('--text-title', mode === 'light' ? colors.textMain : '#ffffff');
+  root.style.setProperty('--text-title', targetMode === 'light' ? colors.textMain : '#ffffff');
   root.style.setProperty('--text-muted', colors.textMuted);
   root.style.setProperty('--accent-pink', colors.accentPink);
   root.style.setProperty('--accent-cyan', colors.accentCyan);
+  root.style.setProperty('--accent-blue', colors.accentCyan);
   root.style.setProperty('--accent-green', colors.accentGreen);
   root.style.setProperty('--accent-amber', colors.accentAmber);
+  root.style.setProperty('--accent-glow', colors.accentCyan);
   root.style.setProperty('--glow-shadow', colors.glowShadow);
-  root.style.setProperty('--grid-line', mode === 'light' ? 'rgba(100, 116, 139, 0.18)' : 'rgba(43, 53, 110, 0.25)');
+  root.style.setProperty('--grid-line', targetMode === 'light' ? 'rgba(100, 116, 139, 0.18)' : 'rgba(43, 53, 110, 0.25)');
 
   // 3. Save to localStorage
   try {
     localStorage.setItem('hikari_theme_preset', preset.id);
+    localStorage.setItem('hikari_theme_mode', targetMode);
   } catch (e) {
     console.warn('Could not save theme to localStorage', e);
   }
 };
+

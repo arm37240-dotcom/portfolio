@@ -104,6 +104,9 @@ export interface ColorThemePreset {
   };
 }
 
+export type ThemeColors = ColorThemePreset['colors'];
+export type PresetMode = 'dark' | 'light';
+
 export interface ThemeConfig {
   mode: 'dark' | 'light';
   presetId?: string;

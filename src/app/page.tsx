@@ -37,12 +37,13 @@ export default function PortfolioPage() {
         const loaded = await StorageService.loadPortfolioData();
         setData(loaded);
         
-        // Restore saved theme preset from localStorage or saved data
+        // Restore saved theme preset and mode from localStorage or saved data
         const savedPreset = localStorage.getItem('hikari_theme_preset') || loaded.themeConfig.presetId || 'hikari-classic';
+        const savedMode = (localStorage.getItem('hikari_theme_mode') || loaded.themeConfig.mode || 'dark') as 'dark' | 'light';
         setCurrentPresetId(savedPreset);
+        setIsDarkMode(savedMode === 'dark');
         const presetObj = getThemePresetById(savedPreset);
-        applyThemePreset(presetObj);
-        setIsDarkMode(presetObj.mode === 'dark');
+        applyThemePreset(presetObj, savedMode);
       } catch (err) {
         console.warn('Load portfolio data error:', err);
       }
@@ -80,74 +81,45 @@ export default function PortfolioPage() {
     }
   }, [isDarkMode]);
 
-  // สลับโหมด มืด / สว่าง
+  // สลับโหมด มืด / สว่าง (Morning / Night) โดยคงโทนสีปัจจุบันไว้
   const handleToggleTheme = () => {
-    const nextMode = !isDarkMode; // true = switch to dark, false = switch to light
-    setIsDarkMode(nextMode);
+    const nextMode = isDarkMode ? 'light' : 'dark';
+    setIsDarkMode(nextMode === 'dark');
     
-    let targetPresetId = currentPresetId;
-    if (nextMode) {
-      // ต้องการสลับไปโหมดมืด (Dark)
-      const presetObj = getThemePresetById(currentPresetId);
-      if (presetObj.mode === 'light') {
-        const lastDark = localStorage.getItem('hikari_last_dark_preset') || 'hikari-classic';
-        targetPresetId = lastDark;
-      }
-    } else {
-      // ต้องการสลับไปโหมดสว่าง (Light)
-      const presetObj = getThemePresetById(currentPresetId);
-      if (presetObj.mode === 'dark') {
-        try {
-          localStorage.setItem('hikari_last_dark_preset', currentPresetId);
-        } catch (e) {
-          // ignore
-        }
-        const lastLight = localStorage.getItem('hikari_last_light_preset') || 'paper-white-minimal';
-        targetPresetId = lastLight;
-      }
-    }
-    const nextPreset = getThemePresetById(targetPresetId);
-    setCurrentPresetId(targetPresetId);
-    applyThemePreset(nextPreset);
+    const presetObj = getThemePresetById(currentPresetId);
+    applyThemePreset(presetObj, nextMode);
 
     const updated: PortfolioData = {
       ...data,
       themeConfig: {
         ...data.themeConfig,
-        mode: nextMode ? 'dark' : 'light',
-        presetId: targetPresetId
+        mode: nextMode,
+        presetId: currentPresetId
       }
     };
     setData(updated);
     StorageService.savePortfolioData(updated);
   };
 
-  // สลับโทนสีจาก 100 แบบ (Color Matrix)
-  const handleSelectTheme = (preset: ColorThemePreset) => {
+  // สลับโทนสีจาก 100 แบบ (Color Matrix) โดยรักษาโหมดปัจจุบันหรือตามที่เลือก
+  const handleSelectTheme = (preset: ColorThemePreset, mode?: 'dark' | 'light') => {
+    const targetMode = mode || (isDarkMode ? 'dark' : 'light');
     setCurrentPresetId(preset.id);
-    const isDark = preset.mode === 'dark';
-    setIsDarkMode(isDark);
-    try {
-      if (isDark) {
-        localStorage.setItem('hikari_last_dark_preset', preset.id);
-      } else {
-        localStorage.setItem('hikari_last_light_preset', preset.id);
-      }
-    } catch (e) {
-      // ignore
-    }
-    applyThemePreset(preset);
+    setIsDarkMode(targetMode === 'dark');
+    applyThemePreset(preset, targetMode);
+
     const updated: PortfolioData = {
       ...data,
       themeConfig: {
         ...data.themeConfig,
-        mode: preset.mode,
+        mode: targetMode,
         presetId: preset.id
       }
     };
     setData(updated);
     StorageService.savePortfolioData(updated);
   };
+
 
   // จัดการบันทึกข้อมูลและซิงค์ Supabase
   const handleSaveData = async (newData: PortfolioData) => {
@@ -512,7 +484,14 @@ export default function PortfolioPage() {
         onClose={() => setIsThemeModalOpen(false)}
         currentPresetId={currentPresetId}
         onSelectTheme={handleSelectTheme}
+        currentMode={isDarkMode ? 'dark' : 'light'}
+        onToggleMode={(mode) => {
+          setIsDarkMode(mode === 'dark');
+          const presetObj = getThemePresetById(currentPresetId);
+          applyThemePreset(presetObj, mode);
+        }}
       />
+
     </div>
   );
 }

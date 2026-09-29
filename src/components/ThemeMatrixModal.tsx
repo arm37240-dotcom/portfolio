@@ -1,35 +1,46 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { 
   Palette, 
   X, 
   Search, 
-  Sparkles, 
   Shuffle, 
   Check, 
   Moon, 
   Sun,
   RotateCcw
 } from 'lucide-react';
-import { ColorThemePreset } from '@/types/portfolio';
-import { themePresets, applyThemePreset } from '@/data/themePresets';
+import { ColorThemePreset, PresetMode } from '@/types/portfolio';
+import { themePresets, applyThemePreset, getThemeColors } from '@/data/themePresets';
 
 interface ThemeMatrixModalProps {
   isOpen: boolean;
   onClose: () => void;
   currentPresetId: string;
-  onSelectTheme: (preset: ColorThemePreset) => void;
+  onSelectTheme: (preset: ColorThemePreset, mode?: PresetMode) => void;
+  currentMode?: PresetMode;
+  onToggleMode?: (mode: PresetMode) => void;
 }
 
 export const ThemeMatrixModal: React.FC<ThemeMatrixModalProps> = ({
   isOpen,
   onClose,
   currentPresetId,
-  onSelectTheme
+  onSelectTheme,
+  currentMode = 'dark',
+  onToggleMode
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [modalMode, setModalMode] = useState<PresetMode>(currentMode);
+
+  // Sync modalMode whenever modal is opened or currentMode prop changes
+  useEffect(() => {
+    if (isOpen) {
+      setModalMode(currentMode);
+    }
+  }, [isOpen, currentMode]);
 
   const categories = [
     { id: 'all', label: 'ALL', count: 100 },
@@ -61,14 +72,23 @@ export const ThemeMatrixModal: React.FC<ThemeMatrixModalProps> = ({
   const handleRandomTheme = () => {
     const randomIndex = Math.floor(Math.random() * themePresets.length);
     const chosen = themePresets[randomIndex];
-    onSelectTheme(chosen);
-    applyThemePreset(chosen);
+    onSelectTheme(chosen, modalMode);
+    applyThemePreset(chosen, modalMode);
   };
 
   const handleResetDefault = () => {
     const defaultTheme = themePresets[0];
-    onSelectTheme(defaultTheme);
-    applyThemePreset(defaultTheme);
+    onSelectTheme(defaultTheme, modalMode);
+    applyThemePreset(defaultTheme, modalMode);
+  };
+
+  const handleModeSwitch = (mode: PresetMode) => {
+    setModalMode(mode);
+    if (onToggleMode) {
+      onToggleMode(mode);
+    }
+    // Also re-apply active preset in the selected mode
+    applyThemePreset(currentThemeObj, mode);
   };
 
   if (!isOpen) return null;
@@ -89,8 +109,12 @@ export const ThemeMatrixModal: React.FC<ThemeMatrixModalProps> = ({
                   100 PRESETS
                 </span>
               </div>
-              <div className="text-[10px] text-slate-400">
-                CURRENT: <span className="text-pink-300 font-bold">{currentThemeObj.nameEn} ({currentThemeObj.name})</span>
+              <div className="text-[10px] text-slate-400 flex items-center gap-1.5 flex-wrap">
+                <span>CURRENT:</span>
+                <span className="text-pink-300 font-bold">{currentThemeObj.nameEn} ({currentThemeObj.name})</span>
+                <span className={`px-1.5 py-0.2 rounded text-[9px] font-bold ${modalMode === 'light' ? 'bg-amber-400/20 text-amber-300 border border-amber-500/40' : 'bg-sky-400/20 text-sky-300 border border-sky-500/40'}`}>
+                  {modalMode === 'light' ? '☀️ โหมดเช้า' : '🌙 โหมดค่ำ'}
+                </span>
               </div>
             </div>
           </div>
@@ -106,7 +130,7 @@ export const ThemeMatrixModal: React.FC<ThemeMatrixModalProps> = ({
             </button>
             <button
               onClick={onClose}
-              className="p-1 text-slate-400 hover:text-rose-400 transition"
+              className="p-1 text-slate-400 hover:text-rose-400 transition cursor-pointer"
               title="ปิดหน้าต่าง"
             >
               <X size={18} />
@@ -114,26 +138,58 @@ export const ThemeMatrixModal: React.FC<ThemeMatrixModalProps> = ({
           </div>
         </div>
 
-        {/* Search & Categories Bar */}
+        {/* Search, Mode Switcher & Categories Bar */}
         <div className="p-3 sm:p-4 bg-[#0c0e24] border-b border-[#232b58] space-y-3">
-          {/* Search Input */}
-          <div className="relative">
-            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="ค้นหาโทนสีจาก 100 แบบ (เช่น Matrix, Neon, Game Boy, PCB, Dracula, Cyber...)"
-              className="w-full pl-9 pr-4 py-2 bg-[#060714] border border-[#2b356e] rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-400 transition"
-            />
-            {searchQuery && (
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+            {/* Search Input */}
+            <div className="relative flex-1">
+              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="ค้นหาโทนสีจาก 100 แบบ (เช่น Matrix, Neon, Game Boy, PCB, Dracula, Cyber...)"
+                className="w-full pl-9 pr-4 py-2 bg-[#060714] border border-[#2b356e] rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-400 transition"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white text-xs cursor-pointer"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+
+            {/* Segmented Mode Switcher: ☀️ โหมดเช้า / 🌙 โหมดค่ำ */}
+            <div className="flex items-center bg-[#060714] border border-[#2b356e] p-1 rounded-lg self-end sm:self-auto shrink-0 shadow-inner">
               <button
-                onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white text-xs"
+                type="button"
+                onClick={() => handleModeSwitch('light')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-bold transition cursor-pointer ${
+                  modalMode === 'light'
+                    ? 'bg-amber-400 text-slate-950 shadow-[0_0_12px_rgba(251,191,36,0.6)]'
+                    : 'text-slate-400 hover:text-amber-300'
+                }`}
+                title="เปลี่ยนการแสดงผลเป็นโหมดเช้า (Morning Mode)"
               >
-                ✕
+                <Sun size={13} className={modalMode === 'light' ? 'text-slate-950 animate-spin-slow' : 'text-amber-400'} />
+                <span>☀️ โหมดเช้า</span>
               </button>
-            )}
+              <button
+                type="button"
+                onClick={() => handleModeSwitch('dark')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-bold transition cursor-pointer ${
+                  modalMode === 'dark'
+                    ? 'bg-sky-500 text-white shadow-[0_0_12px_rgba(56,189,248,0.6)]'
+                    : 'text-slate-400 hover:text-sky-300'
+                }`}
+                title="เปลี่ยนการแสดงผลเป็นโหมดค่ำ (Night Mode)"
+              >
+                <Moon size={13} className={modalMode === 'dark' ? 'text-white' : 'text-sky-400'} />
+                <span>🌙 โหมดค่ำ</span>
+              </button>
+            </div>
           </div>
 
           {/* Category Tabs */}
@@ -162,16 +218,17 @@ export const ThemeMatrixModal: React.FC<ThemeMatrixModalProps> = ({
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-              {filteredPresets.map((preset, idx) => {
+              {filteredPresets.map((preset) => {
                 const isSelected = preset.id === currentPresetId;
-                const { swatches } = preset.colors;
+                const colors = getThemeColors(preset, modalMode);
+                const { swatches } = colors;
 
                 return (
                   <button
                     key={preset.id}
                     onClick={() => {
-                      onSelectTheme(preset);
-                      applyThemePreset(preset);
+                      onSelectTheme(preset, modalMode);
+                      applyThemePreset(preset, modalMode);
                     }}
                     className={`p-3 rounded-lg text-left transition-all duration-150 cursor-pointer flex flex-col justify-between border-2 ${
                       isSelected
@@ -179,7 +236,7 @@ export const ThemeMatrixModal: React.FC<ThemeMatrixModalProps> = ({
                         : 'bg-[#0d102a] border-[#222a54] hover:border-sky-400/60 hover:bg-[#121638]'
                     }`}
                   >
-                    {/* Top Row: Index number, Category tag & Checkmark */}
+                    {/* Top Row: Index number, Category tag & Mode indicator */}
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-1.5">
                         <span className="text-[10px] text-slate-500 font-bold">
@@ -190,7 +247,7 @@ export const ThemeMatrixModal: React.FC<ThemeMatrixModalProps> = ({
                         </span>
                       </div>
                       <div className="flex items-center gap-1">
-                        {preset.mode === 'light' ? (
+                        {modalMode === 'light' ? (
                           <Sun size={11} className="text-amber-400" />
                         ) : (
                           <Moon size={11} className="text-sky-400" />
@@ -213,7 +270,7 @@ export const ThemeMatrixModal: React.FC<ThemeMatrixModalProps> = ({
                       </div>
                     </div>
 
-                    {/* Bottom: 4 Color Swatches */}
+                    {/* Bottom: 4 Color Swatches adapted for active mode */}
                     <div className="flex items-center gap-1.5 pt-2 border-t border-[#1b2248]">
                       {swatches.map((color, sIdx) => (
                         <div
@@ -224,7 +281,7 @@ export const ThemeMatrixModal: React.FC<ThemeMatrixModalProps> = ({
                         />
                       ))}
                       <span className="text-[10px] text-slate-500 ml-auto font-mono">
-                        SELECT ▸
+                        {modalMode === 'light' ? '☀️ เช้า ▸' : '🌙 ค่ำ ▸'}
                       </span>
                     </div>
                   </button>
@@ -246,7 +303,7 @@ export const ThemeMatrixModal: React.FC<ThemeMatrixModalProps> = ({
 
           <div className="flex items-center gap-2">
             <span className="text-slate-500 text-[11px] hidden sm:inline">
-              เลือกแล้วมีผลทันทีทั้งเว็บไซต์
+              เลือกแล้วมีผลทันทีทั้งเว็บไซต์ ({modalMode === 'light' ? 'โหมดเช้า' : 'โหมดค่ำ'})
             </span>
             <button
               onClick={onClose}

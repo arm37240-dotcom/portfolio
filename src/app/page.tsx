@@ -17,6 +17,12 @@ import { AuthModal } from '@/components/AuthModal';
 import { AdminDrawer } from '@/components/AdminDrawer';
 import { ThemeMatrixModal } from '@/components/ThemeMatrixModal';
 import { themePresets, applyThemePreset, getThemePresetById } from '@/data/themePresets';
+import { getTheme10kById } from '@/lib/themeEngine10k';
+import { CrtOverlay } from '@/components/CrtOverlay';
+import { ElectricSparkCursor } from '@/components/ElectricSparkCursor';
+import { MatrixDigitalRain } from '@/components/MatrixDigitalRain';
+import { VfxControlDock } from '@/components/VfxControlDock';
+import { retroAudio } from '@/lib/retroAudio';
 import { ShieldCheck, Sliders, LogOut, Sparkles, Palette } from 'lucide-react';
 
 export default function PortfolioPage() {
@@ -30,6 +36,14 @@ export default function PortfolioPage() {
   const [currentPresetId, setCurrentPresetId] = useState<string>('hikari-classic');
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
 
+  // VFX Suite Settings
+  const [vfxConfig, setVfxConfig] = useState({
+    crtScanlines: true,
+    electricSparks: true,
+    matrixRain: true,
+    soundFx: false
+  });
+
   // 1. โหลดข้อมูลจาก Dual-Engine Storage Service & Theme Preset
   useEffect(() => {
     async function loadData() {
@@ -42,8 +56,22 @@ export default function PortfolioPage() {
         const savedMode = (localStorage.getItem('hikari_theme_mode') || loaded.themeConfig.mode || 'dark') as 'dark' | 'light';
         setCurrentPresetId(savedPreset);
         setIsDarkMode(savedMode === 'dark');
-        const presetObj = getThemePresetById(savedPreset);
+        const presetObj = getTheme10kById(savedPreset);
         applyThemePreset(presetObj, savedMode);
+
+        // Restore VFX suite settings
+        try {
+          const savedCrt = localStorage.getItem('hikari_crtScanlines_enabled');
+          const savedSparks = localStorage.getItem('hikari_electricSparks_enabled');
+          const savedRain = localStorage.getItem('hikari_matrixRain_enabled');
+          setVfxConfig(prev => ({
+            ...prev,
+            crtScanlines: savedCrt !== null ? savedCrt === 'true' : prev.crtScanlines,
+            electricSparks: savedSparks !== null ? savedSparks === 'true' : prev.electricSparks,
+            matrixRain: savedRain !== null ? savedRain === 'true' : prev.matrixRain,
+            soundFx: retroAudio.getIsAudioEnabled()
+          }));
+        } catch {}
       } catch (err) {
         console.warn('Load portfolio data error:', err);
       }
@@ -86,8 +114,9 @@ export default function PortfolioPage() {
     const nextMode = isDarkMode ? 'light' : 'dark';
     setIsDarkMode(nextMode === 'dark');
     
-    const presetObj = getThemePresetById(currentPresetId);
+    const presetObj = getTheme10kById(currentPresetId);
     applyThemePreset(presetObj, nextMode);
+    retroAudio.playChime(nextMode === 'light');
 
     const updated: PortfolioData = {
       ...data,
@@ -101,12 +130,13 @@ export default function PortfolioPage() {
     StorageService.savePortfolioData(updated);
   };
 
-  // สลับโทนสีจาก 100 แบบ (Color Matrix) โดยรักษาโหมดปัจจุบันหรือตามที่เลือก
+  // สลับโทนสีจาก 10,000 แบบ (Quantum Color Matrix) โดยรักษาโหมดปัจจุบันหรือตามที่เลือก
   const handleSelectTheme = (preset: ColorThemePreset, mode?: 'dark' | 'light') => {
     const targetMode = mode || (isDarkMode ? 'dark' : 'light');
     setCurrentPresetId(preset.id);
     setIsDarkMode(targetMode === 'dark');
     applyThemePreset(preset, targetMode);
+    retroAudio.playThemeSwitch();
 
     const updated: PortfolioData = {
       ...data,
@@ -320,7 +350,15 @@ export default function PortfolioPage() {
   };
 
   return (
-    <div className={`min-h-screen bg-[var(--bg-primary)] text-[var(--text-main)] pixel-grid flex flex-col selection:bg-pink-500 selection:text-white`}>
+    <div className={`min-h-screen bg-[var(--bg-primary)] text-[var(--text-main)] pixel-grid flex flex-col selection:bg-pink-500 selection:text-white relative`}>
+      {/* Visual FX Layers */}
+      <CrtOverlay enabled={vfxConfig.crtScanlines} />
+      <ElectricSparkCursor enabled={vfxConfig.electricSparks} />
+      <MatrixDigitalRain enabled={vfxConfig.matrixRain} />
+
+      {/* Floating Interactive VFX Control Dock */}
+      <VfxControlDock config={vfxConfig} onChangeConfig={setVfxConfig} />
+
       {/* 1. Desktop Left Sidebar Navigation */}
       <Sidebar
         activeSection={activeSection}
@@ -357,7 +395,7 @@ export default function PortfolioPage() {
 
           <button
             onClick={() => setIsAdminDrawerOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-medium transition shadow-sm"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-medium transition shadow-sm cursor-pointer"
           >
             <Sliders size={14} />
             <span>เปิดแผงควบคุม</span>
@@ -366,7 +404,7 @@ export default function PortfolioPage() {
           <button
             onClick={handleLogout}
             title="ออกจากระบบผู้ดูแล"
-            className="p-1.5 rounded-xl bg-slate-800 hover:bg-rose-950/80 hover:text-rose-300 text-slate-400 transition"
+            className="p-1.5 rounded-xl bg-slate-800 hover:bg-rose-950/80 hover:text-rose-300 text-slate-400 transition cursor-pointer"
           >
             <LogOut size={15} />
           </button>
@@ -470,19 +508,22 @@ export default function PortfolioPage() {
         onOpenThemeMatrix={() => setIsThemeModalOpen(true)}
       />
 
-      {/* 7. Floating Quick Theme Matrix Button (100 Themes) - Admin Only */}
+      {/* 7. Floating Quick Theme Matrix Button (10,000 Themes) - Admin Only */}
       {isAdmin && (
         <button
-          onClick={() => setIsThemeModalOpen(true)}
-          title="เลือกโทนสีจาก 100 แบบ (Hikari Color Matrix)"
+          onClick={() => {
+            retroAudio.playClick();
+            setIsThemeModalOpen(true);
+          }}
+          title="เลือกโทนสีจาก 10,000 แบบ (Hikari Quantum Color Matrix)"
           className="fixed bottom-5 right-5 z-40 hidden sm:flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#090b20]/90 hover:bg-[#121638] border-2 border-pink-500/60 hover:border-pink-400 text-pink-300 hover:text-white shadow-[0_0_20px_rgba(236,72,153,0.35)] backdrop-blur-md font-mono text-xs font-bold transition transform hover:scale-105 active:scale-95 cursor-pointer"
         >
           <Palette size={15} className="text-pink-400 animate-pulse" />
-          <span>100 THEMES</span>
+          <span>10,000 THEMES</span>
         </button>
       )}
 
-      {/* 8. Hikari Theme Matrix Modal (100 Palettes Explorer) */}
+      {/* 8. Hikari Theme Matrix Modal (10,000 Palettes Explorer) */}
       <ThemeMatrixModal
         isOpen={isThemeModalOpen}
         onClose={() => setIsThemeModalOpen(false)}
@@ -491,8 +532,9 @@ export default function PortfolioPage() {
         currentMode={isDarkMode ? 'dark' : 'light'}
         onToggleMode={(mode) => {
           setIsDarkMode(mode === 'dark');
-          const presetObj = getThemePresetById(currentPresetId);
+          const presetObj = getTheme10kById(currentPresetId);
           applyThemePreset(presetObj, mode);
+          retroAudio.playChime(mode === 'light');
         }}
       />
 

@@ -114,7 +114,7 @@ export const CoursesSection: React.FC<CoursesSectionProps> = ({
           {filteredCourses.map((course) => (
             <div
               key={course.id}
-              className="bg-[var(--bg-card)] rounded-xl border-2 border-[var(--border-neon)] overflow-hidden flex flex-col justify-between hover:border-[var(--accent-cyan)] transition-all duration-300 group relative shadow-lg"
+              className="holo-card bg-[var(--bg-card)] rounded-xl border-2 border-[var(--border-neon)] overflow-hidden flex flex-col justify-between hover:border-[var(--accent-cyan)] transition-all duration-300 group relative shadow-lg"
             >
               {/* Window Header Bar */}
               <div className="flex items-center justify-between px-3.5 py-2 bg-[var(--bg-card-header)] border-b-2 border-[var(--border-neon)] select-none font-mono text-xs">

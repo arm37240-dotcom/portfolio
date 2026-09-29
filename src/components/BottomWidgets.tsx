@@ -82,7 +82,7 @@ export const BottomWidgets: React.FC<BottomWidgetsProps> = ({
             <p className="text-slate-400">Available commands:</p>
             <p><span className="text-white font-bold">whoami</span> - Show user identity</p>
             <p><span className="text-white font-bold">neofetch</span> - Display system specifications</p>
-            {isAdmin && <p><span className="text-white font-bold">theme</span> - Open 100 Color Themes Matrix</p>}
+            {isAdmin && <p><span className="text-white font-bold">theme</span> - Open 10,000 Color Themes Matrix</p>}
             <p><span className="text-white font-bold">bio</span> - Read operator bio</p>
             <p><span className="text-white font-bold">skills</span> - List engineering skills</p>
             <p><span className="text-white font-bold">courses</span> - Navigate to coursework & projects</p>
@@ -97,7 +97,7 @@ export const BottomWidgets: React.FC<BottomWidgetsProps> = ({
       case 'colors':
         if (isAdmin && onOpenThemeMatrix) {
           onOpenThemeMatrix();
-          response = 'Opening Hikari Color Matrix (100 Palettes Explorer)... Select any theme to apply instantly!';
+          response = 'Opening Hikari Quantum Color Matrix (10,000 Palettes Explorer)... Select any theme to apply instantly!';
         } else {
           response = '🔒 การปรับแต่งโทนสีสงวนสิทธิ์สำหรับโหมดผู้ดูแลเท่านั้น (Admin Mode Only) — กด Ctrl + Alt + P เพื่อเข้าสู่ระบบ';
         }

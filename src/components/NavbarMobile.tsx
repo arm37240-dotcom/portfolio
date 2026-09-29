@@ -56,7 +56,7 @@ export const NavbarMobile: React.FC<NavbarMobileProps> = ({
           {isAdmin && onOpenThemeMatrix && (
             <button
               onClick={onOpenThemeMatrix}
-              title="100 Color Themes"
+              title="10,000 Color Themes"
               className="p-1.5 rounded bg-[var(--bg-card)] border border-pink-500/40 text-pink-500 dark:text-pink-400 hover:text-[var(--text-title)] transition shadow-sm cursor-pointer"
             >
               <Palette size={14} />

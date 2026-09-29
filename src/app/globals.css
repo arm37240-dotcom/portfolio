@@ -185,3 +185,53 @@ body {
   box-shadow: 0 0 20px var(--glow-shadow, rgba(56, 189, 248, 0.25));
   transform: translateY(-2px);
 }
+
+/* Holographic Card Sheen & Interactive FX */
+.holo-card {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.holo-card::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    60deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.08) 45%,
+    rgba(56, 189, 248, 0.15) 50%,
+    rgba(236, 72, 153, 0.15) 55%,
+    transparent 65%
+  );
+  transform: translateX(-100%);
+  transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.holo-card:hover::after {
+  transform: translateX(100%);
+}
+
+.holo-card:hover {
+  transform: translateY(-3px) scale(1.008);
+  box-shadow: 0 10px 30px var(--glow-shadow, rgba(56, 189, 248, 0.35));
+}
+
+@keyframes crtBeam {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+@keyframes neonPulse {
+  0%, 100% { opacity: 1; filter: drop-shadow(0 0 6px var(--accent-cyan, #38bdf8)); }
+  50% { opacity: 0.85; filter: drop-shadow(0 0 14px var(--accent-cyan, #38bdf8)); }
+}
+
+.animate-neon-pulse {
+  animation: neonPulse 2.5s ease-in-out infinite;
+}

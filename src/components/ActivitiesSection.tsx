@@ -78,7 +78,7 @@ export const ActivitiesSection: React.FC<ActivitiesSectionProps> = ({
           {activities.map((act) => (
             <div
               key={act.id}
-              className="bg-[var(--bg-card)] rounded-xl overflow-hidden border-2 border-[var(--border-neon)] hover:border-[var(--accent-cyan)] transition-all duration-300 flex flex-col justify-between group cursor-pointer relative shadow-lg"
+              className="holo-card bg-[var(--bg-card)] rounded-xl overflow-hidden border-2 border-[var(--border-neon)] hover:border-[var(--accent-cyan)] transition-all duration-300 flex flex-col justify-between group cursor-pointer relative shadow-lg"
               onClick={() => setActiveModal(act)}
             >
               {/* Delete Button in Admin Mode */}

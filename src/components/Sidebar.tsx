@@ -99,7 +99,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <div className="flex items-center gap-1.5">
               <button
                 onClick={onOpenThemeMatrix}
-                title="เปลี่ยนโทนสี (100 Color Themes)"
+                title="เปลี่ยนโทนสี (10,000 Color Themes)"
                 className="p-1.5 rounded bg-[var(--bg-card)] border border-pink-500/40 text-pink-500 dark:text-pink-400 hover:text-[var(--text-title)] hover:border-pink-400 hover:bg-pink-950/20 transition cursor-pointer flex items-center justify-center shadow-sm"
               >
                 <Palette size={15} />
@@ -128,10 +128,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
             >
               <span className="flex items-center gap-1.5">
                 <Palette size={13} className="text-pink-400 group-hover:rotate-45 transition-transform" />
-                <span>COLOR MATRIX</span>
+                <span>QUANTUM MATRIX</span>
               </span>
               <span className="bg-pink-500/10 text-pink-500 dark:text-pink-300 border border-pink-500/40 px-1.5 py-0.5 rounded text-[9px] font-mono">
-                100 THEMES ▸
+                10,000 THEMES ▸
               </span>
             </button>
           </div>

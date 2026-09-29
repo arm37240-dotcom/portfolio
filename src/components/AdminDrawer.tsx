@@ -534,19 +534,19 @@ export const AdminDrawer: React.FC<AdminDrawerProps> = ({
             {/* TAB 3: FX & APPEARANCE */}
             {activeTab === 'fx' && (
               <div className="space-y-5">
-                {/* 100 Color Themes Matrix Card */}
+                {/* 10,000 Color Themes Matrix Card */}
                 <div className="p-4 rounded-xl electric-glass border-2 border-pink-500/50 bg-[#160c24] space-y-2 text-xs">
                   <div className="flex items-center justify-between">
                     <span className="font-bold text-white flex items-center gap-1.5 font-mono">
                       <Palette size={14} className="text-pink-400" />
-                      <span>HIKARI COLOR MATRIX</span>
+                      <span>QUANTUM COLOR MATRIX</span>
                     </span>
                     <span className="text-[10px] bg-pink-900 text-pink-200 border border-pink-500/50 px-2 py-0.5 rounded font-mono font-bold">
-                      100 THEMES
+                      10,000 THEMES
                     </span>
                   </div>
                   <p className="text-[11px] text-slate-300">
-                    เลือกเปลี่ยนสไตล์โทนสีเว็บไซต์จากคอลเลกชัน 100 ธีมพิกเซลเรโทร (Cyberpunk, Consoles, Electrical, Matrix, Aesthetic, Minimal)
+                    เลือกเปลี่ยนสไตล์โทนสีเว็บไซต์จากคอลเลกชัน 10,000 ธีมพิกเซลเรโทรผ่าน 10 มิติ (Cyberpunk, Consoles, Instruments, Code Matrix, Nebula, Mecha, Nature, Steampunk, Minimal, Prism)
                   </p>
                   {onOpenThemeMatrix && (
                     <button
@@ -554,7 +554,7 @@ export const AdminDrawer: React.FC<AdminDrawerProps> = ({
                       className="w-full mt-2 py-2 px-3 rounded-lg bg-pink-600 hover:bg-pink-500 text-white font-mono font-bold text-xs transition flex items-center justify-center gap-2 cursor-pointer shadow-md"
                     >
                       <Palette size={14} />
-                      <span>เปิดแผงเลือก 100 ธีมสี (Open Palette Matrix)</span>
+                      <span>เปิดแผงเลือก 10,000 ธีมสี (Open Quantum Matrix)</span>
                     </button>
                   )}
                 </div>

@@ -39,7 +39,7 @@ export const VfxControlDock: React.FC<VfxControlDockProps> = ({
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <div className="fixed bottom-4 left-4 z-40 font-mono select-none">
+    <div className="fixed bottom-4 left-4 lg:left-80 z-40 font-mono select-none">
       {/* Expanded Controls Window */}
       {isExpanded ? (
         <div className="bg-[#080918]/95 border-2 border-sky-400 rounded-2xl p-3.5 shadow-[0_0_35px_rgba(56,189,248,0.4)] backdrop-blur-md w-72 animate-fadeIn space-y-3">

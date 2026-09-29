@@ -135,7 +135,7 @@ export const ALL_100_VFX: VfxItem[] = [
     categoryLabelTh: 'หลอดภาพ CRT',
     description: 'เส้นสแกนฮอริซอนทัลเลียนแบบหลอดภาพแก้วเรโทรความละเอียดคลาสสิก',
     icon: 'Tv',
-    defaultEnabled: true,
+    defaultEnabled: false,
     type: 'css'
   },
   {
@@ -148,7 +148,7 @@ export const ALL_100_VFX: VfxItem[] = [
     categoryLabelTh: 'หลอดภาพ CRT',
     description: 'ขอบเงาดำแบบกระจกโค้งของจอ CRT ยุค 1980s',
     icon: 'Maximize',
-    defaultEnabled: true,
+    defaultEnabled: false,
     type: 'css'
   },
   {
@@ -161,7 +161,7 @@ export const ALL_100_VFX: VfxItem[] = [
     categoryLabelTh: 'หลอดภาพ CRT',
     description: 'ลำแสงแคนดีเลเวอร์สแกนจากบนลงล่างอย่างต่อเนื่องจำลองอัตราการรีเฟรช 60Hz',
     icon: 'SlidersHorizontal',
-    defaultEnabled: true,
+    defaultEnabled: false,
     type: 'css'
   },
   {
@@ -187,7 +187,7 @@ export const ALL_100_VFX: VfxItem[] = [
     categoryLabelTh: 'หลอดภาพ CRT',
     description: 'สารเคลือบฟอสฟอรัสเรืองแสงรอบองค์ประกอบที่มีความสว่างสูง',
     icon: 'Sun',
-    defaultEnabled: true,
+    defaultEnabled: false,
     type: 'css'
   },
   {
@@ -226,7 +226,7 @@ export const ALL_100_VFX: VfxItem[] = [
     categoryLabelTh: 'หลอดภาพ CRT',
     description: 'การหักเหแยกช่องสีแดงและฟ้าบริเวณมุมจอ',
     icon: 'Layers',
-    defaultEnabled: true,
+    defaultEnabled: false,
     type: 'css'
   },
   {
@@ -347,7 +347,7 @@ export const ALL_100_VFX: VfxItem[] = [
     categoryLabelTh: 'ไฟฟ้าแรงสูง',
     description: 'ลวดลายตารางหกเหลี่ยมเรืองแสงสะท้อนคลื่นพลังงานเมื่อชี้การ์ด',
     icon: 'Shield',
-    defaultEnabled: true,
+    defaultEnabled: false,
     type: 'css'
   },
   {
@@ -403,7 +403,7 @@ export const ALL_100_VFX: VfxItem[] = [
     categoryLabelTh: 'สายฝนดิจิทัล',
     description: 'ตัวอักษรญี่ปุ่นและสัญลักษณ์วิศวกรรมไฟฟ้าหลั่งไหลลงมาจากด้านบน',
     icon: 'Binary',
-    defaultEnabled: true,
+    defaultEnabled: false,
     type: 'canvas'
   },
   {
@@ -429,7 +429,7 @@ export const ALL_100_VFX: VfxItem[] = [
     categoryLabelTh: 'สายฝนดิจิทัล',
     description: 'พัลส์กระแสไฟฟ้าวิ่งตามลายเส้นปริ้นท์ PCB รอบส่วนหัวและแถบข้าง',
     icon: 'GitBranch',
-    defaultEnabled: true,
+    defaultEnabled: false,
     type: 'canvas'
   },
   {
@@ -455,7 +455,7 @@ export const ALL_100_VFX: VfxItem[] = [
     categoryLabelTh: 'สายฝนดิจิทัล',
     description: 'ตัวอักษรเปลี่ยนรูปสุ่มก่อนจะคลี่คลายกลายเป็นข้อความจริง',
     icon: 'Terminal',
-    defaultEnabled: true,
+    defaultEnabled: false,
     type: 'interactive'
   },
   {
@@ -494,7 +494,7 @@ export const ALL_100_VFX: VfxItem[] = [
     categoryLabelTh: 'สายฝนดิจิทัล',
     description: 'บล็อกสี่เหลี่ยมสีเขียวกะพริบจังหวะ 1Hz ในเทอร์มินัล',
     icon: 'Minus',
-    defaultEnabled: true,
+    defaultEnabled: false,
     type: 'css'
   },
   {
@@ -537,7 +537,7 @@ export const ALL_100_VFX: VfxItem[] = [
     categoryLabelTh: 'คลื่นเสียงและรูปคลื่น',
     description: 'คลื่นออสซิลโลสโคปเรียบเนียน แสดงความถี่มูลฐานของระบบไฟฟ้ากระแสสลับ',
     icon: 'Waves',
-    defaultEnabled: true,
+    defaultEnabled: false,
     type: 'canvas'
   },
   {
@@ -550,7 +550,7 @@ export const ALL_100_VFX: VfxItem[] = [
     categoryLabelTh: 'คลื่นเสียงและรูปคลื่น',
     description: 'รูปคลื่นดิจิทัลสลับสถานะ 0 และ 1 ของวงจรอิเล็กทรอนิกส์และคอมพิวเตอร์',
     icon: 'Square',
-    defaultEnabled: true,
+    defaultEnabled: false,
     type: 'canvas'
   },
   {
@@ -563,7 +563,7 @@ export const ALL_100_VFX: VfxItem[] = [
     categoryLabelTh: 'คลื่นเสียงและรูปคลื่น',
     description: 'คลื่นแอนะล็อกฟันเลื่อยแบบเดียวกับที่ใช้ขับการเบี่ยงเบนลำแสงจอภาพ',
     icon: 'TrendingUp',
-    defaultEnabled: true,
+    defaultEnabled: false,
     type: 'canvas'
   },
   {
@@ -576,7 +576,7 @@ export const ALL_100_VFX: VfxItem[] = [
     categoryLabelTh: 'คลื่นเสียงและรูปคลื่น',
     description: 'จังหวะชีพจรคลื่นไฟฟ้า QRS คอมเพล็กซ์เต้นเป็นจังหวะตามสถานะระบบ',
     icon: 'HeartPulse',
-    defaultEnabled: true,
+    defaultEnabled: false,
     type: 'canvas'
   },
   {
@@ -602,7 +602,7 @@ export const ALL_100_VFX: VfxItem[] = [
     categoryLabelTh: 'คลื่นเสียงและรูปคลื่น',
     description: 'กราฟแท่งความถี่หลายช่องขยับขึ้นลงตามเสียงจำลองในวิทยุเรโทร',
     icon: 'BarChart2',
-    defaultEnabled: true,
+    defaultEnabled: false,
     type: 'css'
   },
   {
@@ -671,7 +671,7 @@ export const ALL_100_VFX: VfxItem[] = [
     categoryLabelTh: 'เกมตู้ 8-Bit',
     description: 'ตัวหนังสือพิกเซลกะพริบชวนหยอดเหรียญสไตล์เกมตู้แคปคอมยุคทอง',
     icon: 'Coins',
-    defaultEnabled: true,
+    defaultEnabled: false,
     type: 'css'
   },
   {
@@ -723,7 +723,7 @@ export const ALL_100_VFX: VfxItem[] = [
     categoryLabelTh: 'เกมตู้ 8-Bit',
     description: 'ตัวเลขคะแนนเกมตู้ลอยขึ้นและค่อยๆ จางหายเมื่อคลิกปุ่มต่างๆ',
     icon: 'Trophy',
-    defaultEnabled: true,
+    defaultEnabled: false,
     type: 'interactive'
   },
   {
@@ -818,7 +818,7 @@ export const ALL_100_VFX: VfxItem[] = [
     categoryLabelTh: 'อวกาศและจักรวาล',
     description: 'ดาวฤกษ์ส่องแสงกะพริบช้าๆ ในความมืดของอวกาศลึก',
     icon: 'Star',
-    defaultEnabled: true,
+    defaultEnabled: false,
     type: 'canvas'
   },
   {
@@ -844,7 +844,7 @@ export const ALL_100_VFX: VfxItem[] = [
     categoryLabelTh: 'อวกาศและจักรวาล',
     description: 'ดาวหางความเร็วสูงพุ่งตัดผ่านหน้าจอเป็นระยะพร้อมหางแสงนีออน',
     icon: 'Send',
-    defaultEnabled: true,
+    defaultEnabled: false,
     type: 'canvas'
   },
   {
@@ -909,7 +909,7 @@ export const ALL_100_VFX: VfxItem[] = [
     categoryLabelTh: 'อวกาศและจักรวาล',
     description: 'วงแหวนล็อกเป้าแบบอนิเมะหุ่นยนต์กั้นสี่เหลี่ยมรอบการ์ดเมื่อชี้เมาส์',
     icon: 'Focus',
-    defaultEnabled: true,
+    defaultEnabled: false,
     type: 'css'
   },
   {
@@ -952,7 +952,7 @@ export const ALL_100_VFX: VfxItem[] = [
     categoryLabelTh: 'โฮโลแกรมและปริซึม',
     description: 'เส้นขอบการ์ดแยกสเปกตรัมแสง 7 สีเหมือนแสงขาวผ่านปริซึมแก้ว',
     icon: 'Maximize2',
-    defaultEnabled: true,
+    defaultEnabled: false,
     type: 'css'
   },
   {
@@ -965,7 +965,7 @@ export const ALL_100_VFX: VfxItem[] = [
     categoryLabelTh: 'โฮโลแกรมและปริซึม',
     description: 'เอฟเฟกต์กระจกเบลอโปร่งแสงระดับพรีเมียมพร้อมการเบี่ยงเบนของแสง',
     icon: 'Eye',
-    defaultEnabled: true,
+    defaultEnabled: false,
     type: 'css'
   },
   {
@@ -1004,7 +1004,7 @@ export const ALL_100_VFX: VfxItem[] = [
     categoryLabelTh: 'โฮโลแกรมและปริซึม',
     description: 'ลำแสงสีฟ้าแนวนอนยาวสะท้อนจากโลโก้และจุดเด่นสไตล์ภาพยนตร์ไซไฟ',
     icon: 'Sun',
-    defaultEnabled: true,
+    defaultEnabled: false,
     type: 'css'
   },
   {
@@ -1030,7 +1030,7 @@ export const ALL_100_VFX: VfxItem[] = [
     categoryLabelTh: 'โฮโลแกรมและปริซึม',
     description: 'ความสว่างค่อยๆ หม่นลงและสว่างขึ้นอย่างนุ่มนวลเป็นคลื่นไซน์',
     icon: 'Activity',
-    defaultEnabled: true,
+    defaultEnabled: false,
     type: 'css'
   },
   {
@@ -1177,7 +1177,7 @@ export const ALL_100_VFX: VfxItem[] = [
     categoryLabelTh: 'สภาพอากาศ',
     description: 'วงระลอกน้ำซ้อนหลายชั้นแผ่ขยายจากจุดสัมผัสคล้ายผิวน้ำที่เงียบสงบ',
     icon: 'Droplets',
-    defaultEnabled: true,
+    defaultEnabled: false,
     type: 'canvas'
   },
   {
@@ -1207,7 +1207,7 @@ export const ALL_100_VFX: VfxItem[] = [
     categoryLabelTh: 'ตัวอักษรและข้อความ',
     description: 'หัวข้อใหญ่ถูกเฉือนเลื่อนซ้ายขวาในเสี้ยววินาทีสร้างฟีลไซเบอร์พังก์',
     icon: 'Scissors',
-    defaultEnabled: true,
+    defaultEnabled: false,
     type: 'css'
   },
   {
@@ -1220,7 +1220,7 @@ export const ALL_100_VFX: VfxItem[] = [
     categoryLabelTh: 'ตัวอักษรและข้อความ',
     description: 'ตัวอักษรบางตัวในชื่อระบบกะพริบและติดสว่างเหมือนหลอดแก้วเรโทรเก่า',
     icon: 'ZapOff',
-    defaultEnabled: true,
+    defaultEnabled: false,
     type: 'css'
   },
   {
@@ -1233,7 +1233,7 @@ export const ALL_100_VFX: VfxItem[] = [
     categoryLabelTh: 'ตัวอักษรและข้อความ',
     description: 'สีสันในตัวหนังสือขนาดใหญ่ไหลเอื่อยเหมือนของเหลวนีออน',
     icon: 'Paintbrush',
-    defaultEnabled: true,
+    defaultEnabled: false,
     type: 'css'
   },
   {
@@ -1246,7 +1246,7 @@ export const ALL_100_VFX: VfxItem[] = [
     categoryLabelTh: 'ตัวอักษรและข้อความ',
     description: 'ตัวหนังสือจะกลายเป็นรหัสฐานสิบหกก่อนถอดรหัสออกมาใหม่เมื่อนำเมาส์ไปชี้',
     icon: 'Code2',
-    defaultEnabled: true,
+    defaultEnabled: false,
     type: 'interactive'
   },
   {
@@ -1259,7 +1259,7 @@ export const ALL_100_VFX: VfxItem[] = [
     categoryLabelTh: 'ตัวอักษรและข้อความ',
     description: 'เงาบล็อกทึบชั้นหนาหลายพิกเซลเฉียง 45 องศาแบบเกมแฟมิคอม',
     icon: 'BoxSelect',
-    defaultEnabled: true,
+    defaultEnabled: false,
     type: 'css'
   },
   {
@@ -1272,7 +1272,7 @@ export const ALL_100_VFX: VfxItem[] = [
     categoryLabelTh: 'ตัวอักษรและข้อความ',
     description: 'ข้อความสถานะระบบเลื่อนผ่านไปทางซ้ายอย่างราบรื่นตลอดเวลา',
     icon: 'ArrowRightLeft',
-    defaultEnabled: true,
+    defaultEnabled: false,
     type: 'css'
   },
   {
@@ -1298,7 +1298,7 @@ export const ALL_100_VFX: VfxItem[] = [
     categoryLabelTh: 'ตัวอักษรและข้อความ',
     description: 'ประกายแสงเลเซอร์เส้นบางวิ่งผ่านหัวข้อสะท้อนประกายแวววาว',
     icon: 'Sun',
-    defaultEnabled: true,
+    defaultEnabled: false,
     type: 'css'
   },
   {
@@ -1324,7 +1324,7 @@ export const ALL_100_VFX: VfxItem[] = [
     categoryLabelTh: 'ตัวอักษรและข้อความ',
     description: 'ตัวเลขสถิติและคะแนนหมุนเปลี่ยนหลักขึ้นลงอย่างนุ่มนวล',
     icon: 'RotateCw',
-    defaultEnabled: true,
+    defaultEnabled: false,
     type: 'interactive'
   },
 
@@ -1341,7 +1341,7 @@ export const ALL_100_VFX: VfxItem[] = [
     categoryLabelTh: 'การโต้ตอบและสัมผัส',
     description: 'เส้นริบบิ้นหางแสงนีออนโค้งงออย่างนุ่มนวลตามเส้นทางการเคลื่อนที่ของเมาส์',
     icon: 'Spline',
-    defaultEnabled: true,
+    defaultEnabled: false,
     type: 'canvas'
   },
   {
@@ -1354,7 +1354,7 @@ export const ALL_100_VFX: VfxItem[] = [
     categoryLabelTh: 'การโต้ตอบและสัมผัส',
     description: 'ปุ่มไอคอนจะเคลื่อนตัวตามเมาส์เล็กน้อยเมื่อเข้าใกล้ขอบเขตสัมผัส',
     icon: 'Magnet',
-    defaultEnabled: true,
+    defaultEnabled: false,
     type: 'interactive'
   },
   {
@@ -1406,7 +1406,7 @@ export const ALL_100_VFX: VfxItem[] = [
     categoryLabelTh: 'การโต้ตอบและสัมผัส',
     description: 'การ์ดเนื้อหาเอียงทำมุมอย่างสมจริงราวกับถือแผ่นวงจรอิเล็กทรอนิกส์ในมือ',
     icon: 'Layers',
-    defaultEnabled: true,
+    defaultEnabled: false,
     type: 'interactive'
   },
   {
@@ -1419,7 +1419,7 @@ export const ALL_100_VFX: VfxItem[] = [
     categoryLabelTh: 'การโต้ตอบและสัมผัส',
     description: 'ลำแสงนีออนพุ่งวนรอบสี่เหลี่ยมของการ์ดที่กำลังถูกโฟกัส',
     icon: 'SquareDashedBottomCode',
-    defaultEnabled: true,
+    defaultEnabled: false,
     type: 'css'
   },
   {
@@ -1445,7 +1445,7 @@ export const ALL_100_VFX: VfxItem[] = [
     categoryLabelTh: 'การโต้ตอบและสัมผัส',
     description: 'อนุภาคที่ลอยอยู่ในบรรยากาศจะถูกแรงผลักดีดตัวออกจากเคอร์เซอร์เมาส์',
     icon: 'Compass',
-    defaultEnabled: true,
+    defaultEnabled: false,
     type: 'canvas'
   },
   {
@@ -1458,7 +1458,7 @@ export const ALL_100_VFX: VfxItem[] = [
     categoryLabelTh: 'การโต้ตอบและสัมผัส',
     description: 'หน้าจอสั่นเล็กน้อยให้ความรู้สึกมีน้ำหนักแบบเกมต่อสู้เมื่อกดปุ่มใหญ่',
     icon: 'Vibrate',
-    defaultEnabled: true,
+    defaultEnabled: false,
     type: 'css'
   }
 ];
@@ -1480,8 +1480,8 @@ export const VFX_PRESET_COMBOS: VfxPresetCombo[] = [
     id: 'balanced-retro',
     name: 'Balanced Retro Lab (Default)',
     nameTh: 'ห้องแล็บเรโทรสมดุล (ค่ามาตรฐาน)',
-    description: 'การผสมผสานเส้นสแกน CRT, ประกายไฟ, ฝนเมทริกซ์, ออสซิลโลสโคป และโฮโลแกรมอย่างลงตัว',
-    activeCount: 28,
+    description: 'เอฟเฟกต์นุ่มนวลสบายตา ประกายไฟตอบสนองเมื่อคลิก ดวงดาวในอวกาศ แถบเลเซอร์วัดระยะเลื่อน และแสงโฮโลแกรม',
+    activeCount: 6,
     icon: 'Sliders',
     badge: 'RECOMMENDED',
     effectIds: ALL_100_VFX.filter(f => f.defaultEnabled).map(f => f.id)

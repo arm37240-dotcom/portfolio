@@ -211,8 +211,11 @@ export const VfxLaboratoryOverlay: React.FC<VfxLaboratoryOverlayProps> = ({ acti
 
       // 6. Screen Shake on Impact (fx-100)
       if (isEnabled('fx-100')) {
-        document.body.classList.add('vfx-screen-shake');
-        setTimeout(() => document.body.classList.remove('vfx-screen-shake'), 260);
+        const target = document.getElementById('portfolio-content-root');
+        if (target) {
+          target.classList.add('vfx-screen-shake');
+          setTimeout(() => target.classList.remove('vfx-screen-shake'), 260);
+        }
       }
     };
 
@@ -497,7 +500,7 @@ export const VfxLaboratoryOverlay: React.FC<VfxLaboratoryOverlayProps> = ({ acti
       {/* Background Atmosphere Canvas */}
       <canvas
         ref={bgCanvasRef}
-        className="fixed inset-0 pointer-events-none z-0 opacity-80"
+        className="fixed inset-0 pointer-events-none z-0 opacity-70"
       />
 
       {/* Foreground Particle & Interactive Canvas */}
@@ -511,7 +514,7 @@ export const VfxLaboratoryOverlay: React.FC<VfxLaboratoryOverlayProps> = ({ acti
       {/* 1. CRT Scanlines (fx-001) */}
       {isEnabled('fx-001') && (
         <div 
-          className="fixed inset-0 pointer-events-none z-20 scanlines opacity-50 select-none" 
+          className="fixed inset-0 pointer-events-none z-10 scanlines opacity-15 select-none" 
           aria-hidden="true" 
         />
       )}
@@ -519,7 +522,7 @@ export const VfxLaboratoryOverlay: React.FC<VfxLaboratoryOverlayProps> = ({ acti
       {/* 2. CRT Curved Glass Vignette (fx-002) */}
       {isEnabled('fx-002') && (
         <div 
-          className="fixed inset-0 pointer-events-none z-20 shadow-[inset_0_0_90px_rgba(0,0,0,0.85)] select-none" 
+          className="fixed inset-0 pointer-events-none z-10 shadow-[inset_0_0_70px_rgba(0,0,0,0.35)] select-none" 
           aria-hidden="true" 
         />
       )}
@@ -527,17 +530,17 @@ export const VfxLaboratoryOverlay: React.FC<VfxLaboratoryOverlayProps> = ({ acti
       {/* 3. CRT Electron Sweep Beam (fx-003) */}
       {isEnabled('fx-003') && (
         <div 
-          className="fixed inset-0 pointer-events-none z-20 overflow-hidden select-none"
+          className="fixed inset-0 pointer-events-none z-10 overflow-hidden select-none"
           aria-hidden="true"
         >
-          <div className="w-full h-24 bg-gradient-to-b from-transparent via-cyan-400/8 to-transparent animate-[crtBeam_7s_linear_infinite]" />
+          <div className="w-full h-24 bg-gradient-to-b from-transparent via-cyan-400/5 to-transparent animate-[crtBeam_7s_linear_infinite]" />
         </div>
       )}
 
       {/* 4. CRT Micro Flicker (fx-004) */}
       {isEnabled('fx-004') && (
         <div 
-          className="fixed inset-0 pointer-events-none z-20 vfx-crt-flicker bg-cyan-950/[0.02]" 
+          className="fixed inset-0 pointer-events-none z-10 vfx-crt-flicker bg-cyan-950/[0.01]" 
           aria-hidden="true" 
         />
       )}
@@ -545,7 +548,7 @@ export const VfxLaboratoryOverlay: React.FC<VfxLaboratoryOverlayProps> = ({ acti
       {/* 5. CRT RGB Triad Shadow Mask (fx-006) */}
       {isEnabled('fx-006') && (
         <div 
-          className="fixed inset-0 pointer-events-none z-20 opacity-30 mix-blend-screen bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-black/20 to-black/60 bg-[length:4px_4px]" 
+          className="fixed inset-0 pointer-events-none z-10 opacity-15 mix-blend-screen bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-black/10 to-black/30 bg-[length:4px_4px]" 
           aria-hidden="true" 
         />
       )}

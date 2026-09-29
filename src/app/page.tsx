@@ -60,9 +60,15 @@ export default function PortfolioPage() {
 
         // Restore 100 VFX suite settings
         try {
-          const savedVfx = localStorage.getItem('hikari_active_100_vfx');
+          const savedVfx = localStorage.getItem('hikari_active_100_vfx_v2');
           if (savedVfx) {
             setActiveVfxIds(new Set(JSON.parse(savedVfx)));
+          } else {
+            // First load or upgrading from legacy version: initialize with clean non-darkening defaults
+            const cleanDefaults = ALL_100_VFX.filter(f => f.defaultEnabled).map(f => f.id);
+            setActiveVfxIds(new Set(cleanDefaults));
+            localStorage.setItem('hikari_active_100_vfx_v2', JSON.stringify(cleanDefaults));
+            localStorage.removeItem('hikari_active_100_vfx');
           }
           setIsAudioEnabled(retroAudio.getIsAudioEnabled());
         } catch {}
@@ -151,7 +157,7 @@ export default function PortfolioPage() {
       if (next.has(id)) next.delete(id);
       else next.add(id);
       try {
-        localStorage.setItem('hikari_active_100_vfx', JSON.stringify(Array.from(next)));
+        localStorage.setItem('hikari_active_100_vfx_v2', JSON.stringify(Array.from(next)));
       } catch {}
       return next;
     });
@@ -161,7 +167,7 @@ export default function PortfolioPage() {
     const next = new Set(combo.effectIds);
     setActiveVfxIds(next);
     try {
-      localStorage.setItem('hikari_active_100_vfx', JSON.stringify(Array.from(next)));
+      localStorage.setItem('hikari_active_100_vfx_v2', JSON.stringify(Array.from(next)));
     } catch {}
   };
 
@@ -169,7 +175,7 @@ export default function PortfolioPage() {
     const all = new Set(ALL_100_VFX.map(f => f.id));
     setActiveVfxIds(all);
     try {
-      localStorage.setItem('hikari_active_100_vfx', JSON.stringify(Array.from(all)));
+      localStorage.setItem('hikari_active_100_vfx_v2', JSON.stringify(Array.from(all)));
     } catch {}
   };
 
@@ -177,7 +183,7 @@ export default function PortfolioPage() {
     const empty = new Set<string>();
     setActiveVfxIds(empty);
     try {
-      localStorage.setItem('hikari_active_100_vfx', JSON.stringify([]));
+      localStorage.setItem('hikari_active_100_vfx_v2', JSON.stringify([]));
     } catch {}
   };
 
@@ -390,17 +396,19 @@ export default function PortfolioPage() {
       {/* 100 Retro VFX Suite Multi-Layer Canvas & DOM Overlay */}
       <VfxLaboratoryOverlay activeIds={activeVfxIds} />
 
-      {/* Floating Interactive 100 VFX Control Dock */}
-      <VfxControlDock
-        activeCount={activeVfxIds.size}
-        onOpenVfxLab={() => setIsVfxLabOpen(true)}
-        isCrtActive={activeVfxIds.has('fx-001')}
-        isSparksActive={activeVfxIds.has('fx-011')}
-        isMatrixActive={activeVfxIds.has('fx-021')}
-        isSoundActive={isAudioEnabled}
-        onToggleEffect={handleToggleVfx}
-        onToggleSound={handleToggleSound}
-      />
+      {/* Floating Interactive 100 VFX Control Dock (Admin Only) */}
+      {isAdmin && (
+        <VfxControlDock
+          activeCount={activeVfxIds.size}
+          onOpenVfxLab={() => setIsVfxLabOpen(true)}
+          isCrtActive={activeVfxIds.has('fx-001')}
+          isSparksActive={activeVfxIds.has('fx-011')}
+          isMatrixActive={activeVfxIds.has('fx-021')}
+          isSoundActive={isAudioEnabled}
+          onToggleEffect={handleToggleVfx}
+          onToggleSound={handleToggleSound}
+        />
+      )}
 
       {/* 1. Desktop Left Sidebar Navigation */}
       <Sidebar
@@ -465,7 +473,7 @@ export default function PortfolioPage() {
       )}
 
       {/* 4. Main Content Area */}
-      <main className="flex-1 lg:pl-72 w-full max-w-7xl mx-auto px-4 sm:px-8 py-6">
+      <main id="portfolio-content-root" className="relative z-20 flex-1 lg:pl-72 w-full max-w-7xl mx-auto px-4 sm:px-8 py-6">
         {/* Section 1: Hero & Highlights */}
         <HeroSection
           data={data}

@@ -482,8 +482,9 @@ body.vfx-active-neon-breathe .pixel-panel {
   animation: neonBreathe 3.5s ease-in-out infinite;
 }
 
-body.vfx-active-chromatic {
-  filter: drop-shadow(1px 0px 0px rgba(255, 0, 85, 0.3)) drop-shadow(-1px 0px 0px rgba(0, 210, 255, 0.3));
+.vfx-active-chromatic h1 .pixel-font,
+.vfx-active-chromatic h2 .pixel-font {
+  text-shadow: 1.5px 0 0 rgba(255, 0, 85, 0.6), -1.5px 0 0 rgba(0, 210, 255, 0.6);
 }
 
 

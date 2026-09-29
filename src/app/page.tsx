@@ -397,6 +397,7 @@ export default function PortfolioPage() {
           portfolioData={data}
           onNavigate={handleNavigate}
           onOpenThemeMatrix={() => setIsThemeModalOpen(true)}
+          isAdmin={isAdmin}
         />
 
         {/* Section 2: Personal Profile */}
@@ -466,17 +467,20 @@ export default function PortfolioPage() {
         data={data}
         onSaveData={handleSaveData}
         onLogout={handleLogout}
+        onOpenThemeMatrix={() => setIsThemeModalOpen(true)}
       />
 
-      {/* 7. Floating Quick Theme Matrix Button (100 Themes) */}
-      <button
-        onClick={() => setIsThemeModalOpen(true)}
-        title="เลือกโทนสีจาก 100 แบบ (Hikari Color Matrix)"
-        className="fixed bottom-5 right-5 z-40 hidden sm:flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#090b20]/90 hover:bg-[#121638] border-2 border-pink-500/60 hover:border-pink-400 text-pink-300 hover:text-white shadow-[0_0_20px_rgba(236,72,153,0.35)] backdrop-blur-md font-mono text-xs font-bold transition transform hover:scale-105 active:scale-95 cursor-pointer"
-      >
-        <Palette size={15} className="text-pink-400 animate-pulse" />
-        <span>100 THEMES</span>
-      </button>
+      {/* 7. Floating Quick Theme Matrix Button (100 Themes) - Admin Only */}
+      {isAdmin && (
+        <button
+          onClick={() => setIsThemeModalOpen(true)}
+          title="เลือกโทนสีจาก 100 แบบ (Hikari Color Matrix)"
+          className="fixed bottom-5 right-5 z-40 hidden sm:flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#090b20]/90 hover:bg-[#121638] border-2 border-pink-500/60 hover:border-pink-400 text-pink-300 hover:text-white shadow-[0_0_20px_rgba(236,72,153,0.35)] backdrop-blur-md font-mono text-xs font-bold transition transform hover:scale-105 active:scale-95 cursor-pointer"
+        >
+          <Palette size={15} className="text-pink-400 animate-pulse" />
+          <span>100 THEMES</span>
+        </button>
+      )}
 
       {/* 8. Hikari Theme Matrix Modal (100 Palettes Explorer) */}
       <ThemeMatrixModal

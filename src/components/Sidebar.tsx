@@ -94,44 +94,48 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
           </div>
 
-          {/* Theme & Palette Switchers */}
-          <div className="flex items-center gap-1.5">
-            <button
-              onClick={onOpenThemeMatrix}
-              title="เปลี่ยนโทนสี (100 Color Themes)"
-              className="p-1.5 rounded bg-[var(--bg-card)] border border-pink-500/40 text-pink-500 dark:text-pink-400 hover:text-[var(--text-title)] hover:border-pink-400 hover:bg-pink-950/20 transition cursor-pointer flex items-center justify-center shadow-sm"
-            >
-              <Palette size={15} />
-            </button>
-            <button
-              onClick={onToggleTheme}
-              title={isDarkMode ? 'สลับเป็นโหมดสว่าง' : 'สลับเป็นโหมดมืด'}
-              className="p-1.5 rounded bg-[var(--bg-card)] border border-[var(--border-neon)] text-sky-500 dark:text-sky-400 hover:text-[var(--text-title)] hover:border-sky-400 transition cursor-pointer"
-            >
-              {isDarkMode ? <Sun size={15} /> : <Moon size={15} />}
-            </button>
-          </div>
+          {/* Theme & Palette Switchers (Admin Only) */}
+          {isAdmin && (
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={onOpenThemeMatrix}
+                title="เปลี่ยนโทนสี (100 Color Themes)"
+                className="p-1.5 rounded bg-[var(--bg-card)] border border-pink-500/40 text-pink-500 dark:text-pink-400 hover:text-[var(--text-title)] hover:border-pink-400 hover:bg-pink-950/20 transition cursor-pointer flex items-center justify-center shadow-sm"
+              >
+                <Palette size={15} />
+              </button>
+              <button
+                onClick={onToggleTheme}
+                title={isDarkMode ? 'สลับเป็นโหมดสว่าง' : 'สลับเป็นโหมดมืด'}
+                className="p-1.5 rounded bg-[var(--bg-card)] border border-[var(--border-neon)] text-sky-500 dark:text-sky-400 hover:text-[var(--text-title)] hover:border-sky-400 transition cursor-pointer"
+              >
+                {isDarkMode ? <Sun size={15} /> : <Moon size={15} />}
+              </button>
+            </div>
+          )}
         </div>
 
         <p className="text-[10px] font-mono text-[var(--text-muted)] mt-2.5 pt-2 border-t border-[var(--border-subtle)] uppercase tracking-wider">
           APHINAT OS 2.0 // EE EDITION
         </p>
 
-        {/* Quick Theme Matrix Button */}
-        <div className="pt-2.5">
-          <button
-            onClick={onOpenThemeMatrix}
-            className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-[var(--bg-card)] hover:bg-[var(--bg-secondary)] border border-pink-500/40 hover:border-pink-400 text-pink-500 dark:text-pink-300 hover:text-[var(--text-title)] transition text-[11px] font-mono font-bold cursor-pointer shadow-sm group"
-          >
-            <span className="flex items-center gap-1.5">
-              <Palette size={13} className="text-pink-400 group-hover:rotate-45 transition-transform" />
-              <span>COLOR MATRIX</span>
-            </span>
-            <span className="bg-pink-500/10 text-pink-500 dark:text-pink-300 border border-pink-500/40 px-1.5 py-0.5 rounded text-[9px] font-mono">
-              100 THEMES ▸
-            </span>
-          </button>
-        </div>
+        {/* Quick Theme Matrix Button (Admin Only) */}
+        {isAdmin && (
+          <div className="pt-2.5">
+            <button
+              onClick={onOpenThemeMatrix}
+              className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-[var(--bg-card)] hover:bg-[var(--bg-secondary)] border border-pink-500/40 hover:border-pink-400 text-pink-500 dark:text-pink-300 hover:text-[var(--text-title)] transition text-[11px] font-mono font-bold cursor-pointer shadow-sm group"
+            >
+              <span className="flex items-center gap-1.5">
+                <Palette size={13} className="text-pink-400 group-hover:rotate-45 transition-transform" />
+                <span>COLOR MATRIX</span>
+              </span>
+              <span className="bg-pink-500/10 text-pink-500 dark:text-pink-300 border border-pink-500/40 px-1.5 py-0.5 rounded text-[9px] font-mono">
+                100 THEMES ▸
+              </span>
+            </button>
+          </div>
+        )}
       </div>
 
       {/* 2. NAVIGATION LIST (Matches Reference Image) */}

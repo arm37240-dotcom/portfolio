@@ -53,21 +53,24 @@ export const NavbarMobile: React.FC<NavbarMobileProps> = ({
         </div>
 
         <div className="flex items-center gap-1.5 font-mono">
-          {onOpenThemeMatrix && (
+          {isAdmin && onOpenThemeMatrix && (
             <button
               onClick={onOpenThemeMatrix}
               title="100 Color Themes"
-              className="p-1.5 rounded bg-[var(--bg-card)] border border-pink-500/40 text-pink-500 dark:text-pink-400 hover:text-[var(--text-title)] transition shadow-sm"
+              className="p-1.5 rounded bg-[var(--bg-card)] border border-pink-500/40 text-pink-500 dark:text-pink-400 hover:text-[var(--text-title)] transition shadow-sm cursor-pointer"
             >
               <Palette size={14} />
             </button>
           )}
-          <button
-            onClick={onToggleTheme}
-            className="p-1.5 rounded bg-[var(--bg-card)] border border-[var(--border-neon)] text-sky-500 dark:text-sky-400 hover:text-[var(--text-title)] transition shadow-sm"
-          >
-            {isDarkMode ? <Sun size={14} /> : <Moon size={14} />}
-          </button>
+          {isAdmin && (
+            <button
+              onClick={onToggleTheme}
+              title={isDarkMode ? 'สลับเป็นโหมดสว่าง' : 'สลับเป็นโหมดมืด'}
+              className="p-1.5 rounded bg-[var(--bg-card)] border border-[var(--border-neon)] text-sky-500 dark:text-sky-400 hover:text-[var(--text-title)] transition shadow-sm cursor-pointer"
+            >
+              {isDarkMode ? <Sun size={14} /> : <Moon size={14} />}
+            </button>
+          )}
           
           {isAdmin ? (
             <button

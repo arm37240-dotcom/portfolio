@@ -22,12 +22,14 @@ interface BottomWidgetsProps {
   portfolioData: PortfolioData;
   onNavigate: (sectionId: string) => void;
   onOpenThemeMatrix?: () => void;
+  isAdmin?: boolean;
 }
 
 export const BottomWidgets: React.FC<BottomWidgetsProps> = ({
   portfolioData,
   onNavigate,
-  onOpenThemeMatrix
+  onOpenThemeMatrix,
+  isAdmin = false
 }) => {
   // Terminal state for interactive typing
   const [terminalInput, setTerminalInput] = useState('');
@@ -80,7 +82,7 @@ export const BottomWidgets: React.FC<BottomWidgetsProps> = ({
             <p className="text-slate-400">Available commands:</p>
             <p><span className="text-white font-bold">whoami</span> - Show user identity</p>
             <p><span className="text-white font-bold">neofetch</span> - Display system specifications</p>
-            <p><span className="text-white font-bold">theme</span> - Open 100 Color Themes Matrix</p>
+            {isAdmin && <p><span className="text-white font-bold">theme</span> - Open 100 Color Themes Matrix</p>}
             <p><span className="text-white font-bold">bio</span> - Read operator bio</p>
             <p><span className="text-white font-bold">skills</span> - List engineering skills</p>
             <p><span className="text-white font-bold">courses</span> - Navigate to coursework & projects</p>
@@ -93,8 +95,12 @@ export const BottomWidgets: React.FC<BottomWidgetsProps> = ({
       case 'themes':
       case 'palette':
       case 'colors':
-        if (onOpenThemeMatrix) onOpenThemeMatrix();
-        response = 'Opening Hikari Color Matrix (100 Palettes Explorer)... Select any theme to apply instantly!';
+        if (isAdmin && onOpenThemeMatrix) {
+          onOpenThemeMatrix();
+          response = 'Opening Hikari Color Matrix (100 Palettes Explorer)... Select any theme to apply instantly!';
+        } else {
+          response = '🔒 การปรับแต่งโทนสีสงวนสิทธิ์สำหรับโหมดผู้ดูแลเท่านั้น (Admin Mode Only) — กด Ctrl + Alt + P เพื่อเข้าสู่ระบบ';
+        }
         break;
       case 'whoami':
         response = 'aphinat (อภิณัฐชรัชน์ มณีรัตน์) — นักศึกษาครุศาสตร์อุตสาหกรรมไฟฟ้า มทร.อีสาน ขอนแก่น';

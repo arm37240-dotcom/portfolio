@@ -1,12 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Cpu, Layers, ChevronRight, X, Plus, Trash2, ExternalLink, Play, Video as VideoIcon, Sparkles } from 'lucide-react';
+import { Cpu, Layers, ChevronRight, X, Plus, Trash2, ExternalLink, Play, Video as VideoIcon, Sparkles, Presentation } from 'lucide-react';
 import { PortfolioData, CourseItem, CourseProject, SectionTextConfig, UploadedFileRecord } from '@/types/portfolio';
 import { EditableText } from './EditableText';
 import { EditableTagList } from './EditableTagList';
 import { SmartMediaView } from './SmartMediaView';
-import { extractYouTubeId, extractFirstVideoFromText } from '@/lib/mediaUtils';
+import { extractYouTubeId, extractFirstVideoFromText, isPresentationUrl } from '@/lib/mediaUtils';
 
 interface CoursesSectionProps {
   data: PortfolioData;
@@ -196,6 +196,7 @@ export const CoursesSection: React.FC<CoursesSectionProps> = ({
 
                   {course.projects.map((proj) => {
                     const isYt = Boolean(extractYouTubeId(proj.imageUrl) || extractYouTubeId(proj.videoUrl || '') || extractFirstVideoFromText(proj.description));
+                    const isSlide = Boolean(isPresentationUrl(proj.imageUrl) || proj.tags?.some(t => t.includes('สไลด์') || t.toLowerCase().includes('slide')));
 
                     return (
                       <div
@@ -205,11 +206,15 @@ export const CoursesSection: React.FC<CoursesSectionProps> = ({
                       >
                         <div className="space-y-1 overflow-hidden pr-4">
                           <div className="flex items-center gap-2">
-                            {isYt && (
-                              <span className="p-1 rounded bg-rose-600 text-white shrink-0">
+                            {isYt ? (
+                              <span className="p-1 rounded bg-rose-600 text-white shrink-0" title="วิดีโอ YouTube">
                                 <Play size={10} className="fill-white" />
                               </span>
-                            )}
+                            ) : isSlide ? (
+                              <span className="p-1 rounded bg-amber-500 text-black shrink-0" title="สไลด์นำเสนอ">
+                                <Presentation size={10} />
+                              </span>
+                            ) : null}
                             <h4 className="text-xs sm:text-sm font-semibold text-[var(--text-main)] group-hover/p:text-sky-500 dark:group-hover/p:text-sky-300 transition truncate">
                               {proj.title}
                             </h4>
@@ -289,8 +294,8 @@ export const CoursesSection: React.FC<CoursesSectionProps> = ({
                 </h3>
               </div>
 
-              {/* Smart Media Player (YouTube Embed / MP4 / Image) */}
-              <div className="w-full rounded-lg overflow-hidden border-2 border-[var(--border-neon)] bg-[var(--bg-primary)] relative min-h-[220px]">
+              {/* Smart Media Player (YouTube Embed / MP4 / Image / Slides) */}
+              <div className="w-full rounded-xl overflow-hidden border-2 border-[var(--border-neon)] bg-[var(--bg-card)] relative min-h-[260px] flex flex-col justify-center shadow-md">
                 <SmartMediaView
                   mediaUrl={activeProjectModal.project.imageUrl}
                   alt={activeProjectModal.project.title}
@@ -311,7 +316,7 @@ export const CoursesSection: React.FC<CoursesSectionProps> = ({
               <div className="space-y-4 font-mono">
                 <div>
                   <div className="flex items-center justify-between mb-1">
-                    <h4 className="text-xs font-bold text-sky-500 dark:text-sky-400 uppercase tracking-wider">
+                    <h4 className="text-xs font-bold text-[var(--accent-cyan)] uppercase tracking-wider">
                       DESCRIPTION &amp; OUTCOMES
                     </h4>
                     {extractYouTubeId(activeProjectModal.project.description) && (
@@ -353,7 +358,7 @@ export const CoursesSection: React.FC<CoursesSectionProps> = ({
 
                 {/* Highlights with EditableTagList */}
                 <div>
-                  <h4 className="text-xs font-bold text-sky-400 uppercase tracking-wider mb-2">
+                  <h4 className="text-xs font-bold text-[var(--accent-cyan)] uppercase tracking-wider mb-2">
                     KEY HIGHLIGHTS
                   </h4>
                   <EditableTagList
@@ -367,14 +372,14 @@ export const CoursesSection: React.FC<CoursesSectionProps> = ({
                     }}
                     isAdmin={isAdmin}
                     prefix="✓ "
-                    pillClassName="flex items-center gap-2 text-xs text-slate-300 bg-[#0e122b] p-2 rounded-lg border border-[#232b58]"
+                    pillClassName="flex items-center gap-2 text-xs text-[var(--text-main)] bg-[var(--bg-secondary)] p-2.5 rounded-lg border border-[var(--border-subtle)] shadow-xs"
                     addPlaceholder="เพิ่มจุดเด่น..."
                   />
                 </div>
 
                 {/* Tags with EditableTagList */}
                 <div>
-                  <h4 className="text-xs font-bold text-sky-400 uppercase tracking-wider mb-2">
+                  <h4 className="text-xs font-bold text-[var(--accent-cyan)] uppercase tracking-wider mb-2">
                     TAGS &amp; SKILLS
                   </h4>
                   <EditableTagList
@@ -387,16 +392,16 @@ export const CoursesSection: React.FC<CoursesSectionProps> = ({
                       });
                     }}
                     isAdmin={isAdmin}
-                    pillClassName="px-2.5 py-1 rounded bg-sky-950/80 border border-sky-500/30 text-sky-300 text-xs"
+                    pillClassName="px-2.5 py-1 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-neon)] text-[var(--accent-cyan)] text-xs font-semibold shadow-xs"
                     addPlaceholder="เพิ่มแท็ก..."
                   />
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-[#1d2550] flex justify-end font-mono">
+              <div className="pt-3 border-t border-[var(--border-subtle)] flex justify-end font-mono">
                 <button
                   onClick={() => setActiveProjectModal(null)}
-                  className="px-4 py-2 rounded-lg bg-[#141a3c] border border-[#3b82f6] text-white text-xs font-bold hover:bg-[#1c2452] transition cursor-pointer"
+                  className="px-4 py-2 rounded-lg bg-[var(--bg-secondary)] border-2 border-[var(--border-neon)] text-[var(--text-title)] text-xs font-bold hover:bg-[var(--accent-cyan)] hover:text-black transition cursor-pointer shadow-md"
                 >
                   CLOSE WINDOW [ × ]
                 </button>
